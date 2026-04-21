@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>모바일 접수이력 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm">
+<div class="p-4" x-data="{ allChecked: false }">
+
+  <!-- 헤더 -->
+  <div class="flex items-center justify-between mb-3 pb-2 border-b border-k-border">
+    <h2 class="text-base font-bold text-k-sub">모바일 접수이력</h2>
+    <div class="flex gap-2">
+      <button class="px-3 py-1 text-xs bg-[#6699FF] text-white rounded hover:opacity-90">선택승인</button>
+      <button class="px-3 py-1 text-xs bg-[#6699FF] text-white rounded hover:opacity-90">엑셀다운</button>
+    </div>
+  </div>
+
+  <!-- 검색바 -->
+  <div class="flex flex-wrap items-center gap-2 mb-3 bg-white p-2 rounded border border-k-border">
+    <span class="text-xs font-bold text-k-sub">접수일</span>
+    <input type="text" value="2026-04-01" class="border border-k-border rounded px-2 py-1 text-xs w-28">
+    <span class="text-xs">~</span>
+    <input type="text" value="2026-04-15" class="border border-k-border rounded px-2 py-1 text-xs w-28">
+    <select class="border border-k-border rounded px-2 py-1 text-xs">
+      <option>접수번호</option>
+      <option>접수사원</option>
+      <option>고객명</option>
+      <option>휴대폰</option>
+      <option>연락처</option>
+      <option>주소</option>
+    </select>
+    <input type="text" placeholder="검색어" class="border border-k-border rounded px-2 py-1 text-xs w-40">
+    <button class="px-3 py-1 text-xs bg-k-primary text-white rounded hover:opacity-90">검색</button>
+    <label class="text-xs flex items-center gap-1 ml-2"><input type="radio" name="m_check" value="m2" checked> 미승인</label>
+    <label class="text-xs flex items-center gap-1"><input type="radio" name="m_check" value="m1"> 승인</label>
+  </div>
+
+  <!-- 데이터 테이블 (가로 스크롤) -->
+  <div class="overflow-x-auto bg-white rounded border border-k-border">
+    <table class="text-xs border-collapse" style="min-width:1400px;">
+      <thead>
+        <tr class="bg-k-header text-k-sub">
+          <th class="px-2 py-2 border-b border-k-border text-center w-8">
+            <input type="checkbox" x-model="allChecked">
+          </th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">접수번호</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">접수일</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">접수구분</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">접수사원</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">고객명</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">휴대폰</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">연락처</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">아파트명</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">모델</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">판매유형</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">증상분류</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">세부증상</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">유상통보</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">특이사항</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">담당지점</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">담당기사</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">구간구분</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold whitespace-nowrap">녹취</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hover:bg-yellow-100 cursor-pointer" title="더블클릭시 승인 가능">
+          <td class="px-2 py-1 border-b border-k-border text-center"><input type="checkbox" :checked="allChecked"></td>
+          <td class="px-2 py-1 border-b border-k-border text-center"><a href="#" class="text-blue-600 underline">260415-0021</a></td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">2026-04-15</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">모바일</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">이기사</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">김민준</td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">010-1234-5678</td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">02-555-1234</td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">한국아파트</td>
+          <td class="px-2 py-1 border-b border-k-border text-center text-xs">[IHP-700] 인터폰</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">민영</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">인터폰</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">통화불량</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">무상</td>
+          <td class="px-2 py-1 border-b border-k-border text-left max-w-xs truncate">방문 전 연락 요망</td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">서울강남센터</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">박기사</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">1구간</td>
+          <td class="px-2 py-1 border-b border-k-border text-center"></td>
+        </tr>
+        <tr class="bg-[#FBF9C4] hover:bg-yellow-100 cursor-pointer">
+          <td class="px-2 py-1 border-b border-k-border text-center"><input type="checkbox" :checked="allChecked"></td>
+          <td class="px-2 py-1 border-b border-k-border text-center"><a href="#" class="text-blue-600 underline">260414-0018</a></td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">2026-04-14</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">모바일</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">장기사</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">이서연</td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">010-2345-6789</td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">031-222-3333</td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">행복마을아파트</td>
+          <td class="px-2 py-1 border-b border-k-border text-center text-xs">[DLP-200] 도어락</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">특판</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">도어락</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">배터리방전</td>
+          <td class="px-2 py-1 border-b border-k-border text-center"><span class="text-purple-600 font-bold">유상</span></td>
+          <td class="px-2 py-1 border-b border-k-border text-left max-w-xs truncate">유상 사전통보 완료</td>
+          <td class="px-2 py-1 border-b border-k-border text-center whitespace-nowrap">경기북부센터</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">김기사</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">2구간</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">🔊</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 페이지네이션 -->
+  <div class="flex items-center justify-center gap-1 mt-3">
+    <button class="px-2 py-1 text-xs border border-k-border rounded bg-white">이전</button>
+    <button class="px-2 py-1 text-xs border border-k-primary rounded bg-k-primary text-white">1</button>
+    <button class="px-2 py-1 text-xs border border-k-border rounded bg-white">2</button>
+    <button class="px-2 py-1 text-xs border border-k-border rounded bg-white">다음</button>
+  </div>
+  <div class="text-center text-xs text-gray-500 mt-1">총 37건 (미승인)</div>
+  <div class="mt-2 text-xs text-gray-400 italic">* 더블클릭 시 해당 접수를 승인 처리합니다 (관리자 권한 필요)</div>
+</div>
+
+<!-- 개발자 스펙 패널 (프론트 개발 참고용) -->
+<div x-data="{ open: false, spec: null }"
+     x-init="Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["receipt"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null })"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg" style="writing-mode: vertical-rl;">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500 text-lg leading-none">&times;</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-1" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-1" x-text="spec?.phpFile"></div>
+    <div class="text-[#333] mb-2 text-[11px]" x-text="'업무: ' + (spec?.workflow || '')"></div>
+    <div class="text-[#555] mb-3 text-[11px] leading-snug" x-text="spec?.purpose"></div>
+
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">검색/입력 필드</div>
+      <table class="w-full text-[10px] border border-gray-200">
+        <template x-for="f in spec?.searchFields">
+          <tr class="border-b">
+            <td class="px-2 py-1 font-mono text-[#6699FF] align-top" x-text="f.name"></td>
+            <td class="px-2 py-1 align-top" x-text="f.label"></td>
+            <td class="px-2 py-1 text-[#999] align-top" x-text="f.type"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">테이블 컬럼</div>
+      <table class="w-full text-[10px] border border-gray-200">
+        <template x-for="c in spec?.tableColumns">
+          <tr class="border-b">
+            <td class="px-2 py-1 align-top" x-text="c.name"></td>
+            <td class="px-2 py-1 font-mono text-[#999] align-top" x-text="c.dbField"></td>
+            <td class="px-2 py-1 text-[#999] align-top" x-text="c.format || ''"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">버튼</div>
+      <template x-for="b in spec?.buttons">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <span class="font-bold" x-text="b.label"></span>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">호출하는 팝업</div>
+      <template x-for="p in spec?.popupsCalled">
+        <div class="text-[10px] mb-1">
+          <span x-text="p.trigger"></span> &rarr; <span class="font-mono text-[#6699FF]" x-text="p.popup"></span>
+          <span class="text-[#999]" x-text="p.size ? '('+p.size+')' : ''"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.ajaxCalls?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">AJAX 호출</div>
+      <template x-for="a in spec?.ajaxCalls">
+        <div class="text-[10px] mb-1">
+          <span x-text="a.trigger"></span> &rarr; <span class="font-mono text-[#6699FF]" x-text="a.url"></span>
+          <span class="text-[#999]" x-text="' ['+a.mode+']'"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.iframes?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">iframe 구성</div>
+      <template x-for="i in spec?.iframes">
+        <div class="text-[10px] mb-1">
+          <span class="font-mono text-[#6699FF]" x-text="i.name"></span>:
+          <span class="text-[#666]" x-text="i.src"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.flowFrom?.length" class="mb-2">
+      <div class="font-bold text-[#333] mb-1">유입 화면</div>
+      <template x-for="t in spec?.flowFrom">
+        <span class="inline-block bg-gray-100 text-[#666] px-2 py-0.5 rounded mr-1 mb-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+
+    <div x-show="spec?.flowTo?.length" class="mb-2">
+      <div class="font-bold text-[#333] mb-1">이동 가능한 화면</div>
+      <template x-for="t in spec?.flowTo">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 mb-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

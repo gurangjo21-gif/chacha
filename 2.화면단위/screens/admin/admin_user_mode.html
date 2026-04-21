@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>직원 등록/수정 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm" x-data="{
+  mode:'insert',
+  uid:'', pass:'', name:'', pos:'', dept:'', tel1:'', tel2:'', branch:'', perm:'2', inDate:'', outDate:'', status:'Y',
+  idChecked: false,
+  branches:['서울지점','경기지점','부산지점','대전지점','광주지점','대구지점','인천지점'],
+  menus:[
+    {id:1, top:'접수관리', subs:[{id:101,name:'CS접수',checked:true},{id:102,name:'접수현황',checked:true},{id:103,name:'처리현황',checked:false}]},
+    {id:2, top:'통계',    subs:[{id:201,name:'월별통계',checked:false},{id:202,name:'기사별통계',checked:false}]},
+    {id:3, top:'관리',    subs:[{id:301,name:'현장관리',checked:true},{id:302,name:'고객관리',checked:true},{id:303,name:'코드관리',checked:false},{id:304,name:'대리점관리',checked:false}]},
+    {id:4, top:'게시판',  subs:[{id:401,name:'공지사항',checked:true},{id:402,name:'자유게시판',checked:true},{id:403,name:'Q&A',checked:true},{id:404,name:'자료실',checked:false}]},
+  ],
+  checkAll(menu){
+    menu.subs.forEach(s=>s.checked=menu.allChecked)
+  },
+  isAllChecked(menu){
+    return menu.subs.every(s=>s.checked)
+  }
+}">
+<div class="max-w-5xl mx-auto p-4">
+  <div class="flex items-center justify-between mb-4 pb-2 border-b border-k-border">
+    <h2 class="text-lg font-bold">직원 <span x-text="mode==='insert'?'등록':'수정'"></span></h2>
+  </div>
+
+  <!-- 기본 정보 -->
+  <div class="bg-white border border-k-border rounded overflow-hidden mb-3">
+    <div class="bg-k-header px-4 py-2 border-b border-k-border font-bold text-sm">기본 정보</div>
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-k-border">
+          <th class="py-3 px-3 bg-k-header text-left font-bold w-28 border-r border-k-border text-xs">사원번호 <span class="text-red-500">*</span></th>
+          <td class="py-3 px-3 border-r border-k-border w-44">
+            <div class="flex items-center gap-1">
+              <input type="text" x-model="uid" placeholder="u000000" class="border border-k-border rounded px-2 py-1 w-24 text-sm" :disabled="mode==='update'">
+              <button x-show="mode==='insert'" @click="idChecked=true; alert('사용가능합니다.')"
+                class="bg-gray-200 px-2 py-1 rounded text-xs hover:bg-gray-300">중복체크</button>
+              <span x-show="idChecked" class="text-blue-600 text-xs font-bold">사용가능</span>
+            </div>
+          </td>
+          <th class="py-3 px-3 bg-k-header text-left font-bold w-24 border-r border-k-border text-xs">비밀번호 <span class="text-red-500">*</span></th>
+          <td class="py-3 px-3 border-r border-k-border">
+            <input type="password" x-model="pass" placeholder="비밀번호" class="border border-k-border rounded px-2 py-1 w-36 text-sm">
+          </td>
+          <th class="py-3 px-3 bg-k-header text-left font-bold w-20 border-r border-k-border text-xs">성명 <span class="text-red-500">*</span></th>
+          <td class="py-3 px-3 border-r border-k-border">
+            <input type="text" x-model="name" placeholder="성명" class="border border-k-border rounded px-2 py-1 w-28 text-sm">
+          </td>
+          <th class="py-3 px-3 bg-k-header text-left font-bold w-20 border-r border-k-border text-xs">직급 <span class="text-red-500">*</span></th>
+          <td class="py-3 px-3">
+            <select x-model="pos" class="border border-k-border rounded px-2 py-1 text-sm">
+              <option value="">:: 직급 ::</option>
+              <option>사원</option><option>주임</option><option>대리</option><option>팀장</option>
+              <option>과장</option><option>차장</option><option>부장</option><option>이사</option>
+            </select>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-k-border">
+          <td class="py-3 px-3 bg-k-header font-bold border-r border-k-border text-xs">부서</td>
+          <td class="py-3 px-3 border-r border-k-border"><input type="text" x-model="dept" placeholder="부서명" class="border border-k-border rounded px-2 py-1 w-full text-sm"></td>
+          <td class="py-3 px-3 bg-k-header font-bold border-r border-k-border text-xs">전화번호1</td>
+          <td class="py-3 px-3 border-r border-k-border"><input type="text" x-model="tel1" placeholder="02-1234-5678" class="border border-k-border rounded px-2 py-1 w-full text-sm"></td>
+          <td class="py-3 px-3 bg-k-header font-bold border-r border-k-border text-xs">전화번호2</td>
+          <td class="py-3 px-3 border-r border-k-border" colspan="3"><input type="text" x-model="tel2" placeholder="010-1234-5678" class="border border-k-border rounded px-2 py-1 w-36 text-sm"></td>
+        </tr>
+        <tr class="border-b border-k-border">
+          <td class="py-3 px-3 bg-k-header font-bold border-r border-k-border text-xs">지점</td>
+          <td class="py-3 px-3 border-r border-k-border">
+            <select x-model="branch" class="border border-k-border rounded px-2 py-1 text-sm">
+              <option value="">:: 지점 선택 ::</option>
+              <template x-for="b in branches" :key="b"><option :value="b" x-text="b"></option></template>
+            </select>
+          </td>
+          <td class="py-3 px-3 bg-k-header font-bold border-r border-k-border text-xs">권한 <span class="text-red-500">*</span></td>
+          <td class="py-3 px-3 border-r border-k-border" colspan="5">
+            <select x-model="perm" class="border border-k-border rounded px-2 py-1 text-sm">
+              <option value="">:: 권한 선택 ::</option>
+              <option value="2">상담원</option><option value="4">일반직원</option>
+              <option value="1">센터+소장</option><option value="3">자재담당자</option>
+              <option value="7">관리자</option><option value="9">슈퍼관리자</option>
+            </select>
+          </td>
+        </tr>
+        <tr class="border-b border-k-border">
+          <td class="py-3 px-3 bg-k-header font-bold border-r border-k-border text-xs">입사일자</td>
+          <td class="py-3 px-3 border-r border-k-border"><input type="date" x-model="inDate" class="border border-k-border rounded px-2 py-1 text-sm"></td>
+          <td class="py-3 px-3 bg-k-header font-bold border-r border-k-border text-xs">퇴사일자</td>
+          <td class="py-3 px-3 border-r border-k-border"><input type="date" x-model="outDate" :disabled="status==='Y'" class="border border-k-border rounded px-2 py-1 text-sm" :class="status==='Y'?'bg-gray-100':''"></td>
+          <td class="py-3 px-3 bg-k-header font-bold border-r border-k-border text-xs">현재상태 <span class="text-red-500">*</span></td>
+          <td class="py-3 px-3" colspan="3">
+            <select x-model="status" class="border border-k-border rounded px-2 py-1 text-sm">
+              <option value="Y">재직</option><option value="N">퇴사</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 메뉴 권한 -->
+  <div class="bg-white border border-k-border rounded overflow-hidden mb-4">
+    <div class="bg-k-header px-4 py-2 border-b border-k-border font-bold text-sm">메뉴 권한 <span class="text-red-500">*</span></div>
+    <div class="p-3 overflow-x-auto">
+      <table class="text-xs border-collapse">
+        <tbody>
+          <template x-for="menu in menus" :key="menu.id">
+            <tr class="border-b border-k-border">
+              <td class="py-2 px-2 border-r border-k-border whitespace-nowrap">
+                <label class="flex items-center gap-1 font-bold">
+                  <input type="checkbox"
+                    :checked="isAllChecked(menu)"
+                    @change="menu.allChecked=$event.target.checked; checkAll(menu)">
+                  <span x-text="menu.top"></span>
+                </label>
+              </td>
+              <template x-for="sub in menu.subs" :key="sub.id">
+                <td class="py-2 px-2 border-r border-k-border whitespace-nowrap">
+                  <label class="flex items-center gap-1">
+                    <input type="checkbox" x-model="sub.checked">
+                    <span x-text="sub.name"></span>
+                  </label>
+                </td>
+              </template>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="flex justify-center gap-2">
+    <button @click="alert(name?'저장되었습니다.':'성함을 입력해주세요!')"
+      class="bg-k-primary text-white px-8 py-2 rounded hover:opacity-80 text-sm">
+      <span x-text="mode==='insert'?'등록':'수정'"></span>
+    </button>
+    <button @click="if(confirm('취소하시겠습니까?'))history.back()"
+      class="bg-gray-400 text-white px-8 py-2 rounded hover:opacity-80 text-sm">취소</button>
+  </div>
+</div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["admin"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

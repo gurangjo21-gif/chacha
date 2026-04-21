@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+
+<script type='text/javascript'>
+	function sub(no){
+		if(eval("list_form.puse"+no+".value") || eval("list_form.pmemo"+no+".value"))if(!confirm("입력된 내용이 있습니다. 삭제하시겠습니까?"))return ;
+		var val = list_form.val.value;
+		var save="";
+		var arr = val.split(';');
+		var cnt = arr.length;
+
+		for(var i=0;i<cnt;i++){
+			if(arr[i]!=no && arr[i]){
+					save+=arr[i] + ";";
+			}
+		}
+		list_form.val.value = save;
+		list_form.submit();
+	}
+</script>
+<form method='post' name='list_form' id='list_form' action="/html/store_request_mater.php">
+	<INPUT TYPE="hidden" NAME="val" value="">
+	<INPUT TYPE="hidden" NAME="val1" value="1;2;3">
+<div id="contents" style='width:600px;'>
+	<div class="wrapper">	
+		<div class="data-table">
+			<table id="data_table" width="100%">
+				<colgroup>
+					<col width="100px" />
+					<col width="" />
+					<col width="100px" />
+					<col width="100px" />
+					<col width="100px" />
+					<col width="100px" />
+					<col width="100px" />
+					<col width="200px" />
+					<col width="100px" />
+					<col width="80px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>품번</th>
+						<th>CS품명</th>
+						<th>출고구분</th>
+						<th>신청수량</th>
+						<th>APP</th>
+						<th>HS</th>
+						<th>OS</th>
+						<th>비고</th>
+						<th>진행상황</th>
+						<th>삭제</th>
+					</tr>
+				</thead>
+				<tbody>
+									
+				</tbody>
+			</table>	
+		</div>
+	</div>
+</div>
+</form>

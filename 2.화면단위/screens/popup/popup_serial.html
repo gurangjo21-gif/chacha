@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>시리얼 번호 등록 - KOCOM</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-white text-xs text-[#333]" x-data="{
+  expected: '',
+  items: [
+    { no:1, serial:'', grade:'', worker:'김출고', date:'' },
+    { no:2, serial:'SN-2026-002', grade:'A', worker:'김출고', date:'2026-04-01' },
+    { no:3, serial:'', grade:'', worker:'김출고', date:'' },
+  ],
+  submit() {
+    const out = this.items.filter(i => i.serial).length;
+    const notOut = this.items.filter(i => !i.serial).length;
+    for(const item of this.items) {
+      if(item.serial && !item.grade) { alert('출고등급을 선택해주세요.'); return; }
+    }
+    if(out === 0) { alert('시리얼을 입력해 주세요'); return; }
+    if(confirm('출고 : ' + out + '\n미출고 : ' + notOut + '\n\n등록하시겠습니까?')) {
+      alert('출고 등록되었습니다.'); window.close();
+    }
+  }
+}">
+  <div class="p-2" style="width:600px;">
+    <div class="border border-[#ddd] p-2">
+      <strong class="block mb-2">[시리얼 번호 등록]</strong>
+      <table class="w-full border-collapse text-xs mb-2" style="border-top:2px solid #959595;">
+        <tr>
+          <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 text-center w-[10%]">품번</th>
+          <td class="border border-[#959595] px-2 py-1">J-001</td>
+        </tr>
+        <tr>
+          <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 text-center">품명</th>
+          <td class="border border-[#959595] px-2 py-1">도어폰 메인보드 (IHM-600용)</td>
+        </tr>
+      </table>
+      <table class="w-full border-collapse text-xs" style="border-top:2px solid #959595;">
+        <thead>
+          <tr class="bg-[#f3f3f3]">
+            <th class="border border-[#959595] px-1 py-1 text-center w-8">번호</th>
+            <th class="border border-[#959595] px-1 py-1 text-center" colspan="2">출고시리얼번호</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-24">등급</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-20">출고사원</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-20">출고일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="(item, i) in items" :key="item.no">
+            <tr>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="item.no"></td>
+              <td class="border border-[#959595] px-1 py-1" colspan="2">
+                <input type="text" x-model="item.serial" :readonly="item.serial && item.grade"
+                  class="border border-[#ccc] px-1 text-xs w-full" :class="item.serial && item.grade ? 'bg-gray-100' : ''">
+              </td>
+              <td class="border border-[#959595] px-1 py-1 text-center">
+                <select x-model="item.grade" :disabled="!!item.date" class="border border-[#ccc] text-xs w-20" :class="item.date ? 'bg-gray-100' : ''">
+                  <option value="">--선택--</option>
+                  <option value="A">A급</option>
+                </select>
+              </td>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="item.worker"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="item.date || '-'"></td>
+            </tr>
+          </template>
+          <!-- 출고예정일 -->
+          <tr>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-1 py-1 text-center" colspan="2">출고예정일</th>
+            <td class="border border-[#959595] px-1 py-1" colspan="2">
+              <input type="date" x-model="expected" class="border border-[#ccc] px-1 text-xs w-28">
+            </td>
+            <td class="border border-[#959595] px-1 py-1" colspan="2">
+              <button class="bg-[#5acd3e] text-white px-2 py-0.5 text-xs rounded"
+                @click="alert('출고예정일이 등록되었습니다.')">등록</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="flex justify-center gap-2 mt-2">
+      <button class="bg-[#6699FF] text-white px-3 py-1 text-xs rounded" @click="submit()">출고등록</button>
+      <button class="bg-[#6699FF] text-white px-3 py-1 text-xs rounded" @click="window.close()">닫기</button>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["popup"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

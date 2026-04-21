@@ -1,0 +1,95 @@
+<HTML>
+<link href="../assets/css/default.css" rel="stylesheet" type="text/css" />
+<style>
+	.t8 {	border-collapse:collapse; margin:3px;}
+	.t8 TD{	border:1px solid #000000;	background-color:#FFFFFF; padding:2 3 2 3; word-break:break-all; font-size:10pt;}
+	.t8 TH{	border:1px solid #000000;	background-color:#FFFFFF; padding:2 4 2 4; height: 40px; font-size:10pt; font-weight:bold;}
+	.t8 CAPTION{border-top:3px solid #88BBFF;border-left:1px solid #88BBFF;border-right:1px solid #88BBFF; font-weight:bold; padding:7px 5px 5px 10px;background-color:#efefe5;text-align:left;font-size:10pt; height:25px;}
+
+</style>
+<br>
+<span style="width:750;text-align:center; font-size:20pt;height:40px;padding-top:20px;font-family: '바탕', 'Verdana';">수리의뢰</span><br><br>
+
+<TABLE class="t8" width="800">
+<COL width="150"></COL>
+<COL width="250"></COL>
+<COL width="150"></COL>
+<COL width="250"></COL>
+<TR height="28px;">
+	<TH>접수번호</TH>
+	<TD colspan="3">-</TD>
+</TR>
+<TR height="28px;">
+	<TH>고객명</TH>
+	<TD></TD>
+	<TH>연락처</TH>
+	<TD></TD>
+</TR>
+<TR height="28px;">
+	<TH>신청일</TH>
+	<TD></TD>
+	<TH>신청센터</TH>
+	<TD></TD>
+</TR>
+<TR height="28px;">
+	<TH>주소</TH>
+	<TD colspan="3">&nbsp;&nbsp;</TD>
+</TR>
+<TR height="28px;">
+	<TH>코드번호</TH>
+	<TD></TD>
+	<TH>모델명</TH>
+	<TD></TD>
+</TR>
+<TR height="28px;">
+	<TH>의뢰방법</TH>
+	
+			<td class='left'>택배</td>
+			<th>송장번호</th>
+			<td class='left'></td>
+		</TR>
+<TR height="28px;">
+	<TH>일련번호</TH>
+	<TD colspan="3"></TD>
+</TR>
+<TR height="28px;">
+	<TH>유무상</TH>
+	<TD>-</TD>
+	<TH>청구금액</TH>
+	<TD></TD>
+</TR>
+<TR height="28px;">
+	<TH>불량증상</TH>
+	<TD colspan="3"></TD>
+</TR>
+<TR height="28px;">
+	<TH>처리내용</TH>
+	<TD colspan="3"></TD>
+</TR>
+<TR height="28px;">
+	<TH>특이사항</TH>
+	<TD colspan="3"></TD>
+</TR>
+<TR height="28px;">
+	<TH>수리완료일자</TH>
+	<TD colspan="3"></TD>
+</TR>
+<TR height="28px;">
+	<TH>진행상황</TH>
+	<TD colspan="3">수리완료</TD>
+</TR>
+
+</TABLE>
+
+<SCRIPT type='text/javascript'>
+
+	function freeview_print(){
+		var active = '<OBJECT ID="active1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
+		document.body.insertAdjacentHTML('beforeEnd', active);
+		active1.ExecWB(7,1); 
+		active1.outerHTML ="";
+	}
+	//freeview_print();
+	// 프린트기능 classid가 안되서 기본 처리
+	print();
+</SCRIPT>

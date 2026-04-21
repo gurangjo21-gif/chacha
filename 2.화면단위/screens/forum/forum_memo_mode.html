@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>쪽지 쓰기 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm" x-data="{
+  mode:'insert', to:'', title:'', content:'',
+  users:[
+    {id:'u100001', name:'홍길동'},{id:'u100002', name:'이민지'},{id:'u100003', name:'박관리'},
+    {id:'u100004', name:'최담당'},{id:'u100005', name:'강나래'},{id:'u100006', name:'김기사'},
+    {id:'u100007', name:'박현장'},{id:'u100008', name:'이시스템'},{id:'u100009', name:'정지원'},
+  ]
+}">
+<div class="max-w-3xl mx-auto p-4">
+  <div class="flex items-center justify-between mb-4 pb-2 border-b border-k-border">
+    <h2 class="text-lg font-bold">쪽지게시판 <span x-text="mode==='insert'?'등록':'수정'"></span></h2>
+  </div>
+
+  <div class="bg-white border border-k-border rounded overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-k-border">
+          <th class="py-3 px-4 bg-k-header text-left font-bold w-28 border-r border-k-border">수신인</th>
+          <td class="py-3 px-4">
+            <select x-model="to" class="border border-k-border rounded px-3 py-1.5 w-64 text-sm">
+              <option value="">:: 수신인 선택 ::</option>
+              <template x-for="u in users" :key="u.id">
+                <option :value="u.id" x-text="u.name + '(' + u.id + ')'"></option>
+              </template>
+            </select>
+          </td>
+        </tr>
+        <tr class="border-b border-k-border">
+          <th class="py-3 px-4 bg-k-header text-left font-bold border-r border-k-border">제목 <span class="text-red-500">*</span></th>
+          <td class="py-3 px-4">
+            <input type="text" x-model="title" placeholder="제목을 입력하세요" maxlength="255"
+              class="border border-k-border rounded px-3 py-1.5 w-full text-sm">
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-k-border">
+          <th class="py-3 px-4 bg-k-header text-left font-bold border-r border-k-border">내용 <span class="text-red-500">*</span></th>
+          <td class="py-3 px-4">
+            <textarea x-model="content" rows="12" class="border border-k-border rounded px-3 py-2 w-full text-sm resize-y"
+              placeholder="쪽지 내용을 입력하세요."></textarea>
+          </td>
+        </tr>
+        <tr class="border-b border-k-border">
+          <th class="py-3 px-4 bg-k-header text-left font-bold border-r border-k-border">파일첨부</th>
+          <td class="py-3 px-4">
+            <input type="file" class="text-sm text-gray-600">
+            <p class="text-xs text-gray-400 mt-1">※ 파일 크기 최대 30 MB</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="py-4 text-center">
+            <div class="flex justify-center gap-2">
+              <button @click="alert(title&&content?'전송되었습니다.':'제목과 내용을 입력하세요!')"
+                class="bg-k-primary text-white px-6 py-2 rounded hover:opacity-80 text-sm">
+                <span x-text="mode==='insert'?'전송':'수정'"></span>
+              </button>
+              <a href="forum_memo_list.html" class="bg-gray-400 text-white px-6 py-2 rounded hover:opacity-80 text-sm">취소</a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["forum"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

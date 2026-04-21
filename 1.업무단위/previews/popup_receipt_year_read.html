@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>연차 접수</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<!-- daum postcode API removed for offline preview -->
+<script type="text/javascript">
+	function new_receipt(){
+		location.href='/html/popup_receipt_year_read.php?num=insert';
+	}
+</script>
+
+
+<style type="text/css">
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+	font-size: 15px;
+	font-weight: bold;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+	font-size: 14px;
+	height:20px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+
+.form-table.type2 td > input {
+height:20px;
+font-size:14px;
+}
+.form-table.type2 td > select {
+height:20px;
+font-size:14px;
+}
+.form-table.type2 td > textarea {
+font-size:14px;
+}
+
+</style>
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/popup_receipt_year_read.php</b>
+  <span class="purpose">접수 연차 조회</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+
+<form name="receipt_form" method='post'>
+	<INPUT TYPE="hidden" NAME="mode" value="">
+	<div style="overflow:scroll; width:690px; height:750px;">
+<table cellpadding="0" cellspacing="0" width="670">
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 0 0 5px 0;">
+						<table width="100%" >
+							<tr>
+								<td style="padding: 15px 0 10px 0"><strong>[연차 접수 읽기전용]</strong></td>
+								<td align="right"><a href="javascript:self.close();" class="btn1 btn-color3" title="닫기"><span class="bg">&nbsp;</span><span class="text">닫기</span></a></td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<th width="15%"><IMG class="btn1 icon_1">접수번호</th>
+								<td width="35%"><INPUT TYPE="text" NAME="rct_no" size="12" value="" ></td>
+								<Th><IMG class="btn1 icon_1">연&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;차</Th>
+								<TD><INPUT TYPE="text" NAME="rct_year" value="" ></TD>
+							</tr>
+							<TR>
+								<th width="15%"><IMG class="btn1 icon_1">접수일자</th>
+								<td width="35%"><INPUT TYPE="text" NAME="rct_date" size="12" value="" ></td>
+								<Th><IMG class="btn1 icon_1"><font style="letter-spacing:1px;">기&nbsp;준&nbsp;일</font></Th>
+								<td width="35%"><INPUT TYPE="text" NAME="rct_basedate" size="12" value="" ></td>
+							</TR>
+							<TR>
+								<Th><IMG class="btn1 icon_1"><font style="letter-spacing:1px;">공&nbsp;종&nbsp;명</font></Th>
+								<TD><INPUT TYPE="text" NAME="rct_gongjong" value="" ></TD>
+								<Th><IMG class="btn1 icon_1"><font style="letter-spacing:-3px;">타공종유무</font></Th>
+								<TD>
+									<select name='rct_tagj_yn' style="width:100px" >
+										<option value='Y' >유</option>
+										<option value='' selected>무</option>
+									</select>
+								</TD>
+							</TR>
+							<TR>
+								<th width="15%"><IMG class="btn1 icon_1"><font style="letter-spacing:-5px;">방문약속여부</font></th>
+								<TD width="35%"><INPUT TYPE="text" NAME="visit_yn" id="visit_yn" size="12" value="" ></TD>
+								<th width="15%"><IMG class="btn1 icon_1"><font style="letter-spacing:-3px;">방문예약일</font></th>
+								<TD width="35%"><INPUT TYPE="text" NAME="rct_basedate1" id="rct_basedate1" size="12" value="" ></TD>
+							</TR>	
+						</table>
+					</td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+    <!-- 고객정보 Start -->
+    <tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 5px 0 5px 0;">
+						<table width="100%" >
+							<tr>
+								<td style="padding: 10px 0 10px 0"><strong>[고객 정보]</strong></td>
+								<td align="right"></td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<th width="15%"><IMG class="btn1 icon_1"><font style="letter-spacing:1px;">고&nbsp;객&nbsp;명</font></th>
+								<td width="35%"><INPUT TYPE="text" NAME="mb_name" style="width:130px;" value="" ></td>
+								<th width="15%"><IMG class="btn1 icon_1">관&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;계</th>
+								<td width="35%">
+									<SELECT NAME="mbr" style="width:100px" >
+										<OPTION VALUE="본인" 

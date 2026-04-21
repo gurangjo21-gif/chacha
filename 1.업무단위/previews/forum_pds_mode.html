@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>KOCOM</title>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tablescroll.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tooltip.js"></script>
+<script type="text/javascript" src="../assets/js/controller.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script src="../assets/js/addon/jquery_plugin/thickbox-compressed.js" type="text/javascript"></script>
+<!-- daum postcode API removed for offline preview -->
+<link href="../assets/css/thickbox.css" rel="stylesheet" type="text/css" />
+
+<!-- 달력 start -->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
+<link rel="stylesheet" href="../assets/css/jquery-ui.css">
+<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+<script src="../assets/js/jquery-1.10.2.js"></script>
+<script src="../assets/js/jquery-ui.js"></script>
+<!-- 달력 end -->   
+
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/forum_pds_mode.php</b>
+  <span class="purpose">자료실 입력</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<div id="header">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+<script language="javascript">
+function open_receipt(){
+	//window.open('receipt.php','pop_receipt','width=665,height=720');
+	/*var cw = screen.availWidth;
+	var ch = screen.availHeight;
+	var sw = 650;
+	var sh = 650;
+	var ml = (cw-sw)/2;
+	var mt = (ch-sh)/2;*/
+	window.open('receipt.php?num=&mode=insert&cid_num=&UID=','pop_receipt','width=710,height=755top=50,left=1000');
+}
+function highlight(which,color){ 
+    if (document.all||document.getElementById) 
+    which.style.backgroundColor=color 
+}
+
+/*function title_ch(name) {
+	location.href="main.php?title_name"+name;
+	top.document.location.reload();
+}*/
+
+function log_out(){
+	var agent_ext = '1000';
+	var agent_id = 'demo';
+	var agent_pw = '';
+	
+	var server1 = '127.0.0.1'
+	if(server1 == '192.168.239') {
+		var server = '192.168.239.252';
+		var server_ip = '192.168.239.251';
+	} else {
+		var server = '222.108.131.73';
+		var server_ip = '222.108.131.123:888';
+	}
+
+	var params = "mode=LogoutAction&ext_no=" + agent_ext+ "&agent_id=" + agent_id+ "&agent_pw=" + agent_pw;
+	$.getJSON("http://"+server_ip+"/manager/callAPI/login.php?callback=?", 
+		params,
+		function(d)
+		{		
+			$.each(d, function(k, v){				
+				var response = v.data;
+				var res_array = response.split("|");
+				alert(res_array[0]);
+				if(res_array[0] == '-1') {
+					alert('DB접속실패');
+				} else if(res_array[0] == '-2'){
+					alert('DB쿼리에러및 기타');
+				}
+				else if(res_array[0] == '-3'){
+					alert('AMI오류입니다.');
+				}else if(res_array[0] == '0'){					
+					//top.location.replace('../logout.php?id='+agent_id);
+					top.location.replace('../logout.php');
+				}
+			}); 
+		}
+	);
+	//location.href = '../logout.php';
+	top.location.replace('../logout.php');
+}
+</script>
+	<div class="main-menu">
+		<div class="wrapper">
+			<ul class="menu">
+							<li >
+					<a href="/html/forum_pds_mode.php?Tidx=" title=""></a>
+					<ul>
+										</ul>
+				</li>
+						</ul>
+			<div class="btns">
+											<a href="#" class="btn1 btn-edit btn-color4" title="SMS" onclick="sms_open('demo','9');">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">SMS</span>
+				</a>
+								<a href="#" class="btn1 btn-edit btn-color4" title="대리점조회" onclick="window.open('popup_center_search.php','center','width=815,height=530,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">대리점조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color4" title="업무담당자조회" onclick="window.open('popup_master_search.php','master','width=800,height=500,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">업무담당자조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color3" title="정보수정" onclick="window.open('my_info.php','info','width=300,height=320,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">정보수정</span>
+				</a>
+				<!--<a href="../logout.php" target="_top" class="btn1 btn-disconnect btn-color4" title="로그아웃">-->
+				<a href="javascript:log_out();" class="btn1 btn-disconnect btn-color4" title="로그아웃">
+					<span class="bg">&nbsp;</span>
+					<span class="icon" style='  background-position: -39px 0px;'>&nbsp;</span>
+					<span class="text">로그아웃</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="sub-menu">&nbsp;</div>
+</div>
+<script>location.href='forum_pds_list.php';</script><script type='text/javascript'>
+	//ajax
+	function ajaxLoader(url){ 
+		if (document.getElementById) { 
+			var xmlHttp = (window.ActiveXObject) ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest(); 
+		}
+		if (xmlHttp){ 
+			xmlHttp.onreadystatechange = function(){ 
+				if (xmlHttp.readyState == 4){// 객체의 상태(0:비초기화, 1:로딩, 3:상호작용, 4: 완료)
+					if(xmlHttp.status == 200){ 
+						ajaxResponse(xmlHttp.responseText); 
+					}else{
+						alert('시스템 오류. CODE :'+ xmlHttp.status);
+					}
+				} 
+			} 
+			xmlHttp.open("GET", url, true); 
+			xmlHttp.send(null); 
+		}else{
+			alert("지원되지 않는 브라우저입니다.");
+		}
+	} 
+
+	function viewfile(no){
+		var f = document.eForm;
+		for(var i=2; i <=no; i++)
+			document.getElementById('file'+i).style.display='';
+		for(; i <=9; i++)
+			document.getElementById('file'+i).style.display='none';
+	}
+
+	function captureReturnKey(e) {
+		if(e.keyCode==13 && e.srcElement.type != 'textarea')
+		return false;
+	}
+
+	function go_next(mode){
+		var myform = document.eForm ;
+
+		var maxsize = myform.MAX_FILE_SIZE.value;
+
+		/*var size = 0;
+
+		var browser = navigator.appName;
+		if(browser=="Microsoft Internet Explorer")
+		{
+			var oas = new ActiveXObject("Scripting.FileSystemObject");
+			var filepath = document.getElementById('upfile1').value;
+			var e = oas.getFile(filepath);
+			size = e.size;
+		}
+		else
+		{
+			var node = document.getElementById('upfile1');
+			size = node.files[0].fileSize;
+		}
+		alert(size);
+		exit;*/
+
+	/*	if($('#upfile1').val() != "") {
+			var size1 = document.getElementById("upfile1").files[0].size;
+
+			if(size1 > maxsize) {
+				alert("첨부파일 사이즈는 10MB 이내로 등록 가능 합니다.");
+				$('#upfile1').val("");
+				$('#upfile1').focus();
+				myform.action = 'forum_pds_mode.php';
+				return;
+			}
+		}
+		if($('#upfile2').val() != "") {
+			var size2 = document.getElementById("upfile2").files[0].size;
+
+			if(size2 > maxsize) {
+				alert("첨부파일 사이즈는 10MB 이내로 등록 가능 합니다.");
+				$('#upfile2').val("");
+				$('#upfile2').focus();
+				myform.action = 'forum_pds_mode.php';
+				return;
+			}
+		}
+		if($('#upfile3').val() != "") {
+			var size3 = document.getElementById("upfile3").files[0].size;
+
+			if(size3 > maxsize) {
+				alert("첨부파일 사이즈는 10MB 이내로 등록 가능 합니다.");
+				$('#upfile3').val("");
+				$('#upfile3').focus();
+				myform.action = 'forum_pds_mode.php';
+				return;
+			}
+		}
+		if($('#upfile4').val() != "") {
+			var size4 = document.getElementById("upfile4").files[0].size;
+
+			if(size4 > maxsize) {
+				alert("첨부파일 사이즈는 10MB 이내로 등록 가능 합니다.");
+				$('#upfile4').val("");
+				$('#upfile4').focus();
+				myform.action = 'forum_pds_mode.php';
+				return;
+			}
+		}
+		if($('#upfile5').val() != "") {
+			var size5 = document.getElementById("upfile5").files[0].size;
+
+			if(size5 > maxsize) {
+				alert("첨부파일 사이즈는 10MB 이내로 등록 가능 합니다.");
+				$('#upfile5').val("");
+				$('#upfile5').focus();
+				myform.action = 'forum_pds_mode.php';
+				return;
+			}
+		}
+		if($('#upfile6').val() != "") {
+			var size6 = document.getElementById("upfile6").files[0].size;
+
+			if(size6 > maxsize) {
+				alert("첨부파일 사이즈는 10MB 이내로 등록 가능 합니다.");
+				$('#upfile6').val("");
+				$('#upfile6').focus();
+				myform.action = 'forum_pds_mode.php';
+				return;
+			}
+		}
+		if($('#upfile7').val() != "") {
+			var size7 = document.getElementById("upfile7").files[0].size;
+
+			if(size7 > maxsize) {
+				alert("첨부파일 사이즈는 10MB 이내로 등록 가능 합니다.");
+				$('#upfile7').val("");
+				$('#upfile7').focus();
+				myform.action = 'forum_pds_mode.php';
+				return;
+			}
+		}
+		if($('#upfile8').val() != "") {
+			var size8 = document.getElementById("upfile8").files[0].size;
+
+			if(size8 > maxsize) {
+				alert("첨부파일 사이즈는 10MB 이내로 등록 가능 합니다.");
+				$('#upfile8').val("");
+				$('#upfile8').focus();
+				myform.action = 'forum_pds_mode.php';
+				return;
+			}
+		}
+		if($('#upfile9').val() != "") {
+			var size9 = document.getElementById("upfile9").files[0].size;
+
+			if(size9 > maxsize) {
+				alert("첨부파일 사이즈는 10MB 이내로 등록 가능 합니다.");
+				$('#upfile9').val("");
+				$('#upfile9').focus();
+				myform.action = 'forum_pds_mode.php';
+				return;
+			}
+		}*/
+
+		if(mode =='cencle'){
+			if(confirm("취소하시겠습니까?")){
+				myform.action = "forum_pds_list.php";
+				myform.submit();
+			}
+		}else{
+			if(myform.qtitle.value == ''){
+				alert("제목을 입력하세요!");
+				myform.qtitle.focus();
+				return;
+			}
+			if(myform.content.value == ''){
+				alert("내용을 입력하세요!");
+				myform.content.focus();
+				return;
+			}
+			myform.action = "forum_pds_proc.php";
+			myform.submit();
+		}
+		return;
+	}
+	function update_next(idx,mode,f){
+		if(mode == "delete") {
+			if(confirm("[파일"+f+"]를 삭제하시겠습니까?")){
+				ajaxLoader("ajax_proc.php?mode=forum_pds_file_del&idx="+idx+"&filenm="+f);
+			}
+		}
+	}
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var str = respose.split("^");
+		switch(str[0]){
+			case "del_ok" :
+				alert("첨부파일이 삭제되었습니다.");
+				window.location.reload();
+			break;
+			case "del_false" :
+				alert("오류!!! 다시 시도해주세요.");
+				search_next();
+			break;
+		}
+	}
+
+</script>
+<form method='post' name='eForm' enctype="multipart/form-data">
+<div id="contents">
+	<div class="wrapper">
+		<div class="header">
+			<h2>자료게시판 등록</h2>
+		</div>
+		
+		<div class="data-table">
+			
+			<table id="data_table" width="100%">
+				<colgroup>
+					<col width="120px" />
+					<col width="" />
+				</colgroup>
+				
+				<thead>
+					<tr>
+						<th>제목<font class="font1">*</font></td>
+						<th class='left'><INPUT type="text" name="qtitle" value="

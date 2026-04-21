@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SMS 리스트</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+
+
+<!-- 달력 start -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<!-- 달력 end -->   
+
+
+<script type="text/javascript">
+	//ajax
+	function ajaxLoader(url){ 
+		if (document.getElementById) { 
+			var xmlHttp = (window.ActiveXObject) ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest(); 
+		}
+		if (xmlHttp){ 
+			xmlHttp.onreadystatechange = function(){ 
+				if (xmlHttp.readyState == 4){// 객체의 상태(0:비초기화, 1:로딩, 3:상호작용, 4: 완료)
+					if(xmlHttp.status == 200){ 
+						ajaxResponse(xmlHttp.responseText); 
+					}else{
+						alert('시스템 오류. CODE :'+ xmlHttp.status);
+					}
+				} 
+			} 
+			xmlHttp.open("GET", url, true); 
+			xmlHttp.send(null); 
+		}else{
+			alert("지원되지 않는 브라우저입니다.");
+		}
+	} 
+	function search_next() {
+		var myform = document.searchForm ;
+		myform.submit();
+	}
+	function re_send(reciever,i,sender,callback) {
+		if(confirm("재전송 하시겠습니까?")){
+			
+			//var snd_msg = $("#snd_msg_"+i).val();
+			ajaxLoader("ajax_proc.php?mode=sms_resend&reciever="+reciever+"&sender="+sender+"&callback="+callback);
+		}
+	}
+	function sms_go() {
+		window.open("popup_sms.php",'sms_go','width=565,height=475');
+	}
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		//alert(respose);
+		var mode_str = respose.split("^");
+		switch(mode_str[0]){
+			case "ok": 
+				alert("재전송 되었습니다.");
+			break;
+			case "false": 
+				alert("오류!!! 다시 시도해주세요.");
+			break;
+		}
+	}
+	$(function(){
+		/* 클릭 클릭시 클릭을 클릭한 위치 근처에 레이어가 나타난다. */
+		$('.tooltip').mouseover(function(e){
+			//alert($(this).attr('title'));
+			var sWidth = window.innerWidth;
+			var sHeight = window.innerHeight;
+
+			var oWidth = $('.popupLayer').width();
+			var oHeight = $('.popupLayer').height();
+
+			// 레이어가 나타날 위치를 셋팅한다.
+			var divLeft = e.clientX + 10;
+			var divTop = e.clientY + 5;
+
+			// 레이어가 화면 크기를 벗어나면 위치를 바꾸어 배치한다.
+			if( divLeft + oWidth > sWidth ) divLeft -= oWidth;
+			if( divTop + oHeight > sHeight ) divTop -= oHeight;
+
+			// 레이어 위치를 바꾸었더니 상단기준점(0,0) 밖으로 벗어난다면 상단기준점(0,0)에 배치하자.
+			if( divLeft < 0 ) divLeft = 0;
+			if( divTop < 0 ) divTop = 0;
+			
+			$("#tooltip_content").html($(this).attr('value'));
+
+			$('.popupLayer').css({
+				"top": divTop,
+				"left": divLeft,
+				"position": "absolute"
+			}).show();
+		}).mouseout(function(){
+			$('.popupLayer').hide();
+		});
+		/*$( "#sday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });
+	    $( "#eday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });*/
+		$( "#sday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+		$( "#eday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+	});
+	// 팝업 다른데 클릭시 레이어 닫기
+	$(document).mouseup(function (e) {
+		var container = $("#popupLayer");
+		if (!container.is(e.target) && container.has(e.target).length === 0){
+			$('.popupLayer').hide();
+		}	
+	});
+	
+	function closeLayer(){
+			$('.popupLayer').hide();
+		}
+</script>
+<style type="text/css">	
+.imgSelect {
+	cursor: pointer;
+}
+
+.popupLayer {
+	position: absolute;
+	display: none;
+	background-color: #ffffff;
+	border: solid 2px #d0d0d0;
+	width: 350px;
+	height: 100px;
+	padding: 10px;
+	z-index:9999;
+}
+.popupLayer div {
+	position: absolute;
+	top: 5px;
+	right: 5px
+}
+
+
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+
+
+</style>
+</head>
+<body onLoad="searchForm.keyword.focus();">
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/popup_sms_list.php</b>
+  <span class="purpose">팝업 SMS 목록</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<SCRIPT ID="dynamic"></SCRIPT>
+<SCRIPT ID="dynamic2"></SCRIPT>
+<form name="searchForm" method='get' >
+	<INPUT TYPE="hidden" NAME="mode" value="">
+	<INPUT TYPE="hidden" NAME="frmNAME" VALUE="">
+<table cellpadding="0" cellspacing="0" width="800px">
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 15px 0 5px 0;">
+						<table width="100%" >
+							<tr>
+								<td><strong>[SMS]</strong>&nbsp;<a href="javascript:sms_go()" class="btn1 btn-color6" title="문구"><span class="bg">&nbsp;</span><span class="text">문구</span></a></td>
+								<td align="right">
+									<INPUT TYPE="text" NAME="sday" id="sday" value="" size="10" mark="####-##-##" onkeypress="input_mark(this,'N')"> ~
+									<INPUT TYPE="text" NAME="eday" id="eday" value="" size="10" mark="####-##-##" onkeypress="input_mark(this,'N')">
+									&nbsp;
+																			My&nbsp;<INPUT TYPE="checkbox" NAME="mylist">
+										&nbsp;
+																		결과:
+									<SELECT NAME="status">
+										<OPTION VALUE="" selected>전체</OPTION>
+										<OPTION VALUE="T">성공</OPTION>
+										<OPTION VALUE="F">실패</OPTION>
+									</SELECT>
+									<SELECT NAME="keyfield">
+										<OPTION VALUE="" selected>전체</OPTION>
+										<OPTION VALUE="T" >수신번호</OPTION>
+										<OPTION VALUE="M" >전송메시지</OPTION>
+										<OPTION VALUE="S" >발신자</OPTION>
+									</SELECT>
+									<INPUT type="text" size="25" name="keyword" style="ime-mode:active" value="">
+									<a href="javascript:search_next();" class="btn1 btn-color5" title="검색" style="padding : 0 5px 0 0"><span class="bg">&nbsp;</span><span class="text">검색</span></a>
+								</td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="0" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<colgroup>
+								<col width="50px" />
+								<col width="120px" />
+								<col width="100px" />
+								<col width="*" />
+								<col width="80px" />
+								<col width="80px" />
+								<col width="80px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th>No</th>
+									<th>전송일시</th>
+									<th>수신번호</th>
+									<th>전송메시지</th>
+									<th>발신자</th>
+									<th>전송결과</th>
+									<TH>재전송</TH>
+								</tr>
+							</thead>
+							<tbody>
+								
+									<tr>
+										<td height='150px;' colspan='7'>데이터가 없습니다.</td>
+									</tr>
+										
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+</table> 
+		<!-- 폼 레이어  -->
+		<div class="popupLayer">
+			<div>
+				<span onClick="closeLayer(this)" style="cursor:pointer;font-size:1.5em" title="닫기">X</span>
+			</div>
+			&nbsp;</br>
+			<span id='tooltip_content'></span>
+		</div>
+		<!-- //폼 레이어  -->
+</form>
+</body>
+</html>
+ 
+

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>모델 검색</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+</head>
+<body class="bg-gray-50" style="width:600px; min-height:450px;"
+  x-data="{
+    keyword: '',
+    results: [],
+    selected: null,
+    init() { this.results = MOCK.modelList; },
+    search() {
+      const kw = this.keyword.trim().toLowerCase();
+      if (!kw) {
+        this.results = MOCK.modelList;
+      } else {
+        this.results = MOCK.modelList.filter(m =>
+          m.modelCode.toLowerCase().includes(kw) ||
+          m.modelName.toLowerCase().includes(kw) ||
+          m.category.toLowerCase().includes(kw)
+        );
+      }
+    },
+    select(model) {
+      this.selected = model;
+      alert('선택: [' + model.modelCode + '] ' + model.modelName);
+    }
+  }">
+
+  <!-- 헤더 -->
+  <div class="bg-blue-700 text-white px-4 py-2 flex items-center justify-between">
+    <span class="font-semibold text-sm">모델 검색</span>
+    <button onclick="window.close()" class="text-white hover:text-gray-200 text-lg leading-none">&times;</button>
+  </div>
+
+  <!-- 검색 영역 -->
+  <div class="px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-2">
+    <label class="text-sm font-medium text-gray-700 whitespace-nowrap">모델명/품번</label>
+    <input
+      type="text"
+      x-model="keyword"
+      @keydown.enter="search()"
+      placeholder="품번, 모델명, 제품군 입력"
+      class="flex-1 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+    >
+    <button
+      @click="search()"
+      class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-1.5 rounded whitespace-nowrap"
+    >검색</button>
+  </div>
+
+  <!-- 결과 테이블 -->
+  <div class="px-4 py-3 overflow-auto" style="max-height:340px;">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="bg-gray-100 text-gray-700">
+          <th class="border border-gray-300 px-3 py-2 text-left font-semibold w-28">품번</th>
+          <th class="border border-gray-300 px-3 py-2 text-left font-semibold">모델명</th>
+          <th class="border border-gray-300 px-3 py-2 text-center font-semibold w-24">제품군</th>
+          <th class="border border-gray-300 px-3 py-2 text-right font-semibold w-28">소비자가</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="results.length === 0">
+          <tr>
+            <td colspan="4" class="border border-gray-300 px-3 py-4 text-center text-gray-400">검색 결과가 없습니다.</td>
+          </tr>
+        </template>
+        <template x-for="model in results" :key="model.modelCode">
+          <tr
+            @click="select(model)"
+            :class="selected && selected.modelCode === model.modelCode ? 'bg-blue-100' : 'hover:bg-blue-50 even:bg-gray-50'"
+            class="cursor-pointer"
+          >
+            <td class="border border-gray-300 px-3 py-2 font-mono text-blue-700 font-medium" x-text="model.modelCode"></td>
+            <td class="border border-gray-300 px-3 py-2 text-gray-800" x-text="model.modelName"></td>
+            <td class="border border-gray-300 px-3 py-2 text-center text-gray-600" x-text="model.category"></td>
+            <td class="border border-gray-300 px-3 py-2 text-right text-gray-700" x-text="model.consumerPrice.toLocaleString() + '원'"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 선택 표시 -->
+  <div class="px-4 py-2 bg-white border-t border-gray-100 text-xs text-gray-500 min-h-[28px]">
+    <template x-if="selected">
+      <span>선택된 모델: <span class="font-semibold text-blue-700" x-text="'[' + selected.modelCode + '] ' + selected.modelName"></span></span>
+    </template>
+  </div>
+
+  <!-- 하단 버튼 -->
+  <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex justify-end gap-2">
+    <button
+      @click="if(selected){ alert('선택 완료: ' + selected.modelName); }"
+      :disabled="!selected"
+      :class="selected ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 cursor-not-allowed'"
+      class="text-white text-sm px-5 py-1.5 rounded"
+    >선택</button>
+    <button onclick="window.close()" class="bg-gray-500 hover:bg-gray-600 text-white text-sm px-5 py-1.5 rounded">닫기</button>
+  </div>
+
+</body>
+</html>

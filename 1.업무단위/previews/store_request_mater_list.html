@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+
+<script type='text/javascript'>
+	
+	function keyDown(){
+		if(event.KeyCode == 13){
+			search_next();
+		}
+	}
+	function search_next(){
+		var myform = document.eForm ; 
+		myform.pageno.value = 1 ;
+		myform.action = "/html/store_request_mater_list.php";
+		myform.target = "";
+		myform.submit();
+	}
+	
+	function add_item(){
+		var save=parent.mater.list_form.val.value;
+		var fail="";
+		var arr = save.split(';');
+		var j=0;
+		
+		$('input:checkbox[name="select_call"]').each(function(){
+	      	if(this.checked){
+	      		if(!arr.inArray(this.value)){
+	      			save+=this.value + ";";
+					j++;
+	      		} else {
+	      			fail+=this.value + ";";
+	      		}
+	      	}
+		});
+		
+		if(!j){alert('추가로 선택된 자재가 없습니다.');return ;}
+		if(fail)alert(fail+'은 이미 등록되어있습니다.');
+
+		parent.mater.list_form.val.value=save;
+		parent.mater.list_form.submit();
+	}
+
+	Array.prototype.inArray = function(needle){
+	     for(var i=0, len=this.length ; i < len ; i++){
+	          if(this[i] === needle){
+	               return true;
+	          }
+	     }
+	     return false;
+	}
+
+	//전체선택
+    function all_check() {
+	      if($('#allagree').is(":checked") == true){
+	         $('input:checkbox[name="select_call"]').attr("checked",true);
+	      }else {
+             $('input:checkbox[name="select_call"]').attr("checked",false);
+          }
+ 	}
+</script>
+<form method='get' name='eForm' action="/html/store_request_mater_list.php">
+<div id="contents" style='width:600px;'>
+	<div class="wrapper">	
+		<div class="search">
+				<span class="spacer">[ 자재조회]</span><br>
+				모품번 : <INPUT TYPE="text" NAME="pp_no" size="10" value="">
+				품번 : <INPUT TYPE="text" NAME="p_no" size="10" value="">
+				CS품명 : <INPUT TYPE="text" NAME="p_name" size="10" value="">
+				재고 : 
+				<select name="keyfield">
+					<option value="" selected>전체</option>
+					<option value="Y" >유(有)</option>
+				</select>
+				<input type="image" src="../assets/images/btn/btn-search.png" alt="검색" onkeydown="javascript:keyDown();" onclick="javascript:search_next();"/>
+				<input type='hidden' name='idx'>
+				<input type='hidden' name='mode'>
+				<input type='hidden' name='pageno' value='1'>
+				<input type='hidden' name='Tidx' value=''>
+				<input type='hidden' name='Sidx' value=''>
+		</div>
+		
+		<div class="data-table" style='width:600px;'>
+			<table id="data_table" width="98%">
+				<colgroup>
+					<col width="10px" />
+					<col width="30px" />
+					<col width="200px" />
+					<col width="80px" />
+					<col width="80px" />
+					<col width="80px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><input type="checkbox" id="allagree" name="allagree" onclick='javascript:all_check();'></th>
+						<th>품번</th>
+						<th>CS품명</th>
+						<th>신품</th>
+						<th>재생</th>
+						<th>소비자가</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+					<tr>
+						<td height='150px;' colspan='6'>데이터가 없습니다.</td>
+					</tr>
+										
+				</tbody>
+			</table>	
+		</div>
+		<div style='width:600px;'>
+		&nbsp;		</div>
+		<div style='width:600px;text-align:right;'>
+			<a href="javascript:add_item()" class="btn1 btn-sms btn-color6" title="추가">
+					<span class="bg">&nbsp;</span>
+					<span class="text">추가</span>
+			</a>
+		</div>
+	</div>
+</div>
+</form>
+<iframe name="ifrm_trans" width="0" height="0" frameborder="0" marginheight="60" marginwidth="100"></iframe>

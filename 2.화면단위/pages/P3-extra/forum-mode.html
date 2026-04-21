@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 작성/수정</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+</head>
+<body class="bg-gray-50" style="width:800px; min-height:600px;"
+  x-data="{
+    mode: 'write',
+    title: '',
+    category: 'normal',
+    content: '',
+    fileName: '',
+    submit() {
+      if (!this.title.trim()) {
+        alert('제목을 입력해 주세요.');
+        return;
+      }
+      if (!this.content.trim()) {
+        alert('내용을 입력해 주세요.');
+        return;
+      }
+      const label = this.mode === 'edit' ? '수정' : '등록';
+      alert('게시글이 ' + label + '되었습니다.');
+      window.close();
+    },
+    handleFile(e) {
+      const f = e.target.files[0];
+      this.fileName = f ? f.name : '';
+    }
+  }">
+
+  <!-- 헤더 -->
+  <div class="bg-blue-700 text-white px-5 py-2.5 flex items-center justify-between">
+    <span class="font-semibold text-sm" x-text="mode === 'edit' ? '게시글 수정' : '게시글 작성'"></span>
+    <button onclick="window.close()" class="text-white hover:text-gray-200 text-lg leading-none">&times;</button>
+  </div>
+
+  <!-- 폼 -->
+  <div class="px-6 py-5 space-y-4">
+
+    <!-- 모드 전환 (프로토타입용) -->
+    <div class="flex items-center gap-3 pb-2 border-b border-gray-200">
+      <span class="text-xs text-gray-400">모드:</span>
+      <label class="flex items-center gap-1 text-xs cursor-pointer">
+        <input type="radio" x-model="mode" value="write" class="accent-blue-600"> 작성
+      </label>
+      <label class="flex items-center gap-1 text-xs cursor-pointer">
+        <input type="radio" x-model="mode" value="edit" class="accent-blue-600"> 수정
+      </label>
+    </div>
+
+    <!-- 카테고리 -->
+    <div class="flex items-center gap-3">
+      <label class="text-sm font-medium text-gray-700 w-20 shrink-0">카테고리</label>
+      <select
+        x-model="category"
+        class="w-40 border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+      >
+        <option value="notice">공지</option>
+        <option value="normal">일반</option>
+      </select>
+      <template x-if="category === 'notice'">
+        <span class="inline-block bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded">공지 글로 등록됩니다</span>
+      </template>
+    </div>
+
+    <!-- 제목 -->
+    <div class="flex items-center gap-3">
+      <label class="text-sm font-medium text-gray-700 w-20 shrink-0">제목 <span class="text-red-500">*</span></label>
+      <input
+        type="text"
+        x-model="title"
+        placeholder="제목을 입력하세요"
+        class="flex-1 border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+      >
+    </div>
+
+    <!-- 내용 -->
+    <div class="flex items-start gap-3">
+      <label class="text-sm font-medium text-gray-700 w-20 shrink-0 pt-1">내용 <span class="text-red-500">*</span></label>
+      <textarea
+        x-model="content"
+        rows="12"
+        placeholder="내용을 입력하세요"
+        class="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+        style="min-height:240px;"
+      ></textarea>
+    </div>
+
+    <!-- 파일 첨부 -->
+    <div class="flex items-center gap-3">
+      <label class="text-sm font-medium text-gray-700 w-20 shrink-0">파일첨부</label>
+      <div class="flex items-center gap-2 flex-1">
+        <label class="cursor-pointer">
+          <span class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs px-3 py-1.5 rounded border border-gray-300">파일 선택</span>
+          <input
+            type="file"
+            @change="handleFile($event)"
+            class="hidden"
+          >
+        </label>
+        <span
+          class="text-sm text-gray-500 truncate max-w-xs"
+          x-text="fileName || '선택된 파일 없음'"
+          :class="fileName ? 'text-blue-600' : 'text-gray-400'"
+        ></span>
+        <template x-if="fileName">
+          <button @click="fileName=''; $refs.fileInput && ($refs.fileInput.value='')" class="text-xs text-red-400 hover:text-red-600 ml-1">삭제</button>
+        </template>
+      </div>
+    </div>
+
+    <!-- 안내 문구 -->
+    <div class="text-xs text-gray-400">
+      * 첨부 가능 파일: jpg, png, pdf, xlsx, docx / 최대 10MB
+    </div>
+
+  </div>
+
+  <!-- 하단 버튼 -->
+  <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-2">
+    <button
+      @click="submit()"
+      class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-7 py-2 rounded"
+      x-text="mode === 'edit' ? '수정' : '등록'"
+    ></button>
+    <button onclick="window.close()" class="bg-gray-500 hover:bg-gray-600 text-white text-sm px-6 py-2 rounded">취소</button>
+  </div>
+
+</body>
+</html>

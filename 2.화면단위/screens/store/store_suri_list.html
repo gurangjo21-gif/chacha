@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>수리의뢰 신청 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm">
+  <div class="p-4 max-w-3xl mx-auto">
+    <div class="mb-4">
+      <h2 class="text-lg font-bold">수리의뢰</h2>
+    </div>
+
+    <div class="bg-white border border-k-border rounded overflow-hidden mb-4">
+      <table class="w-full text-xs border-collapse">
+        <colgroup>
+          <col style="width:15%"><col style="width:35%"><col style="width:15%"><col style="width:35%">
+        </colgroup>
+        <tbody>
+          <tr class="border-b border-k-border bg-k-header">
+            <th colspan="4" class="px-4 py-2 text-left text-k-sub font-bold">[ 수리의뢰 신청 정보 ]</th>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">접수번호</td>
+            <td class="px-3 py-2"><input type="text" value="260401-0001" class="border border-k-border rounded px-2 py-1 w-full bg-gray-100 text-xs" readonly></td>
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">신청센터</td>
+            <td class="px-3 py-2"><input type="text" value="서울센터" class="border border-k-border rounded px-2 py-1 w-full bg-gray-100 text-xs" readonly></td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">고객명</td>
+            <td class="px-3 py-2"><input type="text" name="charge" value="김철수" class="border border-k-border rounded px-2 py-1 w-full text-xs"></td>
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">연락처</td>
+            <td class="px-3 py-2"><input type="text" name="telno" value="010-1234-5678" class="border border-k-border rounded px-2 py-1 w-full text-xs"></td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">우편번호</td>
+            <td class="px-3 py-2" colspan="3">
+              <input type="text" name="zip" value="06000" class="border border-k-border rounded px-2 py-1 w-20 text-xs">
+              <button class="ml-2 px-2 py-1 bg-gray-400 text-white rounded text-xs">주소검색</button>
+            </td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">주소</td>
+            <td class="px-3 py-2" colspan="3"><input type="text" name="addr1" value="서울특별시 강남구 테헤란로 123" class="border border-k-border rounded px-2 py-1 w-full text-xs"></td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">상세주소</td>
+            <td class="px-3 py-2" colspan="3"><input type="text" name="addr2" value="코콤아파트 101동 1234호" class="border border-k-border rounded px-2 py-1 w-full text-xs"></td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">코드번호</td>
+            <td class="px-3 py-2"><input type="text" value="WALLPAD-A1" class="border border-k-border rounded px-2 py-1 w-full bg-gray-100 text-xs" readonly></td>
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">모델명</td>
+            <td class="px-3 py-2"><input type="text" value="월패드 A1 스마트홈" class="border border-k-border rounded px-2 py-1 w-full bg-gray-100 text-xs" readonly></td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">의뢰방법</td>
+            <td class="px-3 py-2">
+              <label class="mr-3 text-xs"><input type="radio" name="req_type" value="1" checked class="mr-1">택배</label>
+              <label class="text-xs"><input type="radio" name="req_type" value="2" class="mr-1">방문</label>
+            </td>
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border" id="type_1">송장번호</td>
+            <td class="px-3 py-2"><input type="text" name="trackno" value="123456789012" class="border border-k-border rounded px-2 py-1 w-full text-xs"></td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">일련번호</td>
+            <td class="px-3 py-2" colspan="3"><input type="text" value="SN20240101001" class="border border-k-border rounded px-2 py-1 w-full text-xs"></td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">유무상</td>
+            <td class="px-3 py-2">
+              <label class="mr-3 text-xs"><input type="radio" name="umuse" value="1" checked class="mr-1">유상</label>
+              <label class="mr-3 text-xs"><input type="radio" name="umuse" value="2" class="mr-1">무상</label>
+              <label class="text-xs"><input type="radio" name="umuse" value="3" class="mr-1">유지보수</label>
+            </td>
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">신청사원</td>
+            <td class="px-3 py-2">
+              <select class="border border-k-border rounded px-2 py-1 w-full text-xs">
+                <option>이민준</option>
+                <option>김태현</option>
+              </select>
+            </td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">불량증상</td>
+            <td class="px-3 py-2" colspan="3"><textarea class="border border-k-border rounded px-2 py-1 w-full text-xs h-16">화면이 켜지지 않음, 전원 불량</textarea></td>
+          </tr>
+          <tr class="border-b border-k-border">
+            <td class="bg-k-header px-3 py-2 font-semibold text-center border-r border-k-border">특이사항</td>
+            <td class="px-3 py-2" colspan="3"><textarea class="border border-k-border rounded px-2 py-1 w-full text-xs h-12">고객 요청으로 빠른 처리 부탁</textarea></td>
+          </tr>
+          <tr>
+            <td colspan="4" class="px-3 py-3">
+              <div class="flex gap-2">
+                <button class="px-3 py-1 bg-gray-400 text-white rounded text-xs">목록으로</button>
+                <button class="px-3 py-1 bg-green-500 text-white rounded text-xs">신청서 제출</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/store/')?'store':'tdb'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["store"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    📋 스펙
+  </button>
+  <div x-show="open" @click.away="open = false"
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">✕</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">🔍 검색 필드</div>
+      <template x-for="f in spec?.searchFields">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">📊 테이블 컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">🔘 버튼</div>
+      <template x-for="b in spec?.buttons">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">🪟 호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' → ' + p.popup"></div>
+      </template>
+    </div>
+
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">➡️ 연결 화면</div>
+      <template x-for="t in spec?.flowTo">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>메뉴얼 리스트 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm">
+<div class="p-4">
+
+  <!-- 헤더 -->
+  <div class="flex items-center justify-between mb-3 pb-2 border-b border-k-border">
+    <h2 class="text-base font-bold text-k-sub">메뉴얼 리스트</h2>
+    <div class="flex gap-2">
+      <button class="px-3 py-1 text-xs bg-[#6699FF] text-white rounded hover:opacity-90">엑셀다운</button>
+      <button class="px-3 py-1 text-xs bg-[#5acd3e] text-white rounded hover:opacity-90">추가</button>
+    </div>
+  </div>
+
+  <!-- 검색바 -->
+  <div class="flex flex-wrap items-center gap-2 mb-3 bg-white p-2 rounded border border-k-border">
+    <span class="text-xs font-bold text-k-sub">검색</span>
+    <select class="border border-k-border rounded px-2 py-1 text-xs">
+      <option>-- 선택 --</option>
+      <option>제목</option>
+      <option>모델명</option>
+      <option>현장명</option>
+      <option>파일명</option>
+    </select>
+    <input type="text" placeholder="검색어 입력" class="border border-k-border rounded px-2 py-1 text-xs w-48">
+    <button class="px-3 py-1 text-xs bg-k-primary text-white rounded hover:opacity-90">검색</button>
+  </div>
+
+  <!-- 데이터 테이블 -->
+  <div class="overflow-x-auto bg-white rounded border border-k-border">
+    <table class="w-full text-xs border-collapse">
+      <thead>
+        <tr class="bg-k-header text-k-sub">
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold">제목</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold">품번</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold">모델명</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold">파일명</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold">현장명</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold w-32">열기</th>
+          <th class="px-2 py-2 border-b border-k-border text-center font-bold w-28">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hover:bg-yellow-100">
+          <td class="px-2 py-1 border-b border-k-border text-center">IHP-700 인터폰 설치매뉴얼</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">IHP700</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">인터폰 700시리즈</td>
+          <td class="px-2 py-1 border-b border-k-border text-center text-gray-600">IHP700_install_v2.pdf</td>
+          <td class="px-2 py-1 border-b border-k-border text-center"></td>
+          <td class="px-2 py-1 border-b border-k-border text-center">
+            <button class="px-2 py-0.5 bg-blue-100 border border-blue-300 text-blue-700 rounded text-xs mr-1 hover:bg-blue-200">열기</button>
+            <button class="px-2 py-0.5 bg-gray-100 border border-k-border rounded text-xs hover:bg-gray-200">첨부파일</button>
+          </td>
+          <td class="px-2 py-1 border-b border-k-border text-center">
+            <button class="px-2 py-0.5 bg-gray-200 border border-k-border rounded text-xs mr-1">수정</button>
+            <button class="px-2 py-0.5 bg-gray-200 border border-k-border rounded text-xs">삭제</button>
+          </td>
+        </tr>
+        <tr class="bg-[#FBF9C4] hover:bg-yellow-100">
+          <td class="px-2 py-1 border-b border-k-border text-center">DLP-200 도어락 사용자 매뉴얼</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">DLP200</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">디지털도어락 200</td>
+          <td class="px-2 py-1 border-b border-k-border text-center text-gray-600">DLP200_user_manual.pdf</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">한국아파트</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">
+            <button class="px-2 py-0.5 bg-blue-100 border border-blue-300 text-blue-700 rounded text-xs mr-1 hover:bg-blue-200">열기</button>
+            <button class="px-2 py-0.5 bg-gray-100 border border-k-border rounded text-xs hover:bg-gray-200">첨부파일</button>
+          </td>
+          <td class="px-2 py-1 border-b border-k-border text-center">
+            <button class="px-2 py-0.5 bg-gray-200 border border-k-border rounded text-xs mr-1">수정</button>
+            <button class="px-2 py-0.5 bg-gray-200 border border-k-border rounded text-xs">삭제</button>
+          </td>
+        </tr>
+        <tr class="hover:bg-yellow-100">
+          <td class="px-2 py-1 border-b border-k-border text-center">WP-500 월패드 서비스매뉴얼</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">WP500</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">월패드 500</td>
+          <td class="px-2 py-1 border-b border-k-border text-center text-gray-600">WP500_service_manual_v3.pdf</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">행복마을아파트</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">
+            <button class="px-2 py-0.5 bg-blue-100 border border-blue-300 text-blue-700 rounded text-xs mr-1 hover:bg-blue-200">열기</button>
+            <button class="px-2 py-0.5 bg-gray-100 border border-k-border rounded text-xs hover:bg-gray-200">첨부파일</button>
+          </td>
+          <td class="px-2 py-1 border-b border-k-border text-center">
+            <button class="px-2 py-0.5 bg-gray-200 border border-k-border rounded text-xs mr-1">수정</button>
+            <button class="px-2 py-0.5 bg-gray-200 border border-k-border rounded text-xs">삭제</button>
+          </td>
+        </tr>
+        <tr class="bg-[#FBF9C4] hover:bg-yellow-100">
+          <td class="px-2 py-1 border-b border-k-border text-center">VDP-300 비디오폰 설치가이드</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">VDP300</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">비디오폰 300</td>
+          <td class="px-2 py-1 border-b border-k-border text-center text-gray-500 italic">파일 없음</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">e편한세상</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">-</td>
+          <td class="px-2 py-1 border-b border-k-border text-center">
+            <button class="px-2 py-0.5 bg-gray-200 border border-k-border rounded text-xs mr-1">수정</button>
+            <button class="px-2 py-0.5 bg-gray-200 border border-k-border rounded text-xs">삭제</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 페이지네이션 -->
+  <div class="flex items-center justify-center gap-1 mt-3">
+    <button class="px-2 py-1 text-xs border border-k-border rounded bg-white">이전</button>
+    <button class="px-2 py-1 text-xs border border-k-primary rounded bg-k-primary text-white">1</button>
+    <button class="px-2 py-1 text-xs border border-k-border rounded bg-white">2</button>
+    <button class="px-2 py-1 text-xs border border-k-border rounded bg-white">다음</button>
+  </div>
+  <div class="text-center text-xs text-gray-500 mt-1">총 18건</div>
+</div>
+
+<!-- 개발자 스펙 패널 (프론트 개발 참고용) -->
+<div x-data="{ open: false, spec: null }"
+     x-init="Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["receipt"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null })"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg" style="writing-mode: vertical-rl;">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500 text-lg leading-none">&times;</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-1" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-1" x-text="spec?.phpFile"></div>
+    <div class="text-[#333] mb-2 text-[11px]" x-text="'업무: ' + (spec?.workflow || '')"></div>
+    <div class="text-[#555] mb-3 text-[11px] leading-snug" x-text="spec?.purpose"></div>
+
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">검색/입력 필드</div>
+      <table class="w-full text-[10px] border border-gray-200">
+        <template x-for="f in spec?.searchFields">
+          <tr class="border-b">
+            <td class="px-2 py-1 font-mono text-[#6699FF] align-top" x-text="f.name"></td>
+            <td class="px-2 py-1 align-top" x-text="f.label"></td>
+            <td class="px-2 py-1 text-[#999] align-top" x-text="f.type"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">테이블 컬럼</div>
+      <table class="w-full text-[10px] border border-gray-200">
+        <template x-for="c in spec?.tableColumns">
+          <tr class="border-b">
+            <td class="px-2 py-1 align-top" x-text="c.name"></td>
+            <td class="px-2 py-1 font-mono text-[#999] align-top" x-text="c.dbField"></td>
+            <td class="px-2 py-1 text-[#999] align-top" x-text="c.format || ''"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">버튼</div>
+      <template x-for="b in spec?.buttons">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <span class="font-bold" x-text="b.label"></span>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">호출하는 팝업</div>
+      <template x-for="p in spec?.popupsCalled">
+        <div class="text-[10px] mb-1">
+          <span x-text="p.trigger"></span> &rarr; <span class="font-mono text-[#6699FF]" x-text="p.popup"></span>
+          <span class="text-[#999]" x-text="p.size ? '('+p.size+')' : ''"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.ajaxCalls?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">AJAX 호출</div>
+      <template x-for="a in spec?.ajaxCalls">
+        <div class="text-[10px] mb-1">
+          <span x-text="a.trigger"></span> &rarr; <span class="font-mono text-[#6699FF]" x-text="a.url"></span>
+          <span class="text-[#999]" x-text="' ['+a.mode+']'"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.iframes?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">iframe 구성</div>
+      <template x-for="i in spec?.iframes">
+        <div class="text-[10px] mb-1">
+          <span class="font-mono text-[#6699FF]" x-text="i.name"></span>:
+          <span class="text-[#666]" x-text="i.src"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.flowFrom?.length" class="mb-2">
+      <div class="font-bold text-[#333] mb-1">유입 화면</div>
+      <template x-for="t in spec?.flowFrom">
+        <span class="inline-block bg-gray-100 text-[#666] px-2 py-0.5 rounded mr-1 mb-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+
+    <div x-show="spec?.flowTo?.length" class="mb-2">
+      <div class="font-bold text-[#333] mb-1">이동 가능한 화면</div>
+      <template x-for="t in spec?.flowTo">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 mb-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

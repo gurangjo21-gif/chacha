@@ -1,0 +1,112 @@
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+<script language="javascript">
+function open_receipt(){
+	//window.open('receipt.php','pop_receipt','width=665,height=720');
+	/*var cw = screen.availWidth;
+	var ch = screen.availHeight;
+	var sw = 650;
+	var sh = 650;
+	var ml = (cw-sw)/2;
+	var mt = (ch-sh)/2;*/
+	window.open('receipt.php?num=&mode=insert&cid_num=&UID=','pop_receipt','width=710,height=755top=50,left=1000');
+}
+function highlight(which,color){ 
+    if (document.all||document.getElementById) 
+    which.style.backgroundColor=color 
+}
+
+/*function title_ch(name) {
+	location.href="main.php?title_name"+name;
+	top.document.location.reload();
+}*/
+
+function log_out(){
+	var agent_ext = '1000';
+	var agent_id = 'demo';
+	var agent_pw = '';
+	
+	var server1 = '127.0.0.1'
+	if(server1 == '192.168.239') {
+		var server = '192.168.239.252';
+		var server_ip = '192.168.239.251';
+	} else {
+		var server = '222.108.131.73';
+		var server_ip = '222.108.131.123:888';
+	}
+
+	var params = "mode=LogoutAction&ext_no=" + agent_ext+ "&agent_id=" + agent_id+ "&agent_pw=" + agent_pw;
+	$.getJSON("http://"+server_ip+"/manager/callAPI/login.php?callback=?", 
+		params,
+		function(d)
+		{		
+			$.each(d, function(k, v){				
+				var response = v.data;
+				var res_array = response.split("|");
+				alert(res_array[0]);
+				if(res_array[0] == '-1') {
+					alert('DB접속실패');
+				} else if(res_array[0] == '-2'){
+					alert('DB쿼리에러및 기타');
+				}
+				else if(res_array[0] == '-3'){
+					alert('AMI오류입니다.');
+				}else if(res_array[0] == '0'){					
+					//top.location.replace('../logout.php?id='+agent_id);
+					top.location.replace('../logout.php');
+				}
+			}); 
+		}
+	);
+	//location.href = '../logout.php';
+	top.location.replace('../logout.php');
+}
+</script>
+	<div class="main-menu">
+		<div class="wrapper">
+			<ul class="menu">
+							<li >
+					<a href="/html/top_menu.php?Tidx=" title=""></a>
+					<ul>
+										</ul>
+				</li>
+						</ul>
+			<div class="btns">
+											<a href="#" class="btn1 btn-edit btn-color4" title="SMS" onclick="sms_open('demo','9');">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">SMS</span>
+				</a>
+								<a href="#" class="btn1 btn-edit btn-color4" title="대리점조회" onclick="window.open('popup_center_search.php','center','width=815,height=530,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">대리점조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color4" title="업무담당자조회" onclick="window.open('popup_master_search.php','master','width=800,height=500,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">업무담당자조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color3" title="정보수정" onclick="window.open('my_info.php','info','width=300,height=320,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">정보수정</span>
+				</a>
+				<!--<a href="../logout.php" target="_top" class="btn1 btn-disconnect btn-color4" title="로그아웃">-->
+				<a href="javascript:log_out();" class="btn1 btn-disconnect btn-color4" title="로그아웃">
+					<span class="bg">&nbsp;</span>
+					<span class="icon" style='  background-position: -39px 0px;'>&nbsp;</span>
+					<span class="text">로그아웃</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="sub-menu">&nbsp;</div>
+</div>

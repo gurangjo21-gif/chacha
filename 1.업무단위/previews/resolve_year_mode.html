@@ -1,0 +1,755 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>KOCOM</title>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tablescroll.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tooltip.js"></script>
+<script type="text/javascript" src="../assets/js/controller.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script src="../assets/js/addon/jquery_plugin/thickbox-compressed.js" type="text/javascript"></script>
+<!-- daum postcode API removed for offline preview -->
+<link href="../assets/css/thickbox.css" rel="stylesheet" type="text/css" />
+
+<!-- 달력 start -->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
+<link rel="stylesheet" href="../assets/css/jquery-ui.css">
+<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+<script src="../assets/js/jquery-1.10.2.js"></script>
+<script src="../assets/js/jquery-ui.js"></script>
+<!-- 달력 end -->   
+
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/resolve_year_mode.php</b>
+  <span class="purpose">연차 입력</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<div id="header">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+<script language="javascript">
+function open_receipt(){
+	//window.open('receipt.php','pop_receipt','width=665,height=720');
+	/*var cw = screen.availWidth;
+	var ch = screen.availHeight;
+	var sw = 650;
+	var sh = 650;
+	var ml = (cw-sw)/2;
+	var mt = (ch-sh)/2;*/
+	window.open('receipt.php?num=&mode=insert&cid_num=&UID=','pop_receipt','width=710,height=755top=50,left=1000');
+}
+function highlight(which,color){ 
+    if (document.all||document.getElementById) 
+    which.style.backgroundColor=color 
+}
+
+/*function title_ch(name) {
+	location.href="main.php?title_name"+name;
+	top.document.location.reload();
+}*/
+
+function log_out(){
+	var agent_ext = '1000';
+	var agent_id = 'demo';
+	var agent_pw = '';
+	
+	var server1 = '127.0.0.1'
+	if(server1 == '192.168.239') {
+		var server = '192.168.239.252';
+		var server_ip = '192.168.239.251';
+	} else {
+		var server = '222.108.131.73';
+		var server_ip = '222.108.131.123:888';
+	}
+
+	var params = "mode=LogoutAction&ext_no=" + agent_ext+ "&agent_id=" + agent_id+ "&agent_pw=" + agent_pw;
+	$.getJSON("http://"+server_ip+"/manager/callAPI/login.php?callback=?", 
+		params,
+		function(d)
+		{		
+			$.each(d, function(k, v){				
+				var response = v.data;
+				var res_array = response.split("|");
+				alert(res_array[0]);
+				if(res_array[0] == '-1') {
+					alert('DB접속실패');
+				} else if(res_array[0] == '-2'){
+					alert('DB쿼리에러및 기타');
+				}
+				else if(res_array[0] == '-3'){
+					alert('AMI오류입니다.');
+				}else if(res_array[0] == '0'){					
+					//top.location.replace('../logout.php?id='+agent_id);
+					top.location.replace('../logout.php');
+				}
+			}); 
+		}
+	);
+	//location.href = '../logout.php';
+	top.location.replace('../logout.php');
+}
+</script>
+	<div class="main-menu">
+		<div class="wrapper">
+			<ul class="menu">
+							<li >
+					<a href="/html/resolve_year_mode.php?Tidx=" title=""></a>
+					<ul>
+										</ul>
+				</li>
+						</ul>
+			<div class="btns">
+											<a href="#" class="btn1 btn-edit btn-color4" title="SMS" onclick="sms_open('demo','9');">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">SMS</span>
+				</a>
+								<a href="#" class="btn1 btn-edit btn-color4" title="대리점조회" onclick="window.open('popup_center_search.php','center','width=815,height=530,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">대리점조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color4" title="업무담당자조회" onclick="window.open('popup_master_search.php','master','width=800,height=500,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">업무담당자조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color3" title="정보수정" onclick="window.open('my_info.php','info','width=300,height=320,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">정보수정</span>
+				</a>
+				<!--<a href="../logout.php" target="_top" class="btn1 btn-disconnect btn-color4" title="로그아웃">-->
+				<a href="javascript:log_out();" class="btn1 btn-disconnect btn-color4" title="로그아웃">
+					<span class="bg">&nbsp;</span>
+					<span class="icon" style='  background-position: -39px 0px;'>&nbsp;</span>
+					<span class="text">로그아웃</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="sub-menu">&nbsp;</div>
+</div>
+<script>location.href='resolve_year_list.php';</script>  
+<script type='text/javascript'>
+	function go_next(mode,com,app){
+		var myform = document.input_form ;
+		var msg = "";
+		var vat = $("input[type=radio][name=vat]:checked").val();
+		var pay_gbn = myform.pay_gbn.value;
+
+		if(com == "결재" && app == "1") {
+			alert("결재가 완료된건은 수정하실수 없습니다.");
+			return;
+		}
+
+		if(mode =='cencle'){
+			if(confirm("취소하시겠습니까?")){
+				myform.action = "resolve_year_list.php";
+				myform.submit();
+			}
+		}else if (mode == 'insert'){	
+			var sc1 = $("#sub_cnt").val();
+			if(mode == 'update') { 
+				if(pay_gbn == "Y") {
+					msg = "다시한번 청구금액을 확인하여주세요. \r\n\r\n수정하시겠습니까?";
+					if(!vat){alert("부가세를 선택하세요.");myform.vat.focus();return ;}
+					if(myform.charge_memo.value.length >= 1000){alert("기사의견에 1000자 이상 입력하실 수 없습니다.");myform.charge_memo.focus();return ;}
+				}
+			} else {
+				msg = "연차처리등록하시겠습니까?";
+
+				if(pay_gbn == "N") {
+					if(!myform.ps_agent.value){alert("처리사원을 선택하세요.");myform.ps_agent.focus();return; }
+					if(!myform.modelnumber.value){alert("제품일련번호를 입력하세요.");myform.modelnumber.focus();return ;}
+					if(!myform.suri_1.value){alert("수리구분를 선택하세요.");myform.suri_1.focus();return ;}
+					if(!myform.suri_2.value){alert("수리상세를 선택하세요.");myform.suri_2.focus();return ;}
+					if(!myform.resion_1.value){alert("원인분류를 선택하세요.");myform.resion_1.focus();return ;}
+					if(!myform.resion_2.value){alert("원인상세를 선택하세요.");myform.resion_2.focus();return ;}
+					if(myform.charge_memo.value.length >= 1000){alert("기사의견에 1000자 이상 입력하실 수 없습니다.");myform.charge_memo.focus();return ;}
+				} else {
+					if(!myform.ps_agent.value){alert("처리사원을 선택하세요.");myform.ps_agent.focus();return; }
+					if(!myform.modelnumber.value){alert("제품일련번호를 입력하세요.");myform.modelnumber.focus();return ;}
+					if(!myform.suri_1.value){alert("수리구분를 선택하세요.");myform.suri_1.focus();return ;}
+					if(!myform.suri_2.value){alert("수리상세를 선택하세요.");myform.suri_2.focus();return ;}
+					if(!myform.resion_1.value){alert("원인분류를 선택하세요.");myform.resion_1.focus();return ;}
+					if(!myform.resion_2.value){alert("원인상세를 선택하세요.");myform.resion_2.focus();return ;}
+					if(!vat){alert("부가세를 선택하세요.");myform.vat.focus();return ;}
+					if(myform.charge_memo.value.length >= 1000){alert("기사의견에 1000자 이상 입력하실 수 없습니다.");myform.charge_memo.focus();return ;}
+
+					for(var j=0 ; j < sc1 ; j++) {
+						if($("#s_type_"+j).val() == "") {
+							alert("등급을 선택해주세요.");
+							$("#s_type_"+j).focus();
+							return ;
+						}
+						else if($("#s_cnt_"+j).val() == "" || $("#s_cnt_"+j).val() == 0) {
+							alert("수량을 입력해 주세요.");
+							$("#s_cnt_"+j).focus();
+							return;
+						}
+					}
+					
+					if($("#pay_gbn").val() == "") {
+						alert("요금적용을 선택해주세요.");
+						$("#pay_gbn").focus();
+						return;
+					} else {
+						if($("#pay_gbn").val() != "N" && $("#pay1").val() == 0) {
+							alert("청구금액을 확인해주세요.");
+							return ;
+						}
+					}
+				}
+			}
+
+			/*if(!myform.idx2.value){
+				alert("처리번호를 입력해주세요.");
+				myform.idx2.focus();
+				return ;
+			}*/
+			myform.action = "resolve_year_proc.php";
+			myform.submit();
+		} else {
+			msg = "다시한번 청구금액을 확인하여주세요. \r\n\r\n수정하시겠습니까?";
+
+			myform.action = "resolve_year_proc.php";
+			myform.submit();
+		}
+		return;
+	}
+	
+	//요금적용 선택시 출장비 계산
+	function svcPayChange() {
+		var sc1 = $("#sub_cnt").val();
+		var sc2 = $("#sub_cnt2").val() ;
+
+		var sc = sc1 - sc2 ;
+
+		var rno = "";	//접수번호
+		var cno = "등록";	//처리번호
+
+		if($("#pay_gbn").val() == "I") {
+			var gugan = "";	//유지보수출장비
+		} else if($("#pay_gbn").val() == "Y") {
+			var gugan = "";	//구간출장비
+		} else {
+			var gugan = 0;
+		}
+
+		var param = "&mode=svcPayChange&rno="+rno+"&cno="+cno+"&gugan="+gugan+"&status="+$("#pay_gbn").val();
+		ajaxLoader("ajax_proc.php?"+param);
+
+		if($("select[name*='s_type_']").length > 0){
+			$("select[name*='s_type_']").val('');
+			$("input[name*='s_price_']").val(0);
+		}
+
+		/*if(pay == "Y")
+		{
+			switch(gupay) {
+				case "1구간" :
+					myform.price_gugan.value = "15000";
+				break;
+				case "2구간" :
+					myform.price_gugan.value = "20000";
+				break;
+				case "3구간" :
+					myform.price_gugan.value = "25000";
+				break;
+				case "4구간" :
+					myform.price_gugan.value = "30000";
+				break;
+				case "5구간" :
+					myform.price_gugan.value = "35000";
+				break;
+				case "6구간" :
+					myform.price_gugan.value = "40000";
+				break;
+				default :
+					myform.price_gugan.value = "15000";
+				break;
+			}
+		}
+		else
+		{
+			myform.price_gugan.value = "0";
+			myform.pay1.value = "0";
+			myform.pay2.value = "0";
+		}*/
+	}
+
+	/*function price_sum() {
+		var myform = document.input_form;
+		var sc1 = myform.price_gongim.value;
+		var sc2 = myform.price_gugan.value;
+	//	var sc1 = $("#price_gongim").val();
+	//	var sc2 = $("#price_gugan").val();
+//		var sum = myform.pay1.value;
+		myform.pay1.value = parseInt(sc1) + parseInt(sc2);
+		myform.pay2.value = parseInt(sc1) + parseInt(sc2);
+//		sum = sc1 + sc2;
+	}*/
+
+	// 부가세 포함
+	function vat_next() {
+		var myform = document.input_form;
+		var vat = $("input[type=radio][name=vat]:checked").val();
+		var vat_go = myform.vat_go.value;
+		var pay1 = myform.pay1.value;
+		var pay2 = myform.pay2.value;
+		var gongim = myform.price_gongim.value;
+		var sobi = myform.sobi_price.value;
+		var gugan = myform.price_gugan.value;
+		var total_sobi = myform.total_sobi.value;
+		var mode = myform.mode.value;
+		var i = 10;
+		//alert(vat);
+
+		if(vat_go == "yes") {
+			if(mode == "update") {
+				if(vat == "Y") {
+					//total_sobi_a = parseInt(total_sobi)/parseInt(i);
+					total_sobi_a = parseInt(sobi)/parseInt(i);
+					//total_sobi_all = parseInt(total_sobi) + parseInt(total_sobi_a);
+					total_sobi_all = parseInt(sobi) + parseInt(total_sobi_a);
+					gongim_a = parseInt(gongim)/parseInt(i);
+					gongim_all = parseInt(gongim) + parseInt(gongim_a);
+
+					myform.pay1.value = parseInt(gongim_all) + parseInt(total_sobi_all) + parseInt(gugan);
+					myform.pay2.value = parseInt(gongim_all) + parseInt(total_sobi_all) + parseInt(gugan);
+				} else {
+					myform.pay1.value = parseInt(gongim) + parseInt(sobi) + parseInt(gugan);
+					myform.pay2.value = parseInt(gongim) + parseInt(sobi) + parseInt(gugan);
+				}
+			} else if(mode == "insert") {
+				if(vat == "Y") {
+					sobi_a = parseInt(sobi)/parseInt(i);
+					sobi_all = parseInt(sobi) + parseInt(sobi_a);
+					gongim_a = parseInt(gongim)/parseInt(i);
+					gongim_all = parseInt(gongim) + parseInt(gongim_a);
+
+					myform.pay1.value = parseInt(gongim_all) + parseInt(sobi_all) + parseInt(gugan);
+					myform.pay2.value = parseInt(gongim_all) + parseInt(sobi_all) + parseInt(gugan);
+				} else {
+					myform.pay1.value = parseInt(gongim) + parseInt(sobi) + parseInt(gugan);
+					myform.pay2.value = parseInt(gongim) + parseInt(sobi) + parseInt(gugan);
+				}
+			} else {
+				alert("오류발생!! 다시시도해 주시기 바랍니다.");
+				return;
+			}
+		} else {
+			alert("청구금액계산을 먼저 실행해 주시기 바랍니다.");
+			return;
+		}
+	}
+
+	// 자재계리 추가
+	function model_next() {
+		var cno = "등록"; // 처리번호
+		//var myform = document.input_form;
+
+		if($("#pay_gbn").val() == "") {
+			alert("요금구분이 선택되어있지 않으면 자재를 추가하실 수 없습니다.");
+			$("#pay_gbn").focus();
+			return ;
+		}
+		
+		var mid = $("input[name='model_no']").val();
+		if(mid == "") {
+			alert("모델명이 존재하지 않습니다. 확인하여 주세요.");
+			return ;
+		}
+
+		var param = "&form=input_form&mid="+mid+"&pay_gbn="+$("#pay_gbn").val()+"&cno="+cno;
+		msearch = window.open('popup_model_search_svc.php?'+param,'msearch','width=610,height=560');
+	}
+	// 증복되는 자품번 추가한게 있는지 체크
+	function exists_model(m_id) {
+		var sc = $("#sub_cnt").val() ;
+		var ck='F';
+		for(var i=0;i < sc; i++) {
+			if($("#s_no_"+i).val() == "" || $("#s_no_"+i).val()==undefined) {
+				// 모델품번이 존재하지 않기때문에 삭제된 값으로 판단
+				continue ;
+			} else {
+				// 진행가능
+				if($("#s_no_"+i).val() == m_id) ck='T';
+			}
+		}
+		return ck ;
+	}
+	// 자재계리 등급을 변경할때마다 그에따른 소비자가를 가져와서 들고있는다.. 청구금액 계산을 위함
+	function price_change(s,m) {
+		if($("#s_type_"+s).val() == '') {
+			alert("등급은 꼭 필요한 값입니다.");
+			$("#s_type_"+s).focus();
+			return;
+		}else if($("#pay_gbn").val() == "" ) {
+			alert("요금구분은 필수값입니다.");
+			$("#pay_gbn").focus();
+			return;
+		}
+		
+		//수량에는 숫자만 입력되도록 추가할것.
+		if(m != 't') {
+			var inputVal = $("#s_cnt_"+s).val();
+    		$("#s_cnt_"+s).val(inputVal.replace(/[^0-9]/gi,''));
+		}
+		var param = "&mode=jajea_price&sc="+s+"&stype="+$("#s_type_"+s).val()+"&sno="+$("#s_no_"+s).val()+"&pay_gbn="+$("#pay_gbn").val();
+		ajaxLoader("ajax_proc.php?"+param);
+	}
+	// 자재계리 품목 추가
+	function insert_model(m_id , m_name) {
+		var sc = $("#sub_cnt").val() ;
+		
+		var str = "<tr id='tr_"+sc+"'>"
+			+"<Td><input type='text' name='s_no_"+sc+"' id='s_no_"+sc+"' value='"+m_id+"' style='width:120px;' readonly></td>"
+			+"<Td>"+m_name+"</td>"
+			+"<td>"
+				+"<select name='s_type_"+sc+"' id='s_type_"+sc+"'  style='width:100px;' onchange=\"price_change("+sc+",'t')\">"
+					+"<option value=''>--선택--</option>"
+					+"<option value='A'>A등급</option>"
+					//+"<option value='R'>R등급</option>"
+				+"</select>"
+			+"<input type='hidden' name='j_price_"+sc+"' id='j_price_"+sc+"' value='0'></td>"
+			+"<td><input type='text' name='s_cnt_"+sc+"' id='s_cnt_"+sc+"' value='0' style='width:100px;text-align:right;padding-right:5px;' onkeypress='price_change("+sc+")'></td>"
+			+"<td><input type='text' name='s_price_"+sc+"' id='s_price_"+sc+"' value='0' style='width:100px;text-align:right;padding-right:5px;' readonly></td>"
+			+"<TD style='width:100px;'><a href=\"javascript:update_next('"+sc+"','delete')\" class='btn1 btn-sms btn-color5' title='삭제'><span class='bg'>&nbsp;</span><span class='text'>삭제</span></a></TD>"
+		    +"</tr>";
+		    //alert(str);
+		var tf = exists_model(m_id);
+		if(tf == 'F') {
+			$("#tr_content").append(str);
+			$("#sub_cnt").val(parseInt(sc)+1);	//tr 아이디주기위해 존재
+		} else {
+			alert("이미 추가된 자재품번입니다. \r\n\r\n다른 자재를 선택해주세요.");
+			return ;
+		}
+	}
+	function update_next(i,mode) {
+		if(mode=='delete') {
+			$("#tr_"+i).remove() ;	//해당열삭제
+			var sc = $("#sub_cnt2").val() ;
+			$("#sub_cnt2").val(parseInt(sc)+1);	//삭제한게 몇개인지 확인을 위함
+		}
+	}
+
+	// 모델 변경
+	function modelsel_year(){
+		var no = document.input_form.model_no.value;
+		var fname = document.input_form.model_name.value;
+
+		var msg = "모델을 변경하시겠습니까?";
+
+		if(confirm(msg)) {
+			document.input_form.etc_memo.value = fname + "[변경]";
+			if(!no)
+				window.open('popup_model_search.php?form=input_form&modelNAME='+fname,'model','width=600,height=560,status=yes');
+			else {
+				window.open('popup_model_search.php?form=input_form&modelNAME='+fname+'&modelNO='+no,'model','width=610,height=560,status=yes');
+			}
+		}
+	}
+
+	// 인쇄
+	function print_svc(num) {
+		var myform = document.input_form;
+		var mode = myform.mode.value;
+		//if(!num) {
+		//	alert('처리 후 인쇄가 가능합니다.');
+		//}else{
+			var rno = "";	//접수번호
+			svc_print = window.open('popup_svc_print.php?no='+num+'&rno='+rno+'&mode='+mode,'svc_print','width=800,height=600,scrollbars=yes');
+		//}
+	}
+
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var mode_str = respose.split("^");
+		switch(mode_str[0]){
+			case "ERRORSEL" :	//장애코드 선택
+				var str = mode_str[1].split("||");
+				var cnt = str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(str[i] != '') {
+						var sel = str[i].split("@");
+						if(i == 0) $("#err_2").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#err_2").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+					}
+				}
+			break;
+
+			case "REPAIRSEL" :	//수리코드 선택
+				var str = mode_str[1].split("||");
+				var cnt = str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(str[i] != '') {
+						var sel = str[i].split("@");
+						if(i == 0) $("#suri_2").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#suri_2").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+					}
+				}
+			break;
+
+			case "CAUSESEL" :	//원인코드 선택
+				var str = mode_str[1].split("||");
+				var cnt = str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(str[i] != '') {
+						var sel = str[i].split("@");
+						if(i == 0) $("#resion_2").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#resion_2").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+					}
+				}
+			break;
+
+			case "SEL_AGENCY" :
+				var sel_str = mode_str[1].split("||");
+				var cnt = sel_str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(sel_str[i] != '') {
+						var sel = sel_str[i].split("@");
+						if(i == 0) $("#ps_agent").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#ps_agent").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+					}
+				}
+			break;
+
+			case "svcPayChange" :	//출장비 계산
+				//alert(respose);
+				if(mode_str[1] == "") mode_str[1] = 0;
+				$("input[name='price_gugan']").val(mode_str[1]);
+			break;
+
+			case "jajea_price" :		//자재가격 보여주기
+				if(mode_str[2] == "") mode_str[2] = 0 ;
+				$("#j_price_"+mode_str[1]).val(mode_str[2]);
+				
+				var cnt = $("#s_cnt_"+mode_str[1]).val();	//수량
+				var price = $("#j_price_"+mode_str[1]).val();	//소비자가격 
+				if(cnt == 0) {
+					//alert("수량이 0 입니다.");
+					$("#s_cnt_"+mode_str[1]).val('');
+					$("#s_cnt_"+mode_str[1]).focus();
+					return;
+				}
+				var total = parseInt(price) * parseInt(cnt);
+				if(isNaN(total) == false) {
+					//무상일 경우는 자재비도 0원이다.
+					if($("#pay_gbn").val() == 'N') {
+						$("#s_price_"+mode_str[1]).val(0);
+					} else {
+						$("#s_price_"+mode_str[1]).val(total);	//금액계산처리
+					}
+				} else {
+					alert("소비자가격이 없습니다.");
+					$("#s_price_"+mode_str[1]).val(0);	//금액계산처리
+				}
+			break;
+
+			case "reset" : 	//초기화할시
+				alert("초기화 되었습니다.");
+				location.href="/html/resolve_year_mode.php?num=&mode=insert&rno="+mode_str[1];
+			break;
+
+			default :
+				alert(respose);
+			break;
+		}
+	}
+
+  $(function() {
+    /*$( "#ch_date" ).datepicker({
+    	dateFormat: 'yy-mm-dd'
+    });*/
+	$( "#ch_date" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+  });
+</script>
+
+<!-- 달력 레이어 -->
+<IFRAME width="199" height="178" name="gToday:normal:agenda.js" id="gToday:normal:agenda.js" src="../lib/pickupdate/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-500px; top:0px;"></IFRAME>
+<!-- 달력 레이어 여기까지 -->
+
+<form method='post' name='input_form'>
+<input type='hidden' name='keyfield' value=''>
+<input type='hidden' name='keyword' value=''>
+<input type='hidden' name='pageno' value=''>
+<input type='hidden' name='Tidx' value='1'>
+<input type='hidden' name='Sidx' value='1'>
+<input type='hidden' name='mode' value=''>
+<input type='hidden' name='idx' value=''>
+<input type='hidden' name='idx2' value='등록'>
+<input type='hidden' name='sday' value=''>
+<input type='hidden' name='eday' value=''>
+<input type='hidden' name='gugan' value=''>
+<input type='hidden' name='sell_gbn' value=''>
+<INPUT TYPE="hidden" NAME="vat_go" id="vat_go" value="">
+
+<div id="contents">
+	<div class="wrapper">
+		<div class="header">
+			<h2>연차처리 등록</h2>
+		</div>
+		
+		<div class="data-table">
+			<table id="data_table" width="100%">
+				<colgroup>
+					<col width="7%">
+					<col width="17%">
+					<col width="7%">
+					<col width="17%">
+					<col width="7%">
+					<col width="11%">
+					<col width="7%">
+					<col width="10%">
+					<col width="7%">
+					<col width="10%">
+				</colgroup>
+				
+				<thead>
+					<tr height='30px;'>
+						<th>모델명</th>
+						<th class='left' colspan='3'>
+						<INPUT TYPE="text" NAME="model_name" value="" size="70" readonly>
+						<IMG SRC="../assets/images/btn/zoom.png" WIDTH="16" HEIGHT="16" BORDER="0" align="absmiddle" onclick="modelsel_year()" style="cursor:pointer;">
+						</th>
+						<th>공종명</th>
+						<th class='left'><input type='text' name='gongjong' value="" style='width:120px;' disabled></th>
+						<TH>연차</TH>
+						<th class='left'><input type='text' name='yearCnt' value="" style='width:80px;' disabled></th>
+						<th>처리여부</th>
+						<th class='left'>
+							<select name='com_yn' disabled>
+								<option value='N' selected>처리대기</option>
+								<option value='Y' >처리완료</option>
+							</select>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr height='30px;'>						
+						<TH>접수일</TH>
+						<td class='left'><input type='text' name='regdate' value="2026-04-20" style='width:120px;' disabled></td>
+						<TH>기준일</TH>
+						<td class='left'><input type='text' name='basedate' value="" style='width:120px;' disabled></td>
+						<TH>고객명</TH>
+						<td class='left'><input type='text' name='cname' value="" style='width:120px;' disabled></td>
+						<TH>APT명칭</TH>
+						<td colspan='3'><INPUT TYPE="text" NAME="apt_name" style="width:90%;" value="" disabled></td>
+					</tr>
+					<tr height='30px;'>
+						<TH>연락처</TH>
+						<td class='left'><input type='text' name='telno' value="" style='width:120px;' disabled></td>
+						<TH>핸드폰</TH>
+						<td class='left'><INPUT type="text" NAME="hp_no" value="" disabled></td>
+						<TH>주소</TH>
+						<td class='left' colspan='5'>
+							<table width='100%'>
+								<tr>
+									<td width='135px'><input type='text' name='zip' id="zip" value="" style='width:100px;float:left;'  disabled></td>
+									<td class='left'>
+										<input type='text' name='addr1' value="" style='width:200px;' disabled>&nbsp;&nbsp;
+										<!--<input type='text' name='addr2' value="" style='width:50px;' disabled>동&nbsp;&nbsp;
+										<input type='text' name='addr3' value="" style='width:50px;' disabled>호-->
+										<input type='text' name='addr4' value="" style='width:100px;' disabled>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr height='30px;'>
+						<TH>장애분류</TH>
+						<td class='left' >
+							<SELECT NAME="err_1" style="width:90%;" onChange="errorselect(this)" disabled>
+								<OPTION VALUE="">:: 장애코드[대] ::</OPTION>
+															</SELECT>
+						</td>
+						<TH>장애상세</TH>
+						<td class='left'>
+							<SELECT NAME="err_2" id="err_2" style="width:60%;" disabled>
+								<OPTION VALUE="">:: 장애코드[소] ::</OPTION>
+															</SELECT>
+						</td>
+						<TH>특이사항</TH>
+						<td class='left' colspan='5'>
+							<INPUT TYPE="text" NAME="smemo" style="width:90%;" title="" value="" disabled>
+						</td>
+					</tr>
+					<tr height='30px;'>
+						<TH>담당지점명</TH>
+						<td class='left' ><input type='text' name='centerName' value="" style='width:100px;' disabled></td>
+						<TH>담당사원명</TH>
+						<td class='left' ><input type='text' name='chargeName' value="" style='width:100px;'  disabled></td>
+						<TH>접수자</TH>
+						<td class='left' ><input type='text' name='inName' value="demo" style='width:100px;' disabled></td>
+						<TH>방문약속여부</TH>
+						<td class='left' >
+							<select name='visit_yn' onchange='go_visit(this.value);' disabled>
+								<option value='Y' >방문약속</option>
+								<option value='N' selected>방문약속없음</option>
+							</select>
+						</td>
+						<TH>방문예약일</TH>
+						<td class='left' >
+							<input type='text' name='visitdate' value="" style='width:100px;' disabled>
+							<span id='visitBtn' style='display:none;'>
+								<A href='javascript:void(0)' onClick='if(self.gfPop)gfPop.fPopCalendar(document.input_form.visitdate);return false;' onfocus='this.blur();'><input type="image" name="ii" src="../assets/images/btn/btn-calendar.png" alt="calendar" /></a>
+							</span>
+							<script type='text/javascript'>go_visit('

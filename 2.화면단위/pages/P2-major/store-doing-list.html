@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>KOCOM CS - 자재 작업현황</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        'k-primary': '#6699FF', 'k-active': '#5acd3e',
+        'k-border': '#d7d7d7', 'k-text': '#333333',
+        'k-sub': '#545454', 'k-bg': '#f2f2f2', 'k-header': '#f3f3f3',
+      }}}
+    }
+  </script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+  <style>
+    body { font-size: 12px; font-family: 'Malgun Gothic', sans-serif; color: #333; }
+    .tbl-wrap { overflow-x: auto; width: 100%; }
+    table.svc-tbl { border-collapse: collapse; min-width: 1100px; width: 100%; }
+    table.svc-tbl thead th {
+      background: #f3f3f3;
+      border-top: 1px solid #cfcfcf;
+      border-bottom: 1px solid #d7d7d7;
+      border-left: 1px solid #e7e7e7;
+      color: #545454;
+      font-weight: bold;
+      padding: 5px 4px;
+      white-space: nowrap;
+      text-align: center;
+    }
+    table.svc-tbl thead th:first-child { border-left: 0; }
+    table.svc-tbl tbody td {
+      border-bottom: 1px solid #d7d7d7;
+      border-left: 1px solid #e7e7e7;
+      color: #545454;
+      font-weight: bold;
+      padding: 3px 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    table.svc-tbl tbody td:first-child { border-left: 0; }
+    table.svc-tbl tbody tr:nth-child(even) { background-color: #FBF9C4; }
+    table.svc-tbl tbody tr:hover { background-color: #FFF59D !important; }
+    table.svc-tbl tbody td.left { text-align: left; padding-left: 6px; }
+    .receipt-no-link { color: #6699FF; cursor: pointer; text-decoration: underline; font-weight: bold; }
+    .search-label { font-size: 12px; font-weight: bold; color: #333; white-space: nowrap; }
+    select, input[type=text] {
+      border: 1px solid #ccc;
+      padding: 2px 4px;
+      font-size: 12px;
+      height: 24px;
+      border-radius: 2px;
+    }
+    .btn-primary {
+      background: #6699FF; color: #fff; border: none;
+      padding: 4px 12px; border-radius: 2px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-primary:hover { background: #4477dd; }
+    .btn-excel {
+      background: #5acd3e; color: #fff; border: none;
+      padding: 4px 12px; border-radius: 2px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-excel:hover { background: #3fa82e; }
+    .page-header {
+      background: #f3f3f3;
+      border-bottom: 1px solid #d7d7d7;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .page-header h2 { font-size: 16px; font-weight: bold; color: #333; }
+    .search-bar {
+      background: #fafafa;
+      border-bottom: 1px solid #d7d7d7;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .result-bar {
+      padding: 6px 16px;
+      font-size: 12px;
+      color: #333;
+      font-weight: bold;
+      border-bottom: 1px solid #e7e7e7;
+      background: #fff;
+    }
+    .pagination { display: flex; gap: 2px; align-items: center; justify-content: center; padding: 10px 0; }
+    .page-btn {
+      border: 1px solid #d7d7d7;
+      background: #fff;
+      color: #333;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 12px;
+      border-radius: 2px;
+    }
+    .page-btn.active { background: #6699FF; color: #fff; border-color: #6699FF; font-weight: bold; }
+    .page-btn:hover:not(.active) { background: #f2f2f2; }
+    /* 진행상태 배지 */
+    .status-accept  { color: #cc0000; font-weight: bold; }   /* 접수완료 */
+    .status-repair  { color: #cc6600; font-weight: bold; }   /* 수리중 */
+    .status-done    { color: #009900; font-weight: bold; }   /* 수리완료 */
+  </style>
+</head>
+<body class="bg-white">
+
+<div x-data="{
+  allRows: window.MOCK ? MOCK.storeDoingList : [],
+  rows: [],
+  sday: '2026-04-01',
+  eday: '2026-04-15',
+  statusFilter: '',
+  centerFilter: '',
+  keyword: '',
+  currentPage: 1,
+  pageSize: 15,
+  init() { this.doSearch(); },
+  doSearch() {
+    this.rows = this.allRows.filter(r => {
+      if (this.statusFilter && r.processStatus !== this.statusFilter) return false;
+      if (this.centerFilter && !r.centerName.includes(this.centerFilter)) return false;
+      if (this.keyword) {
+        const kw = this.keyword.toLowerCase();
+        const haystack = (r.receiptNo + r.customerName + r.applier + r.modelName + r.invoiceNo).toLowerCase();
+        if (!haystack.includes(kw)) return false;
+      }
+      return true;
+    });
+    this.currentPage = 1;
+  },
+  get totalCount() { return this.rows.length; },
+  get pagedRows() {
+    const s = (this.currentPage - 1) * this.pageSize;
+    return this.rows.slice(s, s + this.pageSize);
+  },
+  get totalPages() { return Math.max(1, Math.ceil(this.rows.length / this.pageSize)); },
+  goPage(p) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; },
+  statusLabel(s) {
+    const m = { '1': '접수완료', '2': '수리중', '3': '수리완료' };
+    return m[s] || '-';
+  },
+  statusClass(s) {
+    const m = { '1': 'status-accept', '2': 'status-repair', '3': 'status-done' };
+    return m[s] || '';
+  },
+  amountFmt(n) {
+    if (!n) return '-';
+    return Number(n).toLocaleString() + '원';
+  }
+}">
+
+  <!-- 페이지 헤더 -->
+  <div class="page-header">
+    <h2>진행상황 - 본사 (자재 작업현황)</h2>
+    <button class="btn-excel" onclick="alert('엑셀 다운로드 (프로토타입)')">엑셀다운</button>
+  </div>
+
+  <!-- 검색바 -->
+  <div class="search-bar">
+    <span class="search-label">진행상태</span>
+    <select x-model="statusFilter" style="width:90px;">
+      <option value="">-- 전체 --</option>
+      <option value="1">접수완료</option>
+      <option value="2">수리중</option>
+      <option value="3">수리완료</option>
+    </select>
+
+    <span class="search-label" style="margin-left:6px;">신청일자</span>
+    <input type="text" x-model="sday" style="width:90px;" placeholder="2026-04-01">
+    <span style="color:#666;">~</span>
+    <input type="text" x-model="eday" style="width:90px;" placeholder="2026-04-15">
+
+    <span class="search-label" style="margin-left:6px;">센터</span>
+    <select x-model="centerFilter" style="width:90px;">
+      <option value="">-- 전체 --</option>
+      <option value="강남지점">강남지점</option>
+      <option value="분당지점">분당지점</option>
+      <option value="서초지점">서초지점</option>
+      <option value="부산지점">부산지점</option>
+      <option value="대전지점">대전지점</option>
+      <option value="광주지점">광주지점</option>
+      <option value="창원지점">창원지점</option>
+      <option value="마포지점">마포지점</option>
+      <option value="수원지점">수원지점</option>
+      <option value="청주지점">청주지점</option>
+    </select>
+
+    <span class="search-label" style="margin-left:6px;">신청사원</span>
+    <input type="text" x-model="keyword" style="width:160px;" placeholder="신청사원 / 고객명 / 접수번호" @keydown.enter="doSearch()">
+
+    <button class="btn-primary" @click="doSearch()">검색</button>
+  </div>
+
+  <!-- 결과 건수 -->
+  <div class="result-bar">
+    총 <span x-text="totalCount" style="color:#6699FF;"></span>건
+  </div>
+
+  <!-- 테이블 -->
+  <div class="tbl-wrap">
+    <table class="svc-tbl">
+      <thead>
+        <tr>
+          <th style="width:105px;">접수번호</th>
+          <th style="width:85px;">접수일</th>
+          <th style="width:90px;">센터명</th>
+          <th style="width:80px;">고객명</th>
+          <th style="width:90px;">코드번호</th>
+          <th style="width:220px;">모델명</th>
+          <th style="width:70px;">신청사원</th>
+          <th style="width:130px;">S/N</th>
+          <th style="width:120px;">송장번호</th>
+          <th style="width:80px;">청구금액</th>
+          <th style="width:80px;">진행상태</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="pagedRows.length === 0">
+          <tr>
+            <td colspan="11" style="text-align:center;padding:20px;color:#999;">검색 결과가 없습니다.</td>
+          </tr>
+        </template>
+        <template x-for="(row, idx) in pagedRows" :key="row.receiptNo">
+          <tr>
+            <!-- 접수번호 -->
+            <td>
+              <span class="receipt-no-link"
+                    @dblclick="alert('더블클릭: ' + row.receiptNo + ' 상세 (프로토타입)')"
+                    x-text="row.receiptNo">
+              </span>
+            </td>
+            <!-- 접수일 -->
+            <td x-text="row.receiptDate || '-'"></td>
+            <!-- 센터명 -->
+            <td x-text="row.centerName || '-'"></td>
+            <!-- 고객명 -->
+            <td x-text="row.customerName || '-'"></td>
+            <!-- 코드번호(모델품번) -->
+            <td x-text="row.modelCode || '-'"></td>
+            <!-- 모델명 -->
+            <td class="left" x-text="row.modelName || '-'"></td>
+            <!-- 신청사원 -->
+            <td x-text="row.applier || '-'"></td>
+            <!-- S/N -->
+            <td x-text="row.serialNo || '-'"></td>
+            <!-- 송장번호 -->
+            <td x-text="row.invoiceNo || '-'"></td>
+            <!-- 청구금액 -->
+            <td style="text-align:right;padding-right:6px;" x-text="amountFmt(row.billAmount)"></td>
+            <!-- 진행상태 -->
+            <td>
+              <span :class="statusClass(row.processStatus)" x-text="statusLabel(row.processStatus)"></span>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 페이지네이션 -->
+  <div class="pagination">
+    <button class="page-btn" @click="goPage(1)">&laquo;</button>
+    <button class="page-btn" @click="goPage(currentPage - 1)">&lsaquo;</button>
+    <template x-for="p in totalPages" :key="p">
+      <button class="page-btn" :class="{ active: currentPage === p }" @click="goPage(p)" x-text="p"></button>
+    </template>
+    <button class="page-btn" @click="goPage(currentPage + 1)">&rsaquo;</button>
+    <button class="page-btn" @click="goPage(totalPages)">&raquo;</button>
+    <span style="margin-left:8px;font-size:12px;color:#666;">
+      <span x-text="currentPage"></span> / <span x-text="totalPages"></span> 페이지
+    </span>
+  </div>
+
+</div>
+</body>
+</html>

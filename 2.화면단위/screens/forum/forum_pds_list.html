@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>자료게시판 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm" x-data="{
+  keyword:'', keyfield:'',
+  rows:[
+    {no:25, title:'[매뉴얼] 홈넷 월패드 7인치 사용자 설명서 v3.0', writer:'이기술', file:true, date:'2026-04-12', views:312, open:false, content:'홈넷 월패드 7인치 사용자 설명서 최신 버전입니다.\n- 설치 가이드 포함\n- FAQ 섹션 추가\n- 고장 진단 플로우차트 포함', files:['월패드7인치_사용자설명서_v3.0.pdf','월패드7인치_설치가이드.pdf']},
+    {no:24, title:'[폼] CS 접수 처리 표준 양식 (2026년 개정)', writer:'홍길동', file:true, date:'2026-04-08', views:178, open:false, content:'2026년 개정된 CS 접수 처리 표준 양식입니다.\n신규 항목: 고객 동의서, 처리 사진 첨부란 추가', files:['CS처리표준양식_2026.xlsx']},
+    {no:23, title:'[교육자료] 신규 CS 기사 온보딩 교육 자료', writer:'이교육', file:true, date:'2026-04-03', views:245, open:false, content:'신규 CS 기사를 위한 온보딩 교육 자료입니다.\n1일차: 회사 소개 및 시스템 사용법\n2일차: 제품 구조 및 기본 점검 방법\n3일차: CS 처리 프로세스 실습', files:['신규기사_온보딩자료_1일차.pptx','신규기사_온보딩자료_2일차.pptx','신규기사_온보딩자료_3일차.pptx']},
+    {no:22, title:'도어폰 HD 제품 카탈로그 및 스펙 시트', writer:'박제품', file:true, date:'2026-03-25', views:198, open:false, content:'코콤 도어폰 HD 최신 카탈로그와 기술 사양서입니다.', files:['도어폰HD_카탈로그.pdf','도어폰HD_기술사양서.pdf']},
+    {no:21, title:'[공문] 2026년 AS 요금 체계 개정 안내', writer:'관리자', file:true, date:'2026-03-20', views:421, open:false, content:'2026년 AS 요금 체계가 다음과 같이 개정됩니다.\n- 출장비 조정: 서울/수도권 기본 30,000원\n- 부품비 별도 청구\n- 무상 AS 기간: 설치 후 2년', files:['2026년_AS요금체계_개정안내.pdf']},
+    {no:20, title:'현장별 모델 설치 현황 DB (2026 Q1)', writer:'이관리', file:true, date:'2026-03-15', views:156, open:false, content:'2026년 1분기 현장별 설치 모델 현황 데이터베이스입니다.\n총 247개 현장 정보 포함', files:['현장별설치현황_2026Q1.xlsx']},
+  ]
+}">
+<div class="max-w-5xl mx-auto p-4">
+  <div class="flex items-center justify-between mb-4 pb-2 border-b border-k-border">
+    <h2 class="text-lg font-bold">자료게시판</h2>
+    <a href="forum_pds_mode.html" class="bg-k-primary text-white px-3 py-1 rounded text-xs hover:opacity-80">글쓰기</a>
+  </div>
+
+  <div class="bg-white border border-k-border rounded p-3 mb-3 flex gap-2 items-center text-xs">
+    <span class="font-bold">검색</span>
+    <select x-model="keyfield" class="border border-k-border rounded px-2 py-1">
+      <option value="">-- 선택 --</option><option value="T">제목</option>
+      <option value="N">작성자</option><option value="C">내용</option>
+    </select>
+    <input type="text" x-model="keyword" placeholder="검색어" class="border border-k-border rounded px-2 py-1 w-48">
+    <button class="bg-k-primary text-white px-3 py-1 rounded hover:opacity-80">검색</button>
+  </div>
+
+  <div class="bg-white border border-k-border rounded overflow-hidden">
+    <table class="w-full text-xs">
+      <thead class="bg-k-header">
+        <tr>
+          <th class="py-2 px-3 border-b border-r border-k-border text-center w-12">번호</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-left">제목</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-center w-24">작성자</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-center w-10">파일</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-center w-24">작성일</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-center w-14">조회</th>
+          <th class="py-2 px-3 border-b border-k-border text-center w-20">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="r in rows" :key="r.no">
+          <template>
+            <tr class="border-b border-k-border hover:bg-blue-50">
+              <td class="py-2 px-3 text-center border-r border-k-border" x-text="r.no"></td>
+              <td class="py-2 px-3 border-r border-k-border">
+                <a href="#" @click.prevent="r.open=!r.open; r.views++"
+                  class="hover:text-k-primary hover:underline" x-text="r.title"></a>
+              </td>
+              <td class="py-2 px-3 text-center border-r border-k-border" x-text="r.writer"></td>
+              <td class="py-2 px-3 text-center border-r border-k-border">
+                <span x-show="r.file" class="text-blue-500">📎</span>
+              </td>
+              <td class="py-2 px-3 text-center border-r border-k-border" x-text="r.date"></td>
+              <td class="py-2 px-3 text-center border-r border-k-border" x-text="r.views.toLocaleString()"></td>
+              <td class="py-2 px-3 text-center flex gap-1 justify-center">
+                <a href="forum_pds_mode.html" class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded hover:bg-blue-200">수정</a>
+                <button @click="rows.splice(rows.indexOf(r),1)" class="bg-red-100 text-red-700 px-2 py-0.5 rounded hover:bg-red-200">삭제</button>
+              </td>
+            </tr>
+            <tr x-show="r.open" class="border-b border-k-border bg-gray-50">
+              <td colspan="7" class="p-4">
+                <table class="w-full text-xs border border-gray-200 rounded">
+                  <tr class="border-b border-gray-200"><th colspan="2" class="py-2 bg-k-header font-bold text-sm text-center">상세데이터</th></tr>
+                  <tr class="border-b border-gray-200">
+                    <th class="py-2 px-3 bg-k-header border-r border-gray-200 w-16 text-left">제목</th>
+                    <td class="py-2 px-3 font-bold" x-text="r.title"></td>
+                  </tr>
+                  <tr class="border-b border-gray-200">
+                    <th class="py-2 px-3 bg-k-header border-r border-gray-200 text-left">내용</th>
+                    <td class="py-3 px-3 leading-5 whitespace-pre-line" x-text="r.content"></td>
+                  </tr>
+                  <tr>
+                    <th class="py-2 px-3 bg-k-header border-r border-gray-200 text-left">첨부파일</th>
+                    <td class="py-2 px-3">
+                      <template x-for="f in r.files" :key="f">
+                        <a class="text-blue-500 underline mr-3 block" href="#" x-text="f"></a>
+                      </template>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </template>
+        </template>
+      </tbody>
+    </table>
+  </div>
+  <div class="flex justify-center mt-4 gap-1 text-xs">
+    <button class="px-3 py-1 border border-k-border rounded bg-white">이전</button>
+    <button class="px-3 py-1 border border-k-primary rounded bg-k-primary text-white">1</button>
+    <button class="px-3 py-1 border border-k-border rounded bg-white">다음</button>
+  </div>
+</div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["forum"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

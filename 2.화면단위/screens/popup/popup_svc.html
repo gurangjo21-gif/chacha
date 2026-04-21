@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>처리 - KOCOM</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-white text-xs text-[#333]" x-data="{
+  mode: 'insert',
+  svcDate: '2026-04-15',
+  techName: '김기사',
+  repairCode1: '',
+  repairCode2: '',
+  causeCode1: '',
+  causeCode2: '',
+  freeCharge: 'N',
+  payType: '',
+  pay1: '',
+  svcMemo: '',
+  svcResult: '1',
+  happyCall: 'N',
+  repairCodes: [
+    { code:'R01', name:'전원교체' },
+    { code:'R02', name:'기판교체' },
+    { code:'R03', name:'카메라교체' },
+    { code:'R04', name:'설정변경' },
+    { code:'R05', name:'청소' },
+  ],
+  causeCodes: [
+    { code:'C01', name:'노후화' },
+    { code:'C02', name:'충격' },
+    { code:'C03', name:'습기' },
+    { code:'C04', name:'설정오류' },
+  ],
+  save() {
+    if(!this.svcDate) { alert('처리일자를 입력해주세요.'); return; }
+    alert('처리 저장되었습니다.'); window.close();
+  }
+}">
+  <div class="overflow-auto" style="width:780px; max-height:90vh;">
+    <div class="p-2">
+      <div class="flex justify-between items-center mb-2">
+        <strong>[처리]</strong>
+        <div class="flex gap-1">
+          <button class="bg-[#6699FF] text-white px-2 py-0.5 text-xs rounded" @click="save()">저장</button>
+          <button class="bg-[#6699FF] text-white px-2 py-0.5 text-xs rounded" @click="window.close()">닫기</button>
+        </div>
+      </div>
+      <!-- 처리기본정보 -->
+      <div class="border border-[#ddd] p-2 mb-2">
+        <strong class="block mb-1 text-[10px]">[처리 기본정보]</strong>
+        <table class="w-full border-collapse text-xs" style="border-top:2px solid #959595;">
+          <tr>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold w-[15%]">접수번호</th>
+            <td class="border border-[#959595] px-2 py-1 w-[35%]"><input type="text" value="260401-0023" readonly class="bg-gray-100 text-xs px-1 w-full"></td>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold w-[15%]">처리일자</th>
+            <td class="border border-[#959595] px-2 py-1 w-[35%]"><input type="date" x-model="svcDate" class="border border-[#ccc] text-xs px-1"></td>
+          </tr>
+          <tr>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">처리기사</th>
+            <td class="border border-[#959595] px-2 py-1"><input type="text" x-model="techName" class="border border-[#ccc] text-xs px-1 w-24"></td>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">처리결과</th>
+            <td class="border border-[#959595] px-2 py-1">
+              <select x-model="svcResult" class="border border-[#ccc] text-xs px-1">
+                <option value="1">완료</option>
+                <option value="2">부분완료</option>
+                <option value="3">미완료</option>
+                <option value="4">취소</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">수리코드1</th>
+            <td class="border border-[#959595] px-2 py-1">
+              <select x-model="repairCode1" class="border border-[#ccc] text-xs px-1">
+                <option value="">:: 선택 ::</option>
+                <template x-for="rc in repairCodes" :key="rc.code">
+                  <option :value="rc.code" x-text="rc.name"></option>
+                </template>
+              </select>
+            </td>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">수리코드2</th>
+            <td class="border border-[#959595] px-2 py-1">
+              <select x-model="repairCode2" class="border border-[#ccc] text-xs px-1">
+                <option value="">:: 선택 ::</option>
+                <template x-for="rc in repairCodes" :key="rc.code">
+                  <option :value="rc.code" x-text="rc.name"></option>
+                </template>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">원인코드1</th>
+            <td class="border border-[#959595] px-2 py-1">
+              <select x-model="causeCode1" class="border border-[#ccc] text-xs px-1">
+                <option value="">:: 선택 ::</option>
+                <template x-for="cc in causeCodes" :key="cc.code">
+                  <option :value="cc.code" x-text="cc.name"></option>
+                </template>
+              </select>
+            </td>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">원인코드2</th>
+            <td class="border border-[#959595] px-2 py-1">
+              <select x-model="causeCode2" class="border border-[#ccc] text-xs px-1">
+                <option value="">:: 선택 ::</option>
+                <template x-for="cc in causeCodes" :key="cc.code">
+                  <option :value="cc.code" x-text="cc.name"></option>
+                </template>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">유/무상</th>
+            <td class="border border-[#959595] px-2 py-1">
+              <select x-model="freeCharge" class="border border-[#ccc] text-xs px-1">
+                <option value="N">무상</option>
+                <option value="Y">유상</option>
+                <option value="I">유지보수</option>
+              </select>
+            </td>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">결제방법</th>
+            <td class="border border-[#959595] px-2 py-1">
+              <select x-model="payType" class="border border-[#ccc] text-xs px-1">
+                <option value="">:: 선택 ::</option>
+                <option value="C">현금</option>
+                <option value="S">신용카드</option>
+                <option value="T">계좌이체</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">수납금액</th>
+            <td class="border border-[#959595] px-2 py-1">
+              <input type="text" x-model="pay1" class="border border-[#ccc] text-xs px-1 w-24 text-right"> 원
+            </td>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">해피콜</th>
+            <td class="border border-[#959595] px-2 py-1">
+              <select x-model="happyCall" class="border border-[#ccc] text-xs px-1">
+                <option value="N">미실시</option>
+                <option value="Y">실시</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="border border-[#959595] bg-[#f3f3f3] px-2 py-1 font-bold">처리내용</th>
+            <td class="border border-[#959595] px-2 py-1" colspan="3">
+              <textarea x-model="svcMemo" rows="4" class="border border-[#ccc] text-xs px-1 w-full resize-none" placeholder="처리 내용을 입력해주세요..."></textarea>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <!-- 자재 목록 (iframe svc_master 역할) -->
+      <div class="border border-[#ddd] p-2">
+        <div class="flex justify-between items-center mb-1">
+          <strong class="text-[10px]">[자재 목록]</strong>
+          <button class="bg-[#5acd3e] text-white px-2 py-0.5 text-xs rounded">자재추가</button>
+        </div>
+        <table class="w-full border-collapse text-xs" style="border-top:2px solid #959595;">
+          <thead>
+            <tr class="bg-[#f3f3f3]">
+              <th class="border border-[#959595] px-1 py-1 w-16">품번</th>
+              <th class="border border-[#959595] px-1 py-1">CS품명</th>
+              <th class="border border-[#959595] px-1 py-1 w-8">등급</th>
+              <th class="border border-[#959595] px-1 py-1 w-12">재고량</th>
+              <th class="border border-[#959595] px-1 py-1 w-10">반납</th>
+              <th class="border border-[#959595] px-1 py-1 w-12">사용량</th>
+              <th class="border border-[#959595] px-1 py-1 w-14">금액</th>
+              <th class="border border-[#959595] px-1 py-1 w-8">삭제</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-[#959595] px-1 py-1"><input type="text" value="J-001" readonly class="bg-gray-100 text-xs w-14"></td>
+              <td class="border border-[#959595] px-1 py-1">도어폰 메인보드 (IHM-600용)</td>
+              <td class="border border-[#959595] px-1 py-1 text-center">A</td>
+              <td class="border border-[#959595] px-1 py-1 text-center">5</td>
+              <td class="border border-[#959595] px-1 py-1 text-center">-</td>
+              <td class="border border-[#959595] px-1 py-1"><input type="text" value="1" class="border border-[#ccc] text-xs w-10 text-right"></td>
+              <td class="border border-[#959595] px-1 py-1"><input type="text" value="45000" class="border border-[#ccc] text-xs w-14 text-right"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center"><button class="text-red-500 font-bold text-xs" onclick="if(confirm('삭제하시겠습니까?')) this.closest('tr').remove()">X</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-right mt-1 font-bold text-xs">합계: 45,000 원</div>
+      </div>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["popup"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

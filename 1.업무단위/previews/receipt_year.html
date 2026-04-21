@@ -1,0 +1,399 @@
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>연차 접수</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<!-- daum postcode API removed for offline preview -->
+<!-- 달력 start -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<!-- 달력 end -->   
+<script type="text/javascript">
+	
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var mode_str = respose.split("^");
+		switch(mode_str[0]){
+			case "ERRORSEL" :
+				var str = mode_str[1].split("||");
+				var cnt = str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(str[i] != '') {
+						var sel = str[i].split("@");
+						if(i == 0) $("#err_2").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#err_2").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+					}
+				}
+			break;
+			case "ZIP_SELECT" :
+				var str = mode_str[1].split("|");
+				$("input[name='agency_no']").val(str[0]);	//지점코드
+				$("input[name='agent_no']").val(str[1]);	//담당사원
+				$("input[name='charge_agency']").val(str[2]);	//지점명
+				$("input[name='u_phone']").val(str[3]);	//전화번호
+				$("input[name='charge_name']").val(str[4]);	//사원명
+				$("input[name='gap_gbn']").val(str[5]);	//구간구분
+			break;
+			case "custMOD":
+				alert(mode_str[1]);
+			break;
+			case "ERRORSEL1" :		//값이 있을떄 선택할수있도록 하기
+				var str = mode_str[1].split("||");
+				var cnt = str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(str[i] != '') {
+						var sel = str[i].split("@");						
+						if(i == 0) $("#err_2").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#err_2").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						
+						$("#err_2").val(mode_str[2]).attr("selected","selected");
+					}
+				}
+			break;
+			case "m_ok" :
+				alert("등록 되었습니다");
+				location.reload();
+			break;
+			case "m_end" :
+				alert("처리가 완료되어 등록이 불가능합니다");
+				location.reload();
+			break;
+			case "m_false": 
+				alert("오류!!! 다시 시도해주세요");
+				location.reload();
+			break;
+			default :
+				alert(respose);
+			break;
+		}
+	}
+	function new_receipt(){
+		location.href='/html/receipt_year.php?num=insert';
+	}
+	
+	function ZIP_SELECT(zipcode) {
+		var param = "mode=ZIP_SELECT&form=receipt_form&zip="+zipcode ;
+        ajaxLoader("ajax_proc.php?"+param);
+	}
+	
+	// 기사메모
+	/*function memo_next(mmode, mend) {
+		var m_no = document.receipt_form.rct_no.value;
+		var m_time = document.receipt_form.m_time.value;
+		var memo = document.receipt_form.kmemo.value;
+		var param = "mode=memo_next&form=receipt_form&mmode="+mmode+"&m_no="+m_no+"&m_time="+m_time+"&memo="+memo+"&end="+mend;
+		ajaxLoader("ajax_proc.php?"+param);
+	}*/
+
+	// 기사메모 보기
+	function memo_btn(receipt_no,end)
+	{
+		var myform = document.receipt_form;
+		window.open('receipt_g_memo.php?receipt_no='+receipt_no+"&end="+end,'pop_memo','width=620,height=600,top=30,left=50');
+	}
+
+
+	// 초기화
+	function reset_apt()
+	{
+		document.getElementById('apt_no').value="";
+		document.getElementById('apt_name').value="";
+	}
+	function reset_model()
+	{
+		document.getElementById('model_no').value="";
+		document.getElementById('model_name').value="";
+	}
+	function reset_charge()
+	{
+		document.getElementById('charge_agency').value="";
+		document.getElementById('charge_name').value="";
+		document.getElementById('u_phone').value="";
+		document.getElementById('gap_gbn').value="1구간";
+	}
+
+	//입력/수정 클릭시 이동
+	function go_next(mode,com) {
+		var myform = document.receipt_form ;
+
+		if(com == "결재") {
+			alert("결재가 완료된 건은 수정할 수 없습니다.");
+			return;
+		}
+
+		$("input[name='mode']").val(mode);
+		
+		if(!myform.mb_name.value) {
+			alert("고객명을 입력하세요.");
+			myform.mb_name.focus();
+			return ;
+		}
+		if(!myform.rct_date.value){
+			alert("접수일자를 입력하세요.");
+			myform.rct_date.focus();
+			return ;
+		}
+
+		var msg = "";
+		if(mode == 'insert') {
+			msg = "저장하시겠습니까?";
+		} else if( mode =='update') {
+			msg = "수정하시겠습니까?";
+		}		
+		if(confirm(msg)) {
+			myform.action ="popup_receipt_year_proc.php";
+			myform.submit();
+		}
+	}
+	$(function(){
+		/* 클릭 클릭시 클릭을 클릭한 위치 근처에 레이어가 나타난다. */
+		$('.tooltip').mouseover(function(e){
+			//alert($(this).attr('title'));
+			var sWidth = window.innerWidth;
+			var sHeight = window.innerHeight;
+
+			var oWidth = $('.popupLayer').width();
+			var oHeight = $('.popupLayer').height();
+
+			// 레이어가 나타날 위치를 셋팅한다.
+			var divLeft = e.clientX + 10;
+			var divTop = e.clientY + 5;
+
+			// 레이어가 화면 크기를 벗어나면 위치를 바꾸어 배치한다.
+			if( divLeft + oWidth > sWidth ) divLeft -= oWidth;
+			if( divTop + oHeight > sHeight ) divTop -= oHeight;
+
+			// 레이어 위치를 바꾸었더니 상단기준점(0,0) 밖으로 벗어난다면 상단기준점(0,0)에 배치하자.
+			if( divLeft < 0 ) divLeft = 0;
+			if( divTop < 0 ) divTop = 0;
+			
+			$("#tooltip_content").html($(this).attr('value'));
+
+			$('.popupLayer').css({
+				"top": divTop,
+				"left": divLeft,
+				"position": "absolute"
+			}).show();
+		//}).mouseout(function(){
+		//	$('.popupLayer').hide();
+		});
+		/*
+		$( "#rct_date" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });
+	    $( "#rct_basedate" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });
+	    */
+	});
+</script>
+<style type="text/css">
+.ui-datepicker{ z-index: 9999 !important;}
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+	font-size: 14px;
+	font-weight: bold;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+	height:20px;
+}
+.form-table.type2 td > input {
+height:20px;
+font-size:13px;
+}
+.form-table.type2 td > select {
+background: #E5E5E5;
+height:20px;
+font-size:13px;
+}
+.form-table.type2 td > textarea {
+font-size:13px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+
+
+</style>
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/receipt_year.php</b>
+  <span class="purpose">연차 접수 메인</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<form name="receipt_form" method='post'>
+	<INPUT TYPE="hidden" NAME="idx" value="">
+	<INPUT TYPE="hidden" NAME="mode" value="">
+	<INPUT TYPE="hidden" NAME="smode" value="">
+	<INPUT TYPE="hidden" NAME="m_time" value="2026-04-20 20:56">
+	<INPUT TYPE="hidden" NAME="rct_gbn" value="">
+	<INPUT TYPE="hidden" NAME="p_mode" value="">
+<div style="overflow:scroll; width:710px; height:750px;">
+<table cellpadding="0" cellspacing="0" width="690">
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 0 0 5px 0;">
+						<table width="100%" >
+							<tr>
+								<td style="padding: 15px 0 10px 0"><strong>[연차 접수]</strong></td>
+								<td align="right">
+								<a href="javascript:go_next('','');" class="btn1 btn-color1_s" title="">
+									<span class="bg">&nbsp;</span>
+									<span class="text"></span>
+								</a>
+								</td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<th width="15%"><IMG class="btn1 icon_1">접수번호</th>
+								<td width="35%"><INPUT TYPE="text" NAME="rct_no" size="12" value="" readonly></td>
+								<Th width="15%"><IMG class="btn1 icon_1">연&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;차</Th>
+								<TD width="35%"><INPUT TYPE="text" NAME="rct_year" size="12" value=""></TD>
+							</tr>
+							<TR>
+								<th><IMG class="btn1 icon_1">접수일자</th>
+								<td><INPUT TYPE="text" NAME="rct_date" id="rct_date" size="12" value="" readonly></td>
+								<Th><IMG class="btn1 icon_1"><font style="letter-spacing:1px;">기&nbsp;준&nbsp;일</font></Th>
+								<td><INPUT TYPE="text" NAME="rct_basedate" id="rct_basedate" size="12" value="" readonly></td>
+							</TR>
+							<TR>
+								<Th><IMG class="btn1 icon_1"><font style="letter-spacing:1px;">공&nbsp;종&nbsp;명</font></Th>
+								<TD><INPUT TYPE="text" NAME="rct_gongjong" size="12" value=""></TD>
+								<Th><IMG class="btn1 icon_1"><font style="letter-spacing:-3px;">타공종유무</font></Th>
+								<TD>
+									<select name='rct_tagj_yn' style="width:100px">
+										<option value='Y' >유</option>
+										<option value='' selected>무</option>
+									</select>
+								</TD>
+							</TR>
+							<TR>
+								<th width="15%"><IMG class="btn1 icon_1"><font style="letter-spacing:-4px;">방문약속여부</font></th>
+								<TD width="35%"><INPUT TYPE="text" NAME="visit_yn" id="visit_yn" size="12" value="" readonly></TD>
+								<th width="15%"><IMG class="btn1 icon_1"><font style="letter-spacing:-3px;">방문예약일</font></th>
+								<TD width="35%"><INPUT TYPE="text" NAME="rct_basedate1" id="rct_basedate1" size="12" value="" readonly></TD>
+							</TR>							
+						</table>
+					</td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+    <!-- 고객정보 Start -->
+    <tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 0 0 5px 0;">
+						<table width="100%" >
+							<tr>
+								<td style="padding: 15px 0 10px 0"><strong>[고객 정보]</strong></td>
+								<td align="right">
+								<INPUT TYPE="text" NAME="keyword" size="9" value="" style='height:17px'>&nbsp;&nbsp;
+								<a href="javascript:search_user('all');" class="btn1 btn-color5" style="right:5px;" title="고객검색">
+									<span class="bg">&nbsp;</span>
+									<span class="text">고객검색</span>
+								</a>
+								<!-- 연차접수는 직접입력이 가능해서 회원정보에 없는 경우가 많아서 수정은 제외함 -->
+								<!--a href="javascript:user_update();" class="btn1 btn-color5" title="고객수정">
+									<span class="bg">&nbsp;</span>
+									<span class="text">고객수정</span>
+								</a-->
+								</td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<th width="15%"><IMG class="btn1 icon_1"><font style="letter-spacing:1px;">고&nbsp;객&nbsp;명</font><font class="font1">*</font></th>
+								<td width="35%">
+									<input type='hidden' name='custNUM' value="">
+									<INPUT TYPE="text" NAME="mb_name" style="width:130px;" value="">
+								</td>
+								<th width="15%"><IMG class="btn1 icon_1">관&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;계</th>
+								<td width="35%">
+									<SELECT NAME="mbr" style="width:100px">
+										<OPTION VALUE="본인" 

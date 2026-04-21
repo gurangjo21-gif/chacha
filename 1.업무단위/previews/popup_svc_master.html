@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>자재 검색</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+
+<style type="text/css">
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+
+
+</style>
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/popup_svc_master.php</b>
+  <span class="purpose">팝업 기사 마스터</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<form name="list_form" method="post" action="/html/popup_svc_master.php?num=">
+	<INPUT TYPE="hidden" NAME="mode">
+	<INPUT TYPE="hidden" NAME="p_no"><!-- 삭제시 품번저장 -->
+	<INPUT TYPE="hidden" NAME="p_gd"><!-- 삭제시 등급저장 -->
+	
+<table cellpadding="0" cellspacing="0" width="650">
+	<tr>
+		<td style="border: 8px #eeeeee solid;">			
+			<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+				<tr>
+					<th width="60px">품번</th>
+					<th width="">CS품명</th>
+					<th width="30px">등급</th>
+					<th width="50px">재고량</th>
+					<th width="50px">반납</th>
+					<th width="50px">사용량</th>
+					<th width="50px">금액</th>
+					<th width="50px">삭제</th>
+				</tr>
+				
+							</table>
+        </td>
+    </tr>
+</table>
+</form>
+</body>
+
+<script type="text/javascript">
+	function sub(no,grade){
+		if(!confirm("정말로 삭제하시겠습니까?"))return false;
+		list_form.p_no.value=no;
+		list_form.p_gd.value=grade;
+		list_form.mode.value="delete";
+		list_form.submit();
+	}
+
+	if(parent.svc_form.pay1.defaultValue==''){
+		parent.svc_form.pay1.value='';
+		parent.svc_form.pay1.style.color='gray';
+	}
+</script>
+
+</html>
+ 
+

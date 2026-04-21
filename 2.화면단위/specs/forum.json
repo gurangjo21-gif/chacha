@@ -1,0 +1,278 @@
+{
+  "forum_free_list": {
+    "phpFile": "forum_free_list.php",
+    "htmlFile": "screens/forum/forum_free_list.html",
+    "type": "list",
+    "title": "자유게시판",
+    "purpose": "자유게시판 글 목록 조회",
+    "workflow": "게시판 > 자유게시판",
+    "searchFields": [
+      { "name": "keyfield", "label": "검색구분", "type": "select" },
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "제목", "dbField": "subject" },
+      { "name": "작성자(ID)", "dbField": "writer_id" },
+      { "name": "첨부파일", "dbField": "file_yn" },
+      { "name": "작성일", "dbField": "reg_date" },
+      { "name": "조회", "dbField": "read_count" },
+      { "name": "비고", "dbField": "remark" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "글쓰기", "action": "forum_free_mode.php (insert)" },
+      { "label": "읽기", "action": "forum_free_mode.php (read)" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["forum_free_mode.php"]
+  },
+  "forum_free_mode": {
+    "phpFile": "forum_free_mode.php",
+    "htmlFile": "screens/forum/forum_free_mode.html",
+    "type": "mode",
+    "title": "자유게시판 작성/수정",
+    "purpose": "자유게시판 글 작성, 수정, 읽기",
+    "workflow": "게시판 > 자유게시판 > 작성",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "제목", "dbField": "subject" },
+      { "name": "작성자", "dbField": "writer" },
+      { "name": "내용(FCKeditor)", "dbField": "content" },
+      { "name": "첨부파일", "dbField": "upfile" },
+      { "name": "작성일", "dbField": "reg_date" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "forum_free_proc.php" },
+      { "label": "수정", "action": "forum_free_proc.php (update)" },
+      { "label": "삭제", "action": "forum_free_proc.php (delete)" },
+      { "label": "목록", "action": "forum_free_list.php" },
+      { "label": "파일업로드", "action": "forum_free_upfile.php" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["forum_free_list.php"],
+    "flowTo": ["forum_free_list.php"]
+  },
+  "forum_memo_list": {
+    "phpFile": "forum_memo_list.php",
+    "htmlFile": "screens/forum/forum_memo_list.html",
+    "type": "list",
+    "title": "쪽지",
+    "purpose": "수신/발신 쪽지 목록 조회",
+    "workflow": "게시판 > 쪽지",
+    "searchFields": [
+      { "name": "tab", "label": "구분", "type": "tab", "options": ["수신", "발신"] },
+      { "name": "keyfield", "label": "검색구분", "type": "select" },
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "구분", "dbField": "type" },
+      { "name": "제목", "dbField": "subject" },
+      { "name": "파일", "dbField": "file_yn" },
+      { "name": "센터명", "dbField": "center" },
+      { "name": "발신인", "dbField": "sender" },
+      { "name": "발신일", "dbField": "send_date" },
+      { "name": "수신인", "dbField": "receiver" },
+      { "name": "수신일", "dbField": "recv_date" },
+      { "name": "수신확인", "dbField": "read_yn" },
+      { "name": "비고", "dbField": "remark" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "쪽지쓰기", "action": "forum_memo_mode.php (insert)" },
+      { "label": "읽기", "action": "forum_memo_mode.php (read)" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["forum_memo_mode.php"]
+  },
+  "forum_memo_mode": {
+    "phpFile": "forum_memo_mode.php",
+    "htmlFile": "screens/forum/forum_memo_mode.html",
+    "type": "mode",
+    "title": "쪽지 작성/읽기",
+    "purpose": "쪽지 보내기 및 받은 쪽지 읽기",
+    "workflow": "게시판 > 쪽지 > 작성",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "수신자", "dbField": "receiver" },
+      { "name": "제목", "dbField": "subject" },
+      { "name": "내용", "dbField": "content" },
+      { "name": "첨부파일", "dbField": "upfile" }
+    ],
+    "buttons": [
+      { "label": "보내기", "action": "forum_memo_proc.php" },
+      { "label": "답장", "action": "forum_memo_mode.php (reply)" },
+      { "label": "삭제", "action": "forum_memo_proc.php (delete)" },
+      { "label": "목록", "action": "forum_memo_list.php" },
+      { "label": "수신자선택", "action": "popup_charge_select.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "수신자선택", "popup": "popup_charge_select.php" }
+    ],
+    "flowFrom": ["forum_memo_list.php"],
+    "flowTo": ["forum_memo_list.php"]
+  },
+  "forum_notice_list": {
+    "phpFile": "forum_notice_list.php",
+    "htmlFile": "screens/forum/forum_notice_list.html",
+    "type": "list",
+    "title": "공지사항",
+    "purpose": "공지사항 목록 조회",
+    "workflow": "게시판 > 공지사항",
+    "searchFields": [
+      { "name": "keyfield", "label": "검색구분", "type": "select" },
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "제목", "dbField": "subject" },
+      { "name": "작성자", "dbField": "writer" },
+      { "name": "파일(ID)", "dbField": "file_id" },
+      { "name": "작성일", "dbField": "reg_date" },
+      { "name": "조회", "dbField": "read_count" },
+      { "name": "비고", "dbField": "remark" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "공지등록", "action": "forum_notice_mode.php (insert)" },
+      { "label": "읽기", "action": "forum_notice_mode.php (read)" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["forum_notice_mode.php"]
+  },
+  "forum_notice_mode": {
+    "phpFile": "forum_notice_mode.php",
+    "htmlFile": "screens/forum/forum_notice_mode.html",
+    "type": "mode",
+    "title": "공지사항 작성/수정",
+    "purpose": "공지사항 작성, 수정, 읽기",
+    "workflow": "게시판 > 공지사항 > 작성",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "제목", "dbField": "subject" },
+      { "name": "내용(FCKeditor)", "dbField": "content" },
+      { "name": "첨부파일", "dbField": "upfile" },
+      { "name": "공지노출", "dbField": "notice_yn" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "forum_notice_proc.php" },
+      { "label": "수정", "action": "forum_notice_proc.php (update)" },
+      { "label": "삭제", "action": "forum_notice_proc.php (delete)" },
+      { "label": "목록", "action": "forum_notice_list.php" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["forum_notice_list.php"],
+    "flowTo": ["forum_notice_list.php"]
+  },
+  "forum_pds_list": {
+    "phpFile": "forum_pds_list.php",
+    "htmlFile": "screens/forum/forum_pds_list.html",
+    "type": "list",
+    "title": "자료게시판",
+    "purpose": "자료 파일 공유 게시판",
+    "workflow": "게시판 > 자료게시판",
+    "searchFields": [
+      { "name": "keyfield", "label": "검색구분", "type": "select" },
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "제목", "dbField": "subject" },
+      { "name": "작성자", "dbField": "writer" },
+      { "name": "파일(ID)", "dbField": "file_id" },
+      { "name": "작성일", "dbField": "reg_date" },
+      { "name": "조회", "dbField": "read_count" },
+      { "name": "비고", "dbField": "remark" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "자료등록", "action": "forum_pds_mode.php (insert)" },
+      { "label": "다운로드", "action": "download.php" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["forum_pds_mode.php"]
+  },
+  "forum_pds_mode": {
+    "phpFile": "forum_pds_mode.php",
+    "htmlFile": "screens/forum/forum_pds_mode.html",
+    "type": "mode",
+    "title": "자료 등록/수정",
+    "purpose": "자료게시판 자료 등록/수정/다운로드",
+    "workflow": "게시판 > 자료게시판 > 등록",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "제목", "dbField": "subject" },
+      { "name": "내용", "dbField": "content" },
+      { "name": "첨부파일", "dbField": "upfile" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "forum_pds_proc.php" },
+      { "label": "수정", "action": "forum_pds_proc.php (update)" },
+      { "label": "삭제", "action": "forum_pds_proc.php (delete)" },
+      { "label": "목록", "action": "forum_pds_list.php" },
+      { "label": "다운로드", "action": "download.php" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["forum_pds_list.php"],
+    "flowTo": ["forum_pds_list.php"]
+  },
+  "forum_qna_list": {
+    "phpFile": "forum_qna_list.php",
+    "htmlFile": "screens/forum/forum_qna_list.html",
+    "type": "list",
+    "title": "Q&A 게시판",
+    "purpose": "질문과 답변 게시판",
+    "workflow": "게시판 > Q&A",
+    "searchFields": [
+      { "name": "keyfield", "label": "검색구분", "type": "select" },
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "제목", "dbField": "subject" },
+      { "name": "작성자(ID)", "dbField": "writer_id" },
+      { "name": "첨부파일", "dbField": "file_yn" },
+      { "name": "작성일", "dbField": "reg_date" },
+      { "name": "조회", "dbField": "read_count" },
+      { "name": "비고", "dbField": "remark" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "질문등록", "action": "forum_qna_mode.php (insert)" },
+      { "label": "답변", "action": "forum_qna_mode.php (reply)" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["forum_qna_mode.php"]
+  },
+  "forum_qna_mode": {
+    "phpFile": "forum_qna_mode.php",
+    "htmlFile": "screens/forum/forum_qna_mode.html",
+    "type": "mode",
+    "title": "Q&A 작성/답변",
+    "purpose": "Q&A 질문 작성 및 답변 등록",
+    "workflow": "게시판 > Q&A > 작성/답변",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "제목", "dbField": "subject" },
+      { "name": "내용", "dbField": "content" },
+      { "name": "첨부파일", "dbField": "upfile" },
+      { "name": "답변", "dbField": "reply" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "forum_qna_proc.php" },
+      { "label": "답변등록", "action": "forum_qna_proc.php (reply)" },
+      { "label": "수정", "action": "forum_qna_proc.php (update)" },
+      { "label": "삭제", "action": "forum_qna_proc.php (delete)" },
+      { "label": "목록", "action": "forum_qna_list.php" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["forum_qna_list.php"],
+    "flowTo": ["forum_qna_list.php"]
+  }
+}

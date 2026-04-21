@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SMS</title>
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+
+<link rel="stylesheet" type="text/css" href="../assets/css/phone_css.css" />
+<script type='text/javascript'>
+	function chk_byte() {	//	문자 바이트수 체크
+		var obj = document.forms["frm_handphone"];
+		var bodyVal = obj.han_msg.value;
+		var bodyLen = bodyVal.length;
+		
+		var max_len	= 90;
+		var bytesLen = 0;
+		var validBodyLen = 0;
+		var validBytesLen = 0;
+
+		for (var i = 0; i < bodyLen; i++) {			
+			var oneChar = bodyVal.charAt(i);
+			if (escape(oneChar).length > 4) {
+				bytesLen += 2;
+			} else if (oneChar ==='' || oneChar === '\n') {
+			} else {			
+				bytesLen++;
+			}
+			if(bytesLen <= max_len)	{
+				validBodyLen = i + 1;
+				validBytesLen = bytesLen;
+			}
+		}
+
+		if(bytesLen > max_len) {
+			//alert(max_len+"bytes 이상이면 mms로 전환됩니다.");
+			//var realBodyVal = bodyVal.substr(0, validBodyLen);
+			//obj.han_msg.value = realBodyVal;
+			var bytesVal = validBytesLen;
+			obj.sm_mm.value = "lms";
+		} else {
+			obj.sm_mm.value = "sms";
+			bytesVal = bytesLen;
+		}
+		obj.han_byte.value = bytesVal + "/" + max_len;
+		obj.han_msg.focus();
+	}
+	function reset_msg () {	//다시쓰기
+		document.forms['frm_handphone'].han_msg.value="";
+		document.forms['frm_handphone'].han_msg.focus();
+	}
+	
+	
+	function deleteChar(String) {	// 불필요한 데이터 제거(String)
+		var pattern = /[-\[\]\{\}\(\)\\\t\.\,\|\{\}? \"\'\`\:\;]/g;//전화번호에서 불필요한 문자 
+		var useStr	 = String.replace(pattern, "");
+		return useStr;
+	}
+	
+	function sms_send(){
+		var obj_phone = document.forms['frm_handphone'] ;
+		if(obj_phone.han_msg.value == ""){
+			alert("발송할 내용을 입력해 주세요!");
+			obj_phone.han_msg.focus();
+			return;
+		}
+		if(obj_phone.han_callback.value == ""){
+			alert("발신번호를 입력해 주세요!");
+			obj_phone.han_callback.focus();
+			return;
+		}
+
+		obj_phone.action = "sms_send_proc.php";
+		obj_phone.target = "ifrm_trans";
+		obj_phone.submit();
+	}
+</script>
+
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/sms_send.php</b>
+  <span class="purpose">SMS 발송 화면</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<!-- 휴대폰  start -->
+<div id="MainPhone"> 
+<table>
+<tr><td>
+<table background="../assets/images/phone_img/main_phone_bg.png" width="199px" height="468px" border="0" cellpadding="0" cellspacing="0">
+<form name="frm_handphone">
+<!-- 직접입력 데이터 수 -->
+<input type="hidden" name="direct_phone_num" value="">
+
+<!-- 주문서 수 -->
+<input type="hidden" name="nIdx" value="">
+  <tr valign="top">
+    <td align="center"><table border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td height="26"></td>
+      </tr>
+     <tr>
+        <td><table border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td height='25'>&nbsp;</td>
+          </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td height="5"></td>
+      </tr>
+      <tr valign="top">
+        <td align="center"><table background="../assets/images/phone_img/phone_bg_01.png" width="169px" height="203px" border="0" cellpadding="0" cellspacing="0">
+          <tr valign="top">
+            <td height="36"></td>
+          </tr>
+          <tr valign="top">
+            <td align="center"><textarea name="han_msg" rows="6" cols="19" onKeyUp="chk_byte()" onFocus="chk_byte()" style="border:0;font-size:9pt;overflow-x:hidden;background:none;" tabindex="1"></textarea></td>
+			<!--<td align="center"><textarea name="han_msg" rows="6" cols="19" style="border:0;font-size:9pt;overflow-x:hidden;background:none;" tabindex="1"></textarea></td>-->
+          </tr>
+          <tr valign="top">
+            <td><table width="154" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="13"></td>
+                <td ><input type="text" size="6" name="han_byte" value="0/90" readonly style="background:none;border:0;color:#535353;font-size:8pt;" /><input type="text" size="3" name="sm_mm" value="sms" readonly style="background:none;border:0;color:#535353;font-size:10pt;" /></td>
+                <td align="right"><a href="javascript:reset_msg ()" title="다시쓰기"><img src="../assets/images/phone_img/phone_alldel_btn.png" alt="다시쓰기" border="0" ></a></td>
+              </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td height="6"></td>
+          </tr>
+          
+        </table></td>
+      </tr>
+      
+      <tr>
+		<td height="5"></td>
+	  </tr>
+      
+      <tr valign="top">
+        <td align="center"><table border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td height='5'></td>
+          </tr>
+          <tr>
+            <td align="center" bgcolor="#FFFFFF" style="border-bottom:1px solid #cfcfcf;border-left:1px solid #cfcfcf;border-right:1px solid #cfcfcf;">
+              <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td><table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td height="4"></td>
+                    </tr>
+                    <tr>
+                      <td><div style="width:170px;height:120px;overflow-x:hidden;overflow-y:hidden;">
+                        <table width="148" border="0" cellpadding="0" cellspacing="0" bgcolor="#e8e8e8">
+                          <tr valign="top">
+                            <td style='padding-left:5px;'>수신번호</td>
+                          </tr>
+                          <tr height='23'>
+                          	<td width=100% style='padding-left:5px;'>
+                          		<TEXTAREA NAME="receiver" style="width:155px;height:90px;"></TEXTAREA>
+                          	</td>
+                        </tr>
+                        </table>
+                      </div></td>
+                    </tr>
+                    <tr>
+                      <td height="4"></td>
+                    </tr>
+                  </table></td>
+                </tr>
+                
+                <tr>
+                  <td height="1" bgcolor="#e7e7e7"></td>
+                </tr>
+                
+                <tr>
+                  <td><table border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td><table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td height="24" class="phone_txt" style='padding-left:5px;'>발신번호&nbsp;</td>
+                              <td height="24"><input class="phone_input" type="text" name="han_callback" maxlength="15" value=""  style="width:83px;height:16px;padding:0px 0px 0px 2px;"/></td>
+                              <td width="3"></td>
+                              <td height="24"></td>
+                            </tr>
+                        </table></td>
+                      </tr>
+                  </table></td>
+                </tr>
+                
+                <tr>
+                  <td height="1" bgcolor="#e7e7e7"></td>
+                </tr>
+                
+                <tr>
+                
+              </table>
+            
+            </td>
+          </tr>
+        </table></td>
+      </tr>
+      
+      <tr>
+        <td height="10"></td>
+      </tr>
+      <tr>
+        <td align="center">
+		<div id="btn_send_direct" style="display:inline;"><a href="javascript:sms_send();" title="전송하기"><img src="../assets/images/phone_img/send_btn.png" border="0" alt="전송하기"  tabindex="2"></a></div>
+      </tr>
+    </table></td>
+  </tr>  
+</form>
+</table>
+</div>
+</td>
+<style>
+	.tblLine {
+		text-align:center;
+		background-color:#FFFFFF;
+		border-color:#cbcbcb;
+		border-top:1px solid #ccc;
+	}
+	.tdLine {
+		background-color:#FFFFFF;
+		border-color:#cbcbcb;
+		border-right:1px solid #ccc;
+		border-bottom:1px solid #ccc;
+	}
+	.tdLineRight {
+		background-color:#FFFFFF;
+		border-color:#cbcbcb;
+		border-bottom:1px solid #ccc;
+		text-align : left ;
+	}
+	.thLine {
+		text-align:center;
+		background-color:#f5f4f3;
+		border-color:#cbcbcb;
+		border-bottom:1px solid #ccc;
+	}
+	.thLineRight {
+		text-align:center;
+		background-color:#f5f4f3;
+		border-color:#cbcbcb;
+		border-bottom:1px solid #ccc;
+	}
+</style>
+</tr></table>
+<!-- 휴대폰 end -->
+
+<iframe name="ifrm_trans" width="0" height="0" frameborder="0" marginheight="60" marginwidth="100"></iframe>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>현장 상세 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm" x-data="{
+  data:{
+    code:'APT001', apt:'래미안 강남 2차', scene:'서울 강남 CS',
+    zip:'06164', addr:'서울시 강남구 테헤란로 123', addrDet:'102동~503동',
+    units:350, warrantyStart:'2024-01-01', warrantyEnd:'2026-12-31',
+    moveInStart:'2024-01-15', moveInEnd:'2024-02-28',
+    installManager:'박설치', installPos:'팀장', installTel:'010-1111-2222',
+    sceneManager:'박현장', scenePos:'팀장', sceneTel:'010-2222-3333',
+    model:'홈넷 월패드 7인치', appVer:'3.2.1', haVer:'2.1.0',
+    totalQty:350, gateway:'GW-100', swVer:'1.5.2',
+    branch:'서울지점', tdbYN:'N',
+    tkStatus:'TK완료', tkDate:'2024-01-20', tkEditor:'홍길동',
+    note:'입주 완료 단지. 공용부 홈네트워크 전체 설치. 단지 내 CCTV 연동 완료.',
+    issue:'2026-03-15 일부 세대 WiFi 연결 불안정 보고됨. 펌웨어 업데이트 예정.',
+  },
+  products:[
+    {item:'홈넷', pno:'HMN-700', model:'홈넷 월패드 7인치', tdbStart:'', tdbEnd:'', qty:350, maker:'코콤', tel:'02-1234-5678', pname:'홈넷 월패드'},
+    {item:'도어폰', pno:'HMN-DP1', model:'도어폰 HD 2MP', tdbStart:'', tdbEnd:'', qty:700, maker:'코콤', tel:'02-1234-5678', pname:'디지털 도어폰'},
+    {item:'주차관제', pno:'HMN-PK1', model:'주차관제 시스템', tdbStart:'', tdbEnd:'', qty:1, maker:'코콤', tel:'02-1234-5678', pname:'주차 관제 솔루션'},
+    {item:'게이트웨이', pno:'HMN-GW1', model:'GW-100 게이트웨이', tdbStart:'', tdbEnd:'', qty:3, maker:'코콤', tel:'02-1234-5678', pname:'홈넷 게이트웨이'},
+  ]
+}">
+<div class="max-w-5xl mx-auto p-4">
+  <div class="flex items-center justify-between mb-4 pb-2 border-b border-k-border">
+    <h2 class="text-lg font-bold">현장 상세</h2>
+    <div class="flex gap-1">
+      <a href="admin_scene_mode.html" class="bg-k-primary text-white px-3 py-1 rounded text-xs hover:opacity-80">수정</a>
+      <a href="admin_scene_list.html" class="bg-gray-400 text-white px-3 py-1 rounded text-xs hover:opacity-80">목록</a>
+    </div>
+  </div>
+
+  <!-- 기본 정보 -->
+  <div class="bg-white border border-k-border rounded overflow-hidden mb-3">
+    <div class="bg-k-header px-4 py-2 border-b border-k-border font-bold text-sm flex items-center gap-3">
+      <span>기본 정보</span>
+      <span class="text-xs font-normal text-blue-600" x-text="data.code"></span>
+      <span :class="data.tdbYN==='Y'?'bg-yellow-100 text-yellow-700':'bg-gray-100 text-gray-500'"
+            class="text-xs px-2 py-0.5 rounded" x-text="data.tdbYN==='Y'?'뇌전사용':'뇌전없음'"></span>
+      <span :class="data.tkStatus==='TK완료'?'bg-green-100 text-green-700':'bg-blue-100 text-blue-700'"
+            class="text-xs px-2 py-0.5 rounded" x-text="data.tkStatus"></span>
+    </div>
+    <div class="grid grid-cols-2 text-sm divide-y divide-k-border">
+      <div class="flex border-r border-k-border">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">아파트명</div>
+        <div class="px-3 py-2 font-bold text-k-primary" x-text="data.apt"></div>
+      </div>
+      <div class="flex">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">현장명</div>
+        <div class="px-3 py-2" x-text="data.scene"></div>
+      </div>
+      <div class="flex border-r border-k-border">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">주소</div>
+        <div class="px-3 py-2" x-text="'(' + data.zip + ') ' + data.addr + ' ' + data.addrDet"></div>
+      </div>
+      <div class="flex">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">세대수</div>
+        <div class="px-3 py-2" x-text="data.units.toLocaleString() + ' 세대'"></div>
+      </div>
+      <div class="flex border-r border-k-border">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">보증기간</div>
+        <div class="px-3 py-2 text-blue-600" x-text="data.warrantyStart + ' ~ ' + data.warrantyEnd"></div>
+      </div>
+      <div class="flex">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">입주기간</div>
+        <div class="px-3 py-2" x-text="data.moveInStart + ' ~ ' + data.moveInEnd"></div>
+      </div>
+      <div class="flex border-r border-k-border">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">설치담당자</div>
+        <div class="px-3 py-2" x-text="data.installManager + ' ' + data.installPos + ' / ' + data.installTel"></div>
+      </div>
+      <div class="flex">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">현장담당자</div>
+        <div class="px-3 py-2" x-text="data.sceneManager + ' ' + data.scenePos + ' / ' + data.sceneTel"></div>
+      </div>
+      <div class="flex border-r border-k-border">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">세대기기(모델)</div>
+        <div class="px-3 py-2" x-text="data.model"></div>
+      </div>
+      <div class="flex">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">담당지점</div>
+        <div class="px-3 py-2" x-text="data.branch"></div>
+      </div>
+      <div class="flex border-r border-k-border">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">APP/HA/SW 버전</div>
+        <div class="px-3 py-2 text-xs text-gray-600" x-text="'APP: ' + data.appVer + ' / HA: ' + data.haVer + ' / SW: ' + data.swVer"></div>
+      </div>
+      <div class="flex">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">TK 정보</div>
+        <div class="px-3 py-2 text-xs text-gray-600" x-text="data.tkStatus + ' / ' + data.tkDate + ' / ' + data.tkEditor"></div>
+      </div>
+      <div class="flex col-span-2">
+        <div class="bg-k-header px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs">비고</div>
+        <div class="px-3 py-2 text-xs leading-5" x-text="data.note"></div>
+      </div>
+      <div class="flex col-span-2 border-t border-k-border">
+        <div class="bg-yellow-50 px-3 py-2.5 font-bold w-32 border-r border-k-border flex-shrink-0 text-xs text-orange-600">현장이슈</div>
+        <div class="px-3 py-2 text-xs leading-5 text-orange-700" x-text="data.issue"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 설치 품목 -->
+  <div class="bg-white border border-k-border rounded overflow-hidden mb-4">
+    <div class="bg-k-header px-4 py-2 border-b border-k-border font-bold text-sm">설치 품목</div>
+    <table class="w-full text-xs">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="py-2 px-2 border-b border-r border-k-border text-center">설치항목</th>
+          <th class="py-2 px-2 border-b border-r border-k-border text-center">품번</th>
+          <th class="py-2 px-2 border-b border-r border-k-border text-left">모델명</th>
+          <th class="py-2 px-2 border-b border-r border-k-border text-left">품명</th>
+          <th class="py-2 px-2 border-b border-r border-k-border text-center">수량</th>
+          <th class="py-2 px-2 border-b border-r border-k-border text-center">제조사</th>
+          <th class="py-2 px-2 border-b border-k-border text-center">연락처</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="(p, i) in products" :key="i">
+          <tr :class="i%2===1?'bg-gray-50':''" class="border-b border-k-border">
+            <td class="py-1.5 px-2 text-center border-r border-k-border font-bold text-blue-600" x-text="p.item"></td>
+            <td class="py-1.5 px-2 text-center border-r border-k-border" x-text="p.pno"></td>
+            <td class="py-1.5 px-2 border-r border-k-border" x-text="p.model"></td>
+            <td class="py-1.5 px-2 border-r border-k-border" x-text="p.pname"></td>
+            <td class="py-1.5 px-2 text-center border-r border-k-border" x-text="p.qty.toLocaleString()"></td>
+            <td class="py-1.5 px-2 text-center border-r border-k-border" x-text="p.maker"></td>
+            <td class="py-1.5 px-2 text-center" x-text="p.tel"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex justify-center gap-2">
+    <a href="admin_scene_mode.html" class="bg-k-primary text-white px-8 py-2 rounded hover:opacity-80 text-sm">수정</a>
+    <a href="admin_scene_list.html" class="bg-gray-400 text-white px-8 py-2 rounded hover:opacity-80 text-sm">목록</a>
+  </div>
+</div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["admin"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

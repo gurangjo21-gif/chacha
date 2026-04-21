@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>KOCOM</title>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tablescroll.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tooltip.js"></script>
+<script type="text/javascript" src="../assets/js/controller.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script src="../assets/js/addon/jquery_plugin/thickbox-compressed.js" type="text/javascript"></script>
+<!-- daum postcode API removed for offline preview -->
+<link href="../assets/css/thickbox.css" rel="stylesheet" type="text/css" />
+
+<!-- 달력 start -->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
+<link rel="stylesheet" href="../assets/css/jquery-ui.css">
+<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+<script src="../assets/js/jquery-1.10.2.js"></script>
+<script src="../assets/js/jquery-ui.js"></script>
+<!-- 달력 end -->   
+
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/admin_user_list.php</b>
+  <span class="purpose">사원 목록</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<div id="header">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+<script language="javascript">
+function open_receipt(){
+	//window.open('receipt.php','pop_receipt','width=665,height=720');
+	/*var cw = screen.availWidth;
+	var ch = screen.availHeight;
+	var sw = 650;
+	var sh = 650;
+	var ml = (cw-sw)/2;
+	var mt = (ch-sh)/2;*/
+	window.open('receipt.php?num=&mode=insert&cid_num=&UID=','pop_receipt','width=710,height=755top=50,left=1000');
+}
+function highlight(which,color){ 
+    if (document.all||document.getElementById) 
+    which.style.backgroundColor=color 
+}
+
+/*function title_ch(name) {
+	location.href="main.php?title_name"+name;
+	top.document.location.reload();
+}*/
+
+function log_out(){
+	var agent_ext = '1000';
+	var agent_id = 'demo';
+	var agent_pw = '';
+	
+	var server1 = '127.0.0.1'
+	if(server1 == '192.168.239') {
+		var server = '192.168.239.252';
+		var server_ip = '192.168.239.251';
+	} else {
+		var server = '222.108.131.73';
+		var server_ip = '222.108.131.123:888';
+	}
+
+	var params = "mode=LogoutAction&ext_no=" + agent_ext+ "&agent_id=" + agent_id+ "&agent_pw=" + agent_pw;
+	$.getJSON("http://"+server_ip+"/manager/callAPI/login.php?callback=?", 
+		params,
+		function(d)
+		{		
+			$.each(d, function(k, v){				
+				var response = v.data;
+				var res_array = response.split("|");
+				alert(res_array[0]);
+				if(res_array[0] == '-1') {
+					alert('DB접속실패');
+				} else if(res_array[0] == '-2'){
+					alert('DB쿼리에러및 기타');
+				}
+				else if(res_array[0] == '-3'){
+					alert('AMI오류입니다.');
+				}else if(res_array[0] == '0'){					
+					//top.location.replace('../logout.php?id='+agent_id);
+					top.location.replace('../logout.php');
+				}
+			}); 
+		}
+	);
+	//location.href = '../logout.php';
+	top.location.replace('../logout.php');
+}
+</script>
+	<div class="main-menu">
+		<div class="wrapper">
+			<ul class="menu">
+							<li >
+					<a href="/html/admin_user_list.php?Tidx=" title=""></a>
+					<ul>
+										</ul>
+				</li>
+						</ul>
+			<div class="btns">
+											<a href="#" class="btn1 btn-edit btn-color4" title="SMS" onclick="sms_open('demo','9');">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">SMS</span>
+				</a>
+								<a href="#" class="btn1 btn-edit btn-color4" title="대리점조회" onclick="window.open('popup_center_search.php','center','width=815,height=530,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">대리점조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color4" title="업무담당자조회" onclick="window.open('popup_master_search.php','master','width=800,height=500,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">업무담당자조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color3" title="정보수정" onclick="window.open('my_info.php','info','width=300,height=320,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">정보수정</span>
+				</a>
+				<!--<a href="../logout.php" target="_top" class="btn1 btn-disconnect btn-color4" title="로그아웃">-->
+				<a href="javascript:log_out();" class="btn1 btn-disconnect btn-color4" title="로그아웃">
+					<span class="bg">&nbsp;</span>
+					<span class="icon" style='  background-position: -39px 0px;'>&nbsp;</span>
+					<span class="text">로그아웃</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="sub-menu">&nbsp;</div>
+</div>
+<script type='text/javascript'>
+	
+	function search_next(){
+		var myform = document.eForm ; 
+		myform.pageno.value = 1 ;
+		myform.action = "/html/admin_user_list.php";
+		myform.target="";
+		myform.submit();
+	}
+	function bDel_next(idx,mode){
+		if(mode == 'Y'){
+			var msg = "재직처리 하시겠습니까?";
+			var umode = 'Y';
+		}else{ 
+			var msg = "퇴직처리 하시겠습니까?";
+			var umode = 'N';
+		}
+		if(confirm(msg)){
+			ajaxLoader("ajax_proc.php?mode=admin_user_del&idx="+idx+"&umode="+umode);
+			ajaxLoader("ajax_proc_mysql.php?mode=user_yn&idx="+idx+"&umode="+umode);
+		}
+	}
+	function update_next(idx,mode){
+		var myform = document.eForm ;
+		myform.idx.value = idx;
+		myform.mode.value = mode;
+		myform.action = "admin_user_mode.php";
+		myform.target="";
+		myform.submit();
+	}
+	
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var mode_str = respose.split("^");
+		switch(mode_str[0]){
+			case "ok": 
+				alert("변경되었습니다.");
+				search_next();
+			break;
+			case "false": 
+				alert("오류!!! 다시 시도해주세요.");
+				search_next();
+			break;
+		}
+	}
+	
+	function excel_download(){
+		var myform = document.eForm ;
+		myform.action = "../excel/admin_user_list.php";
+		//myform.target = "ifrm_trans";
+		myform.target = "";
+		myform.submit();
+	}
+</script>
+<div id="contents">
+	<div class="wrapper">
+		<div class="header">
+			<h2>사원 관리</h2>
+			<div class="btns">
+				<a href="#" class="btn1 btn-color5" title="엑셀다운" onclick="javascript:excel_download();">
+					<span class="bg">&nbsp;</span>
+					<span class="text">엑셀다운</span>
+				</a>
+									<a href="javascript:update_next('','insert')" class="btn1 btn-sms btn-color6" title="직원추가">
+						<span class="bg">&nbsp;</span>
+						<span class="text">직원추가</span>
+					</a>
+							</div>
+		</div>
+		<div class="search">
+			<form method='get' name='eForm' action="/html/admin_user_list.php">
+				<span class="spacer">재직상태</span>
+				<select name="bDel" style="margin-top:3px;">
+					<option value="" selected>전체</option>
+					<option value="N" >퇴직</option>
+					<option value="Y" >재직</option>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;
+				<select name="keyfield" style="margin-top:3px;">
+					<!--option value="" selected>-- 선택--</option-->
+					<option value="N" >사원명</option>
+					<option value="C" >센터명</option>
+					<option value="P" >부서명</option>
+				</select>
+				<input type="text" name="keyword" style="margin-top:3px;" size="32" value="" />
+				<input type="image" src="../assets/images/btn/btn-search.png" alt="검색" onkeydown="javascript:keyDown();" onclick="javascript:search_next();"/>
+				<input type='hidden' name='idx'>
+				<input type='hidden' name='mode'>
+				<input type='hidden' name='pageno' value='1'>
+				<input type='hidden' name='Tidx' value='1'>
+				<input type='hidden' name='Sidx' value='1'>
+			</form>
+		</div>
+		
+		<div class="data-table">
+			
+			<table id="data_table" width="100%">
+				<colgroup>
+					<col width="50px" />
+					<col width="100px" />
+					<col width="100px" />
+					<col width="100px" />
+					<col width="200px" />
+					<col width="120px" />
+					<col width="120px" />
+					<col width="" />
+					<col width="100px" />
+					<col width="150px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>순번</th>
+						<th>사원번호</th>
+						<th>사원명</th>
+						<th>직급</th>
+						<th>부서</th>
+						<th>권한</th>
+						<th>콜아이디</th>
+						<th>센터명</th>
+						<th>사원여부</th>
+						<th>비고</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+					<tr>
+						<td height='150px;' colspan='10'>데이터가 없습니다.</td>
+					</tr>
+										
+				</tbody>
+			</table>	
+		</div>
+						<div class='paging'>
+					<div class='paging-wrapper'>
+			<span class='page-first paging-btn'><a href='/html/admin_user_list.php?&pageno=1' title='첫 페이지' tabindex='1'>first</a></span><span class='page-prev paging-btn'><a href='#' title='이전 페이지' tabindex='1'>previous</a></span><span class='page-next paging-btn'><a href='#' title='다음 페이지' tabindex='1'>next</a></span><span class='page-last paging-btn'><a href='/html/admin_user_list.php?&pageno=0' title='마지 막페이지' tabindex='1'>last</a></span>			</div>
+		</div>	</div>
+</div>
+<iframe name="ifrm_trans" width="0" height="0" frameborder="0" marginheight="60" marginwidth="100"></iframe>
+<div id="footer">
+	<div class="wrapper">
+		<div class="copy">Copyright &copy; kocom. All Rights Reserved.</div>
+	</div>
+</div>
+</body>
+</html>

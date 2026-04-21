@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>대리점조회 - KOCOM</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-white text-xs text-[#333]" x-data="{
+  keyfield: '',
+  keyword: '',
+  results: [
+    { code:'D001', name:'서초대리점', addr:'서울 서초구 방배동 123', manager:'김대리', tel:'02-1234-5678', mobile:'010-1234-5678', type:'직영' },
+    { code:'D002', name:'강남대리점', addr:'서울 강남구 역삼동 456', manager:'이부장', tel:'02-2345-6789', mobile:'010-2345-6789', type:'대리점' },
+    { code:'D003', name:'수원대리점', addr:'경기 수원시 영통구 789', manager:'박과장', tel:'031-3456-7890', mobile:'010-3456-7890', type:'대리점' },
+    { code:'D004', name:'인천대리점', addr:'인천 남동구 구월동 321', manager:'최팀장', tel:'032-4567-8901', mobile:'010-4567-8901', type:'직영' },
+    { code:'D005', name:'부산대리점', addr:'부산 해운대구 우동 654', manager:'정대리', tel:'051-5678-9012', mobile:'010-5678-9012', type:'대리점' },
+  ]
+}">
+  <div class="p-2" style="width:797px;">
+    <div class="border border-[#ddd] p-2">
+      <div class="flex items-center justify-between mb-2">
+        <strong>[대리점조회]</strong>
+        <div class="flex items-center gap-1">
+          <select x-model="keyfield" class="border border-[#ccc] px-1 py-0.5 text-xs">
+            <option value="">전체</option>
+            <option value="1">대리점명</option>
+            <option value="2">담당자명</option>
+            <option value="3">주소</option>
+            <option value="4">전화번호</option>
+            <option value="5">핸드폰</option>
+          </select>
+          <input type="text" x-model="keyword" class="border border-[#ccc] px-1 py-0.5 w-32 text-xs" placeholder="검색어">
+          <button class="bg-[#6699FF] text-white px-2 py-0.5 text-xs rounded">검색</button>
+        </div>
+      </div>
+      <table class="w-full border-collapse text-xs" style="border-top:2px solid #959595;">
+        <thead>
+          <tr class="bg-[#f3f3f3]">
+            <th class="border border-[#959595] px-2 py-1 text-center w-12">코드</th>
+            <th class="border border-[#959595] px-2 py-1 text-center w-20">대리점명</th>
+            <th class="border border-[#959595] px-2 py-1 text-center">주소</th>
+            <th class="border border-[#959595] px-2 py-1 text-center w-14">담당자명</th>
+            <th class="border border-[#959595] px-2 py-1 text-center w-22">전화번호</th>
+            <th class="border border-[#959595] px-2 py-1 text-center w-22">핸드폰</th>
+            <th class="border border-[#959595] px-2 py-1 text-center w-14">형태</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="row in results" :key="row.code">
+            <tr class="hover:bg-blue-50 cursor-pointer" @click="alert('선택: ' + row.name + ' (' + row.code + ')')">
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="row.code"></td>
+              <td class="border border-[#959595] px-1 py-1" x-text="row.name"></td>
+              <td class="border border-[#959595] px-1 py-1" x-text="row.addr"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="row.manager"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="row.tel"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="row.mobile"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="row.type"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <div class="flex justify-center mt-1 gap-1">
+        <button class="border px-2 py-0.5 text-xs">이전</button>
+        <button class="border px-2 py-0.5 text-xs bg-[#6699FF] text-white">1</button>
+        <button class="border px-2 py-0.5 text-xs">2</button>
+        <button class="border px-2 py-0.5 text-xs">다음</button>
+      </div>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["popup"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

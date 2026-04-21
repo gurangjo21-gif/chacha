@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>popup_satisfaction.php · preview</title>
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/popup_style.css">
+<style>
+  body{margin:0;padding:0;background:#f5f6f8;font-family:"맑은 고딕","Malgun Gothic",sans-serif;font-size:12px;color:#333}
+  .preview-banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:10px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+  }
+  .preview-banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace}
+  .preview-banner .purpose{color:#cbd5e1;font-size:11px}
+  .preview-banner .tag{
+    background:rgba(96,165,250,.2);color:#93c5fd;padding:2px 8px;border-radius:10px;
+    font-size:10px;letter-spacing:.5px;text-transform:uppercase;
+  }
+  .preview-banner .warn{
+    margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;
+    padding:3px 10px;border-radius:10px;font-size:10px;
+  }
+  .php-var{
+    display:inline-block;background:#fef3c7;color:#92400e;padding:1px 6px;
+    border-radius:4px;font-family:Consolas,monospace;font-size:11px;
+    border:1px dashed #fbbf24;
+  }
+  /* Stub missing images */
+  img{max-height:40px}
+  img[src*="btn"]{background:#ddd;padding:2px 8px;border-radius:3px;min-width:60px;height:22px;}
+  /* 화면 body itself */
+  #contents{padding:20px;background:#fff;margin:0 auto;max-width:1400px}
+  .wrapper{background:#fff;padding:14px 20px;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:14px}
+  .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #e5e7eb}
+  .header h2{font-size:18px;font-weight:700;color:#111}
+  .header .btns{display:flex;gap:6px}
+  .search{background:#f9fafb;padding:10px 14px;border-radius:6px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .data-table table{width:100%;border-collapse:collapse;font-size:12px}
+  .data-table th{background:#f3f4f6;padding:8px;border:1px solid #d1d5db;text-align:center;font-weight:600}
+  .data-table td,.data-table Td{padding:6px 8px;border:1px solid #e5e7eb;text-align:center}
+  .data-table tr:hover td{background:#fffbeb}
+  .btn1,.btn1 .text{display:inline-block;padding:3px 10px;background:#3b82f6;color:#fff;border-radius:4px;text-decoration:none;font-size:11px;cursor:pointer}
+  .btn1 .bg{display:none}
+  .btn1.btn-color5{background:#10b981}
+  .btn1.btn-color6{background:#f59e0b}
+  .btn1.btn-color7{background:#6366f1}
+  input[type=text],select,input[type=password],input[type=date]{padding:4px 8px;border:1px solid #d1d5db;border-radius:3px;font-size:12px}
+  input[type=image]{background:#3b82f6;padding:3px 10px;border-radius:4px;color:#fff}
+  form{margin:0}
+  textarea{padding:6px;border:1px solid #d1d5db;border-radius:3px;font-size:12px;font-family:inherit}
+  /* Hidden iframe */
+  iframe[name="ifrm_trans"]{display:none}
+  iframe{display:block;border:1px dashed #cbd5e1;max-width:100%}
+</style>
+<script>
+// Stub out dynamic behaviors
+function ajaxLoader(){return false}
+function search_next(){alert('[미리보기] 검색 액션 (실제 호출 없음)');return false}
+function update_next(){alert('[미리보기] 등록/수정 화면 이동 (실제 호출 없음)');return false}
+function excel_download(){alert('[미리보기] 엑셀 다운로드 (실제 호출 없음)');return false}
+function confirm(msg){return window.top!==window?false:window.confirm(msg)}
+window.onload=function(){
+  // Defuse all form submits in preview
+  document.querySelectorAll('form').forEach(f=>{
+    f.onsubmit=(e)=>{e.preventDefault();alert('[미리보기] Form 제출 차단됨');return false};
+  });
+  document.querySelectorAll('a[href^="javascript:"],a[href="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{e.preventDefault()});
+  });
+};
+</script>
+</head>
+<body>
+<div class="preview-banner">
+  <span class="tag">미리보기</span>
+  <b>html/popup_satisfaction.php</b>
+  <span class="purpose">만족도 팝업</span>
+  <span class="warn">⚠️ PHP 실행 없이 정적 추출 (값 = 샘플)</span>
+</div>
+
+<!-- top.php (간략화) -->
+<div style="background:#1e40af;color:#fff;padding:8px 20px;display:flex;align-items:center;gap:16px">
+  <b style="font-size:14px">KOCOM CS/AS</b>
+  <nav style="display:flex;gap:14px;font-size:12px">
+    <span>수신접수</span><span>서비스</span><span>자재</span><span>TDB</span>
+    <span>관리자</span><span>게시판</span><span>통계</span>
+  </nav>
+  <span style="margin-left:auto;font-size:11px;opacity:.8">user: <span class="php-var">[사원명]</span></span>
+</div>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>해피콜 처리</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../css/style.css" />
+<script type="text/javascript" src="../js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+
+<!-- 달력 start -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<!-- 달력 end -->  
+
+<script type="text/javascript">
+	function ajaxLoader(url){ 
+		if (document.getElementById) { 
+			var xmlHttp = (window.ActiveXObject) ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest(); 
+		}
+		if (xmlHttp){ 
+			xmlHttp.onreadystatechange = function(){ 
+				if (xmlHttp.readyState == 4){// 객체의 상태(0:비초기화, 1:로딩, 3:상호작용, 4: 완료)
+					if(xmlHttp.status == 200){ 
+						ajaxResponse(xmlHttp.responseText); 
+					}else{
+						alert('시스템 오류. CODE :'+ xmlHttp.status);
+					}
+				} 
+			} 
+			xmlHttp.open("GET", url, true); 
+			xmlHttp.send(null); 
+		}else{
+			alert("지원되지 않는 브라우저입니다.");
+		}
+	} 
+	function save(){
+		if(!confirm("저장하시겠습니까?"))return false;
+
+		var param = "mode=happy_update&oNAME="+$("input[name=oNAME]").val()+"&score="+$("select[name=score]").val()+"&oDATE="+$("input[name=oDATE]").val();
+		param +="&memo="+$("textarea[name=memo]").val()+"&idx="+$("input[name=idx]").val();
+		//alert(param);
+		ajaxLoader("ajax_proc.php?mode=happy_update&"+param);
+	}
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var str = respose.split("^");
+		switch(str[0]){
+			case "ok" :
+				alert("해피콜 처리되었습니다.");
+				opener.search_next();
+				self.close();
+			break;
+			case "false" :
+				alert("오류!!! 다시 시도해주세요.");
+			break;
+			default:
+				alert(respose);
+			break;
+		}
+	}
+	
+	$(function(){		
+		$( "#oDATE" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });
+	});
+</script>
+
+
+<style type="text/css">
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+	font-size: 15px;
+	font-weight: bold;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+
+.form-table.type2 td > input {
+font-size:14px;
+}
+.form-table.type2 td > select {
+font-size:14px;
+}
+.form-table.type2 td > textarea {
+font-size:14px;
+}
+
+
+</style>
+</head>
+<body>
+
+<form name="hform" method='post'>
+	<INPUT TYPE="hidden" NAME="mode" value="">
+	<INPUT TYPE="hidden" NAME="idx" value="<span class="php-var">[idx]</span>">
+<table cellpadding="0" cellspacing="0" width="400">
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 15px 0 5px 0;">
+						<table width="100%" style='height:17px;'>
+							<tr>
+								<td><strong>[해피콜 처리]</strong></td>
+								<td align="right"></td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<th width="25%">확인일자</th>
+								<td><INPUT TYPE="text" NAME="oDATE" id="oDATE" style="width:40%" value="<span class="php-var">[rowDate]</span>"></td>
+							</tr>
+							<tr>
+								<th>확인고객명</th>
+								<td><INPUT TYPE="text" NAME="oNAME"  style="width:110px" value="<span class="php-var">[oName]</span>" ></td>
+							</tr>
+							<TR>
+								<Th >만족도</Th>
+								<TD>	
+									<SELECT NAME="score" style="width:115px;">
+										<OPTION VALUE="" >:: 만족도 ::</OPTION>
+									
+										<OPTION VALUE="<span class="php-var">[res등급코드i]</span>" ><span class="php-var">[res등급명i]</span></OPTION>
+									
+									</SELECT>
+								</TD>
+							</tr>
+							<tr>
+								<Th colspan='2'>상담내역 고객의견</Th>
+							</tr>
+							<tr>
+								<TD colspan='2'>
+									<TEXTAREA NAME="memo" STYLE="width:95%;" ROWS="11"><span class="php-var">[row고객의견]</span></TEXTAREA>
+								</TD>
+							</TR>
+							<tr>
+								<th>처리사원</th>
+								<td><INPUT TYPE="text" NAME="sNAME"  style="width:110px" value="<span class="php-var">[sName]</span>" readonly></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<div align='center' style='padding:5px 0 5px 0;'>
+				<a href="javascript:save();" class="btn1 btn-color3" title="저장"><span class="bg">&nbsp;</span><span class="text">저장</span></a> &nbsp;&nbsp;
+				<a href="javascript:self.close();" class="btn1 btn-color3" title="닫기"><span class="bg">&nbsp;</span><span class="text">닫기</span></a>
+			</div>
+        </td>
+    </tr>
+</table>
+ 
+</form>
+</body>
+</html>
+<!-- tail.php (간략화) -->
+<div style="background:#e5e7eb;padding:10px;text-align:center;font-size:11px;color:#6b7280;border-top:1px solid #d1d5db">
+  © KOCOM CS/AS System · 미리보기 모드
+</div>
+</body>
+</html>

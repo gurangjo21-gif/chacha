@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+
+<head>
+<title>고객간략조회</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script type="text/javascript">
+	function movedata(unum,uname,tel,hp,zip,addr1,addr2,apt,apt_name,callprice){
+		var f = opener.document.receipt_form;
+
+		f.mb_name.value=uname;
+		f.zip.value=zip;
+		f.addr1.value=addr1;
+		f.addr2.value=addr2;
+		f.apt_no.value=apt;
+		f.apt_name.value=apt_name;
+		f.callprice.value=callprice;
+		f.custNUM.value=unum;	//kms 고객번호 넘기기 주석 해제(접수둥록에서 기존에 접수된 고객일 경우 처리용)
+
+		if(tel){
+			var sp_telNUM = tel.split('-');
+			f.phone1.value = sp_telNUM[0];
+			f.phone2.value = sp_telNUM[1];
+			f.phone3.value = sp_telNUM[2];
+		}
+		if(hp){
+			var sp_cellNUM = hp.split('-');
+			f.mobile1.value = sp_cellNUM[0];
+			f.mobile2.value = sp_cellNUM[1];
+			f.mobile3.value = sp_cellNUM[2];
+		}
+
+		//처리지점&처리사원 선택
+		if(zip)opener.ZIP_SELECT(zip);
+		//if(zip)opener.dynamic.src="../common/selectLoad.php?RUN=ZIP_SELECT&form=receipt_form&zip=" + zip;
+		window.close();
+	}
+	
+	function go_next() {
+		var findStr = document.search_form.find.value;
+		var keyword = document.search_form.keyword.value;
+		location.href="/html/member_find.php?find="+findStr+"&keyword="+keyword;
+	}
+	function winResize(){
+	  width  = parseInt(document.body.clientWidth -  document.images[0].width)-5;
+	  height = parseInt(document.body.clientHeight -  document.images[0].height)+70;
+	  window.resizeTo(width,height)
+	}
+
+
+</script>
+
+
+<style type="text/css">
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+
+
+</style>
+</head>
+<body  onload="winResize()">
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/member_find.php</b>
+  <span class="purpose">회원 찾기</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<SCRIPT ID="dynamic"></SCRIPT>
+<SCRIPT ID="dynamic2"></SCRIPT>
+<form name="search_form" method='post' action="/html/member_find.php">
+<table cellpadding="0" cellspacing="0" width="780">
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 15px 0 5px 0;">
+						<table width="100%" >
+							<tr>
+								<td><strong>고객간략조회</strong></td>
+								<td align="right">
+									<SELECT NAME="find">
+										<OPTION VALUE="all" >전체</OPTION>
+										<OPTION VALUE="name" >고객명</OPTION>
+										<OPTION VALUE="phone" >전화번호(휴대폰)</OPTION>
+										<OPTION VALUE="addr" >주소</OPTION>
+									</SELECT>
+									<INPUT TYPE="text" NAME="keyword" style="ime-mode:active;" value="">&nbsp;
+									<a href="javascript:go_next();" class="btn1 btn-color0" title="찾기">
+										<span class="bg">&nbsp;</span>
+										<span class="text">찾기</span>
+									</a>
+								</td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<th width="15%"><b>고객명</b></th>
+								<th width="15%"><b>전화번호</b></th>
+								<th width="15%"><b>휴대폰</b></th>
+								<th width="35%"><b>주소 (동이상)</b></th>
+								<th width="20%"><b>아파트</b></th>
+							</tr>
+							<TR><TD colspan='5' align='center' height='150px;'>검색된 고객이 없습니다.</TD></TR>						</table>
+					</td>
+				</tr>
+			</table>
+			&nbsp;        </td>
+    </tr>
+</table>
+ 
+</form>
+</body>
+</html>
+ 
+

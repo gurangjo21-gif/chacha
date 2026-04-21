@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>현장 상세보기 - KOCOM</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-white text-xs text-[#333]">
+  <div id="contents">
+    <div class="p-2">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="font-bold text-sm">현장 상세보기</h2>
+        <button class="bg-[#6699FF] text-white px-2 py-0.5 text-xs rounded" onclick="history.back()">목록으로</button>
+      </div>
+      <div class="overflow-y-auto" style="height:700px;">
+        <table class="w-full border-collapse text-xs mb-2">
+          <thead>
+            <tr class="bg-[#f3f3f3]">
+              <th class="border border-[#cfcfcf] px-2 py-1 font-bold" colspan="10">현장 정보 상세</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="height:35px;">
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">현장명</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="9">서초 래미안 현장</td>
+            </tr>
+            <tr style="height:35px;">
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">아파트명</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="9">래미안 퍼스티지</td>
+            </tr>
+            <tr style="height:35px;">
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">세대수</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="2">총 1,264 세대</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">보증기간</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="2">2023-01-01 ~ 2025-12-31</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">입주기간</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="2">2023-02-01 ~ 2023-04-30</td>
+              <td class="border border-[#cfcfcf]"></td>
+            </tr>
+            <tr style="height:35px;">
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">주소</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">06628</td>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="3">서울 서초구 반포동 1번지</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">상세주소</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="5">래미안퍼스티지 아파트</td>
+            </tr>
+            <tr style="height:35px;">
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">담당지점</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="2">서초센터</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">비고</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="4">특이사항 없음</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">뇌전유무</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="2">뇌전없음</td>
+            </tr>
+            <tr style="height:35px;">
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">설치담당</th>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">성명/직함</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">김설치 팀장</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">연락처</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">010-1111-2222</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">현장담당</th>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">성명/직함</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">이현장 대리</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">연락처</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">010-3333-4444</td>
+            </tr>
+            <tr style="height:35px;">
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">세대기기</th>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">모델명</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">IHM-600</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">총수량</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="2">1,264 개</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">App Ver.</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">v2.1.3</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">H/W Ver.</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">r1.5</td>
+            </tr>
+            <tr style="height:35px;">
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">게이트웨이</th>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">모델명</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">IKS-1020</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">S/W Ver.</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="2">v3.2.1</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">TK유무</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">TK완료</td>
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">TK점검자</th>
+              <td class="border border-[#cfcfcf] px-2 py-1">박점검</td>
+            </tr>
+            <tr style="height:35px;">
+              <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">현장이슈</th>
+              <td class="border border-[#cfcfcf] px-2 py-1" colspan="9">입주 초기 일부 세대 인터폰 설정 오류 발생 → 펌웨어 업데이트로 해결</td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- 설치품목 테이블 -->
+        <table class="w-full border-collapse text-xs mt-2">
+          <thead>
+            <tr class="bg-[#f3f3f3]">
+              <th class="border border-[#cfcfcf] px-2 py-1 w-28">Category</th>
+              <th class="border border-[#cfcfcf] px-2 py-1 w-16">코드번호</th>
+              <th class="border border-[#cfcfcf] px-2 py-1 w-44">모델명</th>
+              <th class="border border-[#cfcfcf] px-2 py-1 w-20">수량</th>
+              <th class="border border-[#cfcfcf] px-2 py-1 w-24">제조사</th>
+              <th class="border border-[#cfcfcf] px-2 py-1">연락처</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-[#cfcfcf] px-2 py-1 font-bold">세대기기</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">IHM-600</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">코콤 도어폰 IHM-600</td>
+              <td class="border border-[#cfcfcf] px-2 py-1 text-center">1,264 개</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">코콤</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">1588-0000</td>
+            </tr>
+            <tr>
+              <td class="border border-[#cfcfcf] px-2 py-1 font-bold">게이트웨이</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">IKS-1020</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">코콤 게이트웨이 IKS-1020</td>
+              <td class="border border-[#cfcfcf] px-2 py-1 text-center">4 개</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">코콤</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">1588-0000</td>
+            </tr>
+            <tr>
+              <td class="border border-[#cfcfcf] px-2 py-1 font-bold">통합관리서버</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">KCX-200</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">코콤 통합관리서버</td>
+              <td class="border border-[#cfcfcf] px-2 py-1 text-center">1 개</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">코콤</td>
+              <td class="border border-[#cfcfcf] px-2 py-1">1588-0000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["popup"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

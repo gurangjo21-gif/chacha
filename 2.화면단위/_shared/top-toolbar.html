@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Toolbar</title>
+  <script src="libs/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        'k-primary': '#6699FF', 'k-active': '#5acd3e',
+        'k-border': '#d7d7d7', 'k-border2': '#b6babf',
+        'k-text': '#333333', 'k-sub': '#545454',
+        'k-bg': '#f2f2f2', 'k-header': '#f3f3f3',
+      }}}
+    }
+  </script>
+  <script defer src="libs/alpine.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; height: 48px; overflow: hidden; }
+  </style>
+</head>
+<body class="bg-white border-b border-k-border" style="height:48px;">
+
+  <div
+    x-data="toolbar()"
+    class="flex items-center h-12 px-3 gap-0"
+    style="height:48px;"
+  >
+    <!-- 좌측: KOCOM 로고 -->
+    <div class="flex items-center mr-4 shrink-0">
+      <span class="text-lg font-bold text-k-primary tracking-widest">KOCOM</span>
+      <span class="ml-1 text-[10px] font-semibold text-white bg-k-primary rounded px-1.5 py-0.5 tracking-wide">CS</span>
+    </div>
+
+    <!-- 중앙: 드롭다운 메뉴 -->
+    <nav class="flex items-center flex-1 h-full gap-0.5">
+
+      <!-- 처리 -->
+      <div class="relative h-full flex items-center" @click.away="open === '처리' && (open = null)">
+        <button
+          @click="open = open === '처리' ? null : '처리'"
+          :class="open === '처리' ? 'bg-k-primary text-white' : 'text-k-text hover:bg-blue-50 hover:text-k-primary'"
+          class="h-full px-3 text-xs font-medium transition-colors duration-100 whitespace-nowrap"
+        >처리 ▾</button>
+        <div
+          x-show="open === '처리'"
+          x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 -translate-y-1"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          class="absolute top-full left-0 z-50 bg-white border border-k-border rounded shadow-lg min-w-[140px] py-1"
+        >
+          <template x-for="item in menus['처리']" :key="item.label">
+            <a
+              href="#"
+              @click.prevent="navigate(item.url); open = null"
+              class="block px-4 py-1.5 text-xs text-k-text hover:bg-blue-50 hover:text-k-primary transition-colors duration-100"
+              x-text="item.label"
+            ></a>
+          </template>
+        </div>
+      </div>
+
+      <!-- 자재관리 -->
+      <div class="relative h-full flex items-center" @click.away="open === '자재관리' && (open = null)">
+        <button
+          @click="open = open === '자재관리' ? null : '자재관리'"
+          :class="open === '자재관리' ? 'bg-k-primary text-white' : 'text-k-text hover:bg-blue-50 hover:text-k-primary'"
+          class="h-full px-3 text-xs font-medium transition-colors duration-100 whitespace-nowrap"
+        >자재관리 ▾</button>
+        <div
+          x-show="open === '자재관리'"
+          x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 -translate-y-1"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          class="absolute top-full left-0 z-50 bg-white border border-k-border rounded shadow-lg min-w-[140px] py-1"
+        >
+          <template x-for="item in menus['자재관리']" :key="item.label">
+            <a
+              href="#"
+              @click.prevent="navigate(item.url); open = null"
+              class="block px-4 py-1.5 text-xs text-k-text hover:bg-blue-50 hover:text-k-primary transition-colors duration-100"
+              x-text="item.label"
+            ></a>
+          </template>
+        </div>
+      </div>
+
+      <!-- TDB -->
+      <div class="relative h-full flex items-center" @click.away="open === 'TDB' && (open = null)">
+        <button
+          @click="open = open === 'TDB' ? null : 'TDB'"
+          :class="open === 'TDB' ? 'bg-k-primary text-white' : 'text-k-text hover:bg-blue-50 hover:text-k-primary'"
+          class="h-full px-3 text-xs font-medium transition-colors duration-100 whitespace-nowrap"
+        >TDB ▾</button>
+        <div
+          x-show="open === 'TDB'"
+          x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 -translate-y-1"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          class="absolute top-full left-0 z-50 bg-white border border-k-border rounded shadow-lg min-w-[140px] py-1"
+        >
+          <template x-for="item in menus['TDB']" :key="item.label">
+            <a
+              href="#"
+              @click.prevent="navigate(item.url); open = null"
+              class="block px-4 py-1.5 text-xs text-k-text hover:bg-blue-50 hover:text-k-primary transition-colors duration-100"
+              x-text="item.label"
+            ></a>
+          </template>
+        </div>
+      </div>
+
+      <!-- 관리 -->
+      <div class="relative h-full flex items-center" @click.away="open === '관리' && (open = null)">
+        <button
+          @click="open = open === '관리' ? null : '관리'"
+          :class="open === '관리' ? 'bg-k-primary text-white' : 'text-k-text hover:bg-blue-50 hover:text-k-primary'"
+          class="h-full px-3 text-xs font-medium transition-colors duration-100 whitespace-nowrap"
+        >관리 ▾</button>
+        <div
+          x-show="open === '관리'"
+          x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 -translate-y-1"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          class="absolute top-full left-0 z-50 bg-white border border-k-border rounded shadow-lg min-w-[140px] py-1"
+        >
+          <template x-for="item in menus['관리']" :key="item.label">
+            <a
+              href="#"
+              @click.prevent="navigate(item.url); open = null"
+              class="block px-4 py-1.5 text-xs text-k-text hover:bg-blue-50 hover:text-k-primary transition-colors duration-100"
+              x-text="item.label"
+            ></a>
+          </template>
+        </div>
+      </div>
+
+      <!-- 게시판 -->
+      <div class="relative h-full flex items-center" @click.away="open === '게시판' && (open = null)">
+        <button
+          @click="open = open === '게시판' ? null : '게시판'"
+          :class="open === '게시판' ? 'bg-k-primary text-white' : 'text-k-text hover:bg-blue-50 hover:text-k-primary'"
+          class="h-full px-3 text-xs font-medium transition-colors duration-100 whitespace-nowrap"
+        >게시판 ▾</button>
+        <div
+          x-show="open === '게시판'"
+          x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 -translate-y-1"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          class="absolute top-full left-0 z-50 bg-white border border-k-border rounded shadow-lg min-w-[140px] py-1"
+        >
+          <template x-for="item in menus['게시판']" :key="item.label">
+            <a
+              href="#"
+              @click.prevent="navigate(item.url); open = null"
+              class="block px-4 py-1.5 text-xs text-k-text hover:bg-blue-50 hover:text-k-primary transition-colors duration-100"
+              x-text="item.label"
+            ></a>
+          </template>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- 우측: 버튼 그룹 -->
+    <div class="flex items-center gap-1 shrink-0 ml-2">
+      <button
+        class="px-2.5 py-1 text-[11px] font-medium text-k-sub border border-k-border rounded hover:bg-blue-50 hover:text-k-primary hover:border-k-primary transition-colors duration-100"
+        @click="navigate('../pages/P2-major/sms.html')"
+      >SMS</button>
+      <button
+        class="px-2.5 py-1 text-[11px] font-medium text-k-sub border border-k-border rounded hover:bg-blue-50 hover:text-k-primary hover:border-k-primary transition-colors duration-100"
+        @click="navigate('../pages/P2-major/store-search.html')"
+      >대리점조회</button>
+      <button
+        class="px-2.5 py-1 text-[11px] font-medium text-k-sub border border-k-border rounded hover:bg-blue-50 hover:text-k-primary hover:border-k-primary transition-colors duration-100"
+        @click="navigate('../pages/P2-major/my-info.html')"
+      >정보수정</button>
+      <button
+        class="px-2.5 py-1 text-[11px] font-medium text-white bg-red-400 hover:bg-red-500 rounded transition-colors duration-100"
+        @click="logout()"
+      >로그아웃</button>
+    </div>
+  </div>
+
+  <script>
+    function toolbar() {
+      return {
+        open: null,
+
+        menus: {
+          '처리': [
+            { label: '접수처리목록', url: '../pages/P1-core/svc-list.html' },
+            { label: '해피콜목록',   url: '../pages/P2-major/happycall-list.html' },
+            { label: '콜백목록',     url: '../pages/P2-major/callback-list.html' },
+            { label: '연도별접수',   url: '../pages/P2-major/yearly-list.html' },
+          ],
+          '자재관리': [
+            { label: '작업현황',     url: '../pages/P2-major/store-doing-list.html' },
+            { label: '자재요청목록', url: '../pages/P2-major/material-req-list.html' },
+            { label: '반품목록',     url: '../pages/P2-major/return-list.html' },
+            { label: '단가목록',     url: '../pages/P2-major/price-list.html' },
+          ],
+          'TDB': [
+            { label: 'TDB입고목록', url: '../pages/P2-major/tdb-in-list.html' },
+            { label: 'TDB반품목록', url: '../pages/P2-major/tdb-return-list.html' },
+            { label: 'TDB매장목록', url: '../pages/P2-major/tdb-store-list.html' },
+          ],
+          '관리': [
+            { label: '사원관리', url: '../pages/P2-major/admin-user-list.html' },
+            { label: '멤버관리', url: '../pages/P2-major/member-list.html' },
+            { label: '권한관리', url: '../pages/P2-major/permission-list.html' },
+            { label: '코드관리', url: '../pages/P2-major/code-list.html' },
+            { label: '센터관리', url: '../pages/P2-major/center-list.html' },
+          ],
+          '게시판': [
+            { label: '공지사항',   url: '../pages/P2-major/forum-list.html' },
+            { label: '자유게시판', url: '../pages/P2-major/free-board-list.html' },
+            { label: 'Q&A',        url: '../pages/P2-major/qna-list.html' },
+            { label: '자료실',     url: '../pages/P2-major/archive-list.html' },
+          ],
+        },
+
+        navigate(url) {
+          if (!url) return;
+          // iframe 환경에서 parent의 content frame 교체
+          try {
+            parent.document.getElementById('content').src = url;
+          } catch(e) {
+            window.location.href = url;
+          }
+        },
+
+        logout() {
+          try {
+            parent.window.location.href = '../index.html';
+          } catch(e) {
+            window.location.href = '../index.html';
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>KOCOM CS - 사원관리</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        'k-primary': '#6699FF', 'k-active': '#5acd3e',
+        'k-border': '#d7d7d7', 'k-text': '#333333',
+        'k-sub': '#545454', 'k-bg': '#f2f2f2', 'k-header': '#f3f3f3',
+      }}}
+    }
+  </script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+  <style>
+    body { font-size: 12px; font-family: 'Malgun Gothic', sans-serif; color: #333; }
+    .tbl-wrap { overflow-x: auto; width: 100%; }
+    table.user-tbl { border-collapse: collapse; min-width: 900px; width: 100%; }
+    table.user-tbl thead th {
+      background: #f3f3f3;
+      border-top: 1px solid #cfcfcf;
+      border-bottom: 1px solid #d7d7d7;
+      border-left: 1px solid #e7e7e7;
+      color: #545454;
+      font-weight: bold;
+      padding: 5px 4px;
+      white-space: nowrap;
+      text-align: center;
+    }
+    table.user-tbl thead th:first-child { border-left: 0; }
+    table.user-tbl tbody td {
+      border-bottom: 1px solid #d7d7d7;
+      border-left: 1px solid #e7e7e7;
+      color: #545454;
+      font-weight: bold;
+      padding: 4px 6px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    table.user-tbl tbody td:first-child { border-left: 0; }
+    table.user-tbl tbody tr:nth-child(even) { background-color: #FBF9C4; }
+    table.user-tbl tbody tr:hover { background-color: #FFF59D !important; }
+    /* 퇴직자 행: 회색 텍스트 */
+    table.user-tbl tbody tr.row-retired td { color: #aaa !important; }
+    table.user-tbl tbody tr.row-retired:nth-child(even) { background-color: #f5f5f5; }
+    table.user-tbl tbody tr.row-retired:hover { background-color: #ebebeb !important; }
+
+    .search-label { font-size: 12px; font-weight: bold; color: #333; white-space: nowrap; }
+    select, input[type=text] {
+      border: 1px solid #ccc;
+      padding: 2px 4px;
+      font-size: 12px;
+      height: 24px;
+      border-radius: 2px;
+    }
+    .btn-primary {
+      background: #6699FF; color: #fff; border: none;
+      padding: 4px 12px; border-radius: 2px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-primary:hover { background: #4477dd; }
+    .btn-register {
+      background: #6699FF; color: #fff; border: none;
+      padding: 5px 14px; border-radius: 3px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-register:hover { background: #4477dd; }
+    .btn-sm {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 2px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-edit { background: #fff; color: #5555cc; border-color: #5555cc; }
+    .btn-edit:hover { background: #eef; }
+    .btn-resign { background: #fff; color: #cc3333; border-color: #cc3333; }
+    .btn-resign:hover { background: #fee; }
+    .btn-reinstate { background: #fff; color: #009900; border-color: #009900; }
+    .btn-reinstate:hover { background: #efe; }
+    .page-header {
+      background: #f3f3f3;
+      border-bottom: 1px solid #d7d7d7;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .page-header h2 { font-size: 16px; font-weight: bold; color: #333; }
+    .search-bar {
+      background: #fafafa;
+      border-bottom: 1px solid #d7d7d7;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .result-bar {
+      padding: 6px 16px;
+      font-size: 12px;
+      color: #333;
+      font-weight: bold;
+      border-bottom: 1px solid #e7e7e7;
+      background: #fff;
+    }
+    .pagination { display: flex; gap: 2px; align-items: center; justify-content: center; padding: 10px 0; }
+    .page-btn {
+      border: 1px solid #d7d7d7;
+      background: #fff;
+      color: #333;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 12px;
+      border-radius: 2px;
+    }
+    .page-btn.active { background: #6699FF; color: #fff; border-color: #6699FF; font-weight: bold; }
+    .page-btn:hover:not(.active) { background: #f2f2f2; }
+    /* 재직/퇴직 배지 */
+    .badge-active { color: #009900; font-weight: bold; }
+    .badge-retired { color: #aaa; }
+    /* 권한 배지 */
+    .perm-admin { color: #cc0000; font-weight: bold; }
+    .perm-manager { color: #5500ff; font-weight: bold; }
+    .perm-engineer { color: #006699; font-weight: bold; }
+    .perm-agent { color: #545454; }
+  </style>
+</head>
+<body class="bg-white">
+
+<div x-data="{
+  allRows: window.MOCK ? MOCK.userList : [],
+  rows: [],
+  activeYnFilter: '',
+  centerFilter: '',
+  keyword: '',
+  currentPage: 1,
+  pageSize: 15,
+  init() {
+    this.doSearch();
+  },
+  doSearch() {
+    this.rows = this.allRows.filter(r => {
+      if (this.activeYnFilter && r.activeYn !== this.activeYnFilter) return false;
+      if (this.centerFilter && r.centerName !== this.centerFilter) return false;
+      if (this.keyword) {
+        const kw = this.keyword.toLowerCase();
+        const match =
+          String(r.employeeNo).toLowerCase().includes(kw) ||
+          String(r.employeeName).toLowerCase().includes(kw) ||
+          String(r.department).toLowerCase().includes(kw) ||
+          String(r.callId).toLowerCase().includes(kw) ||
+          String(r.centerName).toLowerCase().includes(kw);
+        if (!match) return false;
+      }
+      return true;
+    });
+    this.currentPage = 1;
+  },
+  get centerList() {
+    const names = [...new Set(this.allRows.map(r => r.centerName))];
+    return names.sort();
+  },
+  get totalCount() { return this.rows.length; },
+  get pagedRows() {
+    const s = (this.currentPage - 1) * this.pageSize;
+    return this.rows.slice(s, s + this.pageSize);
+  },
+  get totalPages() { return Math.max(1, Math.ceil(this.rows.length / this.pageSize)); },
+  goPage(p) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; },
+  permLabel(p) {
+    const m = { 1: '상담원', 2: '기사', 7: '팀장', 9: '관리자' };
+    return m[p] || String(p);
+  },
+  permClass(p) {
+    if (p === 9) return 'perm-admin';
+    if (p === 7) return 'perm-manager';
+    if (p === 2) return 'perm-engineer';
+    return 'perm-agent';
+  },
+  rowNo(idx) {
+    return this.totalCount - ((this.currentPage - 1) * this.pageSize + idx);
+  }
+}">
+
+  <!-- 페이지 헤더 -->
+  <div class="page-header">
+    <h2>사원 관리</h2>
+    <button class="btn-register" onclick="alert('사원등록 (프로토타입)')">+ 사원등록</button>
+  </div>
+
+  <!-- 검색바 -->
+  <div class="search-bar">
+    <span class="search-label">재직여부</span>
+    <select x-model="activeYnFilter" style="width:80px;">
+      <option value="">전체</option>
+      <option value="Y">재직</option>
+      <option value="N">퇴직</option>
+    </select>
+
+    <span class="search-label" style="margin-left:6px;">센터</span>
+    <select x-model="centerFilter" style="width:100px;">
+      <option value="">전체</option>
+      <template x-for="c in centerList" :key="c">
+        <option :value="c" x-text="c"></option>
+      </template>
+    </select>
+
+    <span class="search-label" style="margin-left:6px;">키워드</span>
+    <input type="text" x-model="keyword" style="width:180px;" placeholder="사원번호/사원명/부서/콜아이디 검색"
+           @keydown.enter="doSearch()">
+
+    <button class="btn-primary" @click="doSearch()">검색</button>
+  </div>
+
+  <!-- 결과 건수 -->
+  <div class="result-bar">
+    총 <span x-text="totalCount" style="color:#6699FF;"></span>명
+  </div>
+
+  <!-- 테이블 -->
+  <div class="tbl-wrap">
+    <table class="user-tbl">
+      <thead>
+        <tr>
+          <th style="width:50px;">순번</th>
+          <th style="width:90px;">사원번호</th>
+          <th style="width:80px;">사원명</th>
+          <th style="width:70px;">직급</th>
+          <th style="width:160px;">부서</th>
+          <th style="width:80px;">권한</th>
+          <th style="width:90px;">콜아이디</th>
+          <th style="width:110px;">센터명</th>
+          <th style="width:70px;">재직여부</th>
+          <th style="width:140px;">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="pagedRows.length === 0">
+          <tr>
+            <td colspan="10" style="text-align:center;padding:20px;color:#999;">검색 결과가 없습니다.</td>
+          </tr>
+        </template>
+        <template x-for="(row, idx) in pagedRows" :key="row.employeeNo">
+          <tr :class="row.activeYn === 'N' ? 'row-retired' : ''">
+            <!-- 순번 -->
+            <td x-text="rowNo(idx)"></td>
+            <!-- 사원번호 -->
+            <td x-text="row.employeeNo"></td>
+            <!-- 사원명 -->
+            <td>
+              <span x-text="row.employeeName"
+                    :style="row.activeYn === 'N' ? 'color:#aaa;' : 'color:#333; font-weight:bold;'">
+              </span>
+            </td>
+            <!-- 직급 -->
+            <td x-text="row.position"></td>
+            <!-- 부서 -->
+            <td style="text-align:left; padding-left:8px;" x-text="row.department"></td>
+            <!-- 권한 -->
+            <td>
+              <span :class="permClass(row.permission)" x-text="permLabel(row.permission)"></span>
+            </td>
+            <!-- 콜아이디 -->
+            <td>
+              <span x-show="row.callId" x-text="row.callId" style="color:#6699FF; font-weight:bold;"></span>
+              <span x-show="!row.callId" style="color:#ccc;">-</span>
+            </td>
+            <!-- 센터명 -->
+            <td x-text="row.centerName"></td>
+            <!-- 재직여부 -->
+            <td>
+              <span x-show="row.activeYn === 'Y'" class="badge-active">재직</span>
+              <span x-show="row.activeYn !== 'Y'" class="badge-retired">퇴직</span>
+            </td>
+            <!-- 비고 (수정/재직-퇴직 처리 버튼) -->
+            <td style="text-align:center;">
+              <button class="btn-sm btn-edit"
+                      @click="alert('사원수정: ' + row.employeeName + ' (' + row.employeeNo + ')')">
+                수정
+              </button>
+              &nbsp;
+              <template x-if="row.activeYn === 'Y'">
+                <button class="btn-sm btn-resign"
+                        @click="alert('퇴사처리: ' + row.employeeName)">
+                  퇴사처리
+                </button>
+              </template>
+              <template x-if="row.activeYn !== 'Y'">
+                <button class="btn-sm btn-reinstate"
+                        @click="alert('재직처리: ' + row.employeeName)">
+                  재직처리
+                </button>
+              </template>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 페이지네이션 -->
+  <div class="pagination">
+    <button class="page-btn" @click="goPage(1)">&laquo;</button>
+    <button class="page-btn" @click="goPage(currentPage - 1)">&lsaquo;</button>
+    <template x-for="p in totalPages" :key="p">
+      <button class="page-btn" :class="{ active: currentPage === p }" @click="goPage(p)" x-text="p"></button>
+    </template>
+    <button class="page-btn" @click="goPage(currentPage + 1)">&rsaquo;</button>
+    <button class="page-btn" @click="goPage(totalPages)">&raquo;</button>
+    <span style="margin-left:8px;font-size:12px;color:#666;">
+      <span x-text="currentPage"></span> / <span x-text="totalPages"></span> 페이지
+    </span>
+  </div>
+
+</div>
+</body>
+</html>

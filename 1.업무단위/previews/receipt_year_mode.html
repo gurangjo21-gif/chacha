@@ -1,0 +1,618 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>KOCOM</title>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tablescroll.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tooltip.js"></script>
+<script type="text/javascript" src="../assets/js/controller.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script src="../assets/js/addon/jquery_plugin/thickbox-compressed.js" type="text/javascript"></script>
+<!-- daum postcode API removed for offline preview -->
+<link href="../assets/css/thickbox.css" rel="stylesheet" type="text/css" />
+
+<!-- 달력 start -->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
+<link rel="stylesheet" href="../assets/css/jquery-ui.css">
+<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+<script src="../assets/js/jquery-1.10.2.js"></script>
+<script src="../assets/js/jquery-ui.js"></script>
+<!-- 달력 end -->   
+
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/receipt_year_mode.php</b>
+  <span class="purpose">연차 입력</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<div id="header">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+<script language="javascript">
+function open_receipt(){
+	//window.open('receipt.php','pop_receipt','width=665,height=720');
+	/*var cw = screen.availWidth;
+	var ch = screen.availHeight;
+	var sw = 650;
+	var sh = 650;
+	var ml = (cw-sw)/2;
+	var mt = (ch-sh)/2;*/
+	window.open('receipt.php?num=&mode=insert&cid_num=&UID=','pop_receipt','width=710,height=755top=50,left=1000');
+}
+function highlight(which,color){ 
+    if (document.all||document.getElementById) 
+    which.style.backgroundColor=color 
+}
+
+/*function title_ch(name) {
+	location.href="main.php?title_name"+name;
+	top.document.location.reload();
+}*/
+
+function log_out(){
+	var agent_ext = '1000';
+	var agent_id = 'demo';
+	var agent_pw = '';
+	
+	var server1 = '127.0.0.1'
+	if(server1 == '192.168.239') {
+		var server = '192.168.239.252';
+		var server_ip = '192.168.239.251';
+	} else {
+		var server = '222.108.131.73';
+		var server_ip = '222.108.131.123:888';
+	}
+
+	var params = "mode=LogoutAction&ext_no=" + agent_ext+ "&agent_id=" + agent_id+ "&agent_pw=" + agent_pw;
+	$.getJSON("http://"+server_ip+"/manager/callAPI/login.php?callback=?", 
+		params,
+		function(d)
+		{		
+			$.each(d, function(k, v){				
+				var response = v.data;
+				var res_array = response.split("|");
+				alert(res_array[0]);
+				if(res_array[0] == '-1') {
+					alert('DB접속실패');
+				} else if(res_array[0] == '-2'){
+					alert('DB쿼리에러및 기타');
+				}
+				else if(res_array[0] == '-3'){
+					alert('AMI오류입니다.');
+				}else if(res_array[0] == '0'){					
+					//top.location.replace('../logout.php?id='+agent_id);
+					top.location.replace('../logout.php');
+				}
+			}); 
+		}
+	);
+	//location.href = '../logout.php';
+	top.location.replace('../logout.php');
+}
+</script>
+	<div class="main-menu">
+		<div class="wrapper">
+			<ul class="menu">
+							<li >
+					<a href="/html/receipt_year_mode.php?Tidx=" title=""></a>
+					<ul>
+										</ul>
+				</li>
+						</ul>
+			<div class="btns">
+											<a href="#" class="btn1 btn-edit btn-color4" title="SMS" onclick="sms_open('demo','9');">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">SMS</span>
+				</a>
+								<a href="#" class="btn1 btn-edit btn-color4" title="대리점조회" onclick="window.open('popup_center_search.php','center','width=815,height=530,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">대리점조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color4" title="업무담당자조회" onclick="window.open('popup_master_search.php','master','width=800,height=500,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">업무담당자조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color3" title="정보수정" onclick="window.open('my_info.php','info','width=300,height=320,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">정보수정</span>
+				</a>
+				<!--<a href="../logout.php" target="_top" class="btn1 btn-disconnect btn-color4" title="로그아웃">-->
+				<a href="javascript:log_out();" class="btn1 btn-disconnect btn-color4" title="로그아웃">
+					<span class="bg">&nbsp;</span>
+					<span class="icon" style='  background-position: -39px 0px;'>&nbsp;</span>
+					<span class="text">로그아웃</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="sub-menu">&nbsp;</div>
+</div>
+
+<script type='text/javascript'>
+	function keyDown(){
+		if(event.KeyCode == 13){
+			
+		}
+	}
+
+	function go_next(mode,com,app){
+		var myform = document.year_form ;
+
+		if(com == "결재" && app == "1") {
+			alert("결재가 완료된건은 수정이 불가능 합니다.");
+			return;
+		}
+
+		if(mode =='cencle'){
+			if(confirm("취소하시겠습니까?")){
+				myform.action = "receipt_year_list.php";
+				myform.submit();
+			}
+		}else{		
+			/*if(!myform.model_name.value){
+				alert("모델명이 선택되지 않았습니다.");
+				myform.model_name.focus();
+				return ;
+			}*/
+			if(!myform.cname.value){
+				alert("고객명을 입력해 주시기 바랍니다.");
+				myform.cname.focus();
+				return ;
+			}
+			myform.action = "receipt_year_proc.php";
+			myform.submit();
+		}
+		return;
+	}
+	
+
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		//alert(respose);
+		var mode_str = respose.split("^");
+		var str = respose.split("^");
+		switch(mode_str[0]){
+			case "ERRORSEL" :	//장애코드 선택
+				var str = mode_str[1].split("||");
+				var cnt = str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(str[i] != '') {
+						var sel = str[i].split("@");
+						if(i == 0) $("#err_2").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#err_2").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+					}
+				}
+			break;
+			case "SEL_AGENCY" :
+				var sel_str = mode_str[1].split("||");
+				//alert(sel_str);
+				var cnt = sel_str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(sel_str[i] != '') {
+						var sel = sel_str[i].split("@");
+						if(i == 0) $("#chargeName").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#chargeName").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+					}
+				}
+			break;
+			case "ZIP_SELECT1" :
+				var str = mode_str[1].split("|");
+				$("select[name='centerCode']").val(str[0]);	//지점코드
+
+				$.getJSON(
+					'ajax_proc.php',
+					'mode=SEL_AGENCY1&form=year_form&val='+str[0],
+					
+					function(res) {
+						var sRtn = '<option value="">:: 처리기사 선택 ::</option>';
+						$.each(res, function(k, obj) {
+							if(str[1] == obj.charge_code){
+								var charge_select = "selected";
+							} else {
+								var charge_select = "";
+							}
+
+							sRtn += '<option value="'+obj.charge_code+'"'+charge_select+'>'+obj.charge_name+'</option>';
+						});
+						$('select[name=chargeName]').html(sRtn);
+					});
+			break;
+			case "mm_ok": 
+				alert("등록 되었습니다");
+				location.reload();
+			break;
+			case "mm_false": 
+				alert("오류!!! 다시 시도해주세요");
+				return;
+			break;
+			case "mmm_ok": 
+				alert("삭제 되었습니다");
+				location.reload();
+			break;
+			case "mmm_false": 
+				alert("오류!!! 다시 시도해주세요");
+				return;
+			break;
+			case "up_ok":
+				alert("수정 되었습니다.");
+				location.reload();
+			break;
+			case "up_false":
+				alert("오류!!! 다시 시도해주세요");
+				return;
+			break;
+			default :
+				alert(respose);
+			break;
+		}
+	}
+
+	function message_next() {
+		var myform = document.year_form;
+		var sno = myform.idx.value;
+		var mtime = myform.m_time.value;
+		var message = myform.smessage.value;
+		var id = myform.uid.value;
+		if(message == "" || message == null) {
+			alert("전달사항 내용을 입력해 주시기 바랍니다.");
+			return;
+		}
+
+		var param = "mode=message_next&form=year_form&s_no="+sno+"&m_time="+mtime+"&message="+message+"&id="+id;
+		ajaxLoader("ajax_proc.php?"+param);
+	}
+
+	function message_update() {
+		var myform = document.year_form;
+		var up_no = myform.up_no.value;
+		var message_up = myform.smessage_up.value;
+
+		if(message_up == "" || message_up == null) {
+			alert("전달사항 내용을 입력해 주시기 바랍니다.");
+			return;
+		}
+
+		var param = "mode=message_update&form=year_form&no="+up_no+"&message="+message_up;
+		ajaxLoader("ajax_proc.php?"+param);
+	}
+
+	function ZIP_SELECT1(zipcode) {
+		var param = "mode=ZIP_SELECT1&form=receipt_form&zip="+zipcode ;
+        ajaxLoader("ajax_proc.php?"+param);
+	}
+
+	function update_next(no,mode,message) {
+		var myform = document.year_form;
+
+		var msg = "";
+		if(mode == "delete") {
+			msg = "삭제하시겠습니까?";
+			if(confirm(msg)){
+				var param = "mode=message_delete&form=year_form&no="+no;
+				ajaxLoader("ajax_proc.php?"+param);
+			}
+		} else {
+			$("#message_in").css("display","none");
+			$("#message_up").css("display","block");
+			$("#smessage_up").val(message);
+			$("#up_no").val(no);
+		}
+
+		//var param = "mode=message_delete&form=year_form&no="+no;
+		//ajaxLoader("ajax_proc.php?"+param);
+	}
+
+	// 기사메모 보기
+	function memo_btn(receipt_no,end)
+	{
+		var myform = document.receipt_form;
+		window.open('receipt_g_memo.php?receipt_no='+receipt_no+"&end="+end,'pop_memo','width=620,height=600,top=30,left=50');
+	}
+	
+	//방문예약 날짜 추가되도록 추가
+	function go_visit(val) {
+		if(val == 'Y' ) {
+			$("#visitdate").attr("display",false);
+		} else {
+			$("#visitdate").attr("display",true);
+			$("input[name='visitdate']").val('');	//예약일자 초기화
+		}
+	}
+	$(function(){
+		/* 클릭 클릭시 클릭을 클릭한 위치 근처에 레이어가 나타난다. */
+		$('.tooltip').mouseover(function(e){
+			//alert($(this).attr('title'));
+			var sWidth = window.innerWidth;
+			var sHeight = window.innerHeight;
+
+			var oWidth = $('.popupLayer').width();
+			var oHeight = $('.popupLayer').height();
+
+			// 레이어가 나타날 위치를 셋팅한다.
+			var divLeft = e.clientX + 10;
+			var divTop = e.clientY + 5;
+
+			// 레이어가 화면 크기를 벗어나면 위치를 바꾸어 배치한다.
+			if( divLeft + oWidth > sWidth ) divLeft -= oWidth;
+			if( divTop + oHeight > sHeight ) divTop -= oHeight;
+
+			// 레이어 위치를 바꾸었더니 상단기준점(0,0) 밖으로 벗어난다면 상단기준점(0,0)에 배치하자.
+			if( divLeft < 0 ) divLeft = 0;
+			if( divTop < 0 ) divTop = 0;
+			
+			$("#tooltip_content").html($(this).attr('value'));
+
+			$('.popupLayer').css({
+				"top": divTop,
+				"left": divLeft,
+				"position": "absolute"
+			}).show();
+		}).mouseout(function(){
+			$('.popupLayer').hide();
+		});
+		
+		/*$( "#regdate" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });
+	    $( "#basedate" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });
+	    $( "#visitdate" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });*/
+		$( "#regdate" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+		$( "#basedate" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+		$( "#visitdate" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+	    
+	});
+</script>
+<style type="text/css">
+.ui-datepicker{ z-index: 9999 !important;}
+</style>
+
+<form method='post' name='year_form'>
+<input type='hidden' name='keyfield' value=''>
+<input type='hidden' name='keyword' value=''>
+<input type='hidden' name='pageno' value=''>
+<input type='hidden' name='Tidx' value='1'>
+<input type='hidden' name='Sidx' value='1'>
+<input type='hidden' name='mode' value=''>
+<input type='hidden' name='idx' value=''>
+<input type='hidden' name='sday' value=''>
+<input type='hidden' name='eday' value=''>
+<INPUT TYPE="hidden" NAME="m_time" value="2026-04-20 20:56">
+<INPUT TYPE="hidden" NAME="uid" value="demo">
+<INPUT TYPE="hidden" NAME="up_no" ID="up_no" value="">
+
+<div id="contents">
+	<div class="wrapper">
+		<div class="header">
+			<h2>연차접수 등록</h2>
+		</div>
+		
+		<div class="data-table">
+			<table id="data_table" width="100%">
+				<colgroup>
+					<col width="150px;">
+					<col width="">
+				</colgroup>
+				
+				<thead>
+					<tr height='30px;'>
+						<th>모델명</th>
+						<th class='left' colspan='3'>
+							<INPUT TYPE="hidden" NAME="model_no" value="">
+							<input type='text' name='model_name' value="" style='width:90%;float:left;' readonly>&nbsp;
+							<IMG SRC="../assets/images/btn/zoom.png" WIDTH="16" HEIGHT="16" BORDER="0" ALT="모델검색" align="absmiddle" onclick="modelsel('year_form');" style="cursor:pointer;">
+						</th>
+						<th>공종명</th>
+						<th class='left'><input type='text' name='gongjong' value="" style='width:120px;' ></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr height='30px;'>
+						<TH>연차</TH>
+						<td class='left'><input type='text' name='yearCnt' value="" style='width:120px;' ></td>
+						<TH>접수일<font class="font1">*</font></TH>
+						<td class='left'><input type='text' name='regdate' id='regdate' value="2026-04-20" style='width:120px;'>
+						</td>
+						<TH>기준일</TH>
+						<td class='left'><input type='text' name='basedate' id='basedate' value="" style='width:120px;'>
+						</td>
+					</tr>
+					<tr height='30px;'>
+						<TH>고객명<font class="font1">*</font></TH>
+						<td class='left'><input type='text' name='cname' value="" style='width:120px;' ></td>
+						<TH>APT명칭</TH>
+						<td class='left' colspan='3'>
+							<INPUT type="hidden" NAME="apt_no" value="">
+							<INPUT TYPE="text" NAME="apt_name" style="width:90%;" value="" readonly> <IMG SRC="../assets/images/btn/zoom.png" WIDTH="16" HEIGHT="16" BORDER="0" ALT="찾기" align="absmiddle" onclick="aptsel('year_form')" style="cursor:pointer;">
+						</td>
+					</tr>
+					<tr height='30px;'>
+						<TH>연락처</TH>
+						<TD>
+							<INPUT TYPE="text" NAME="phone1" ID="phone1" size="3" value=""> - 
+							<INPUT TYPE="text" NAME="phone2" ID="phone2" size="4" value=""> - 
+							<INPUT TYPE="text" NAME="phone3" ID="phone3" size="4" value="">
+							<!--<INPUT TYPE="text" NAME="phone" ID="phone" size="20" value="">-->
+						</TD>
+						<TH>핸드폰</TH>
+						<TD>
+							<INPUT TYPE="text" NAME="mobile1" ID="mobile1" size="3" value=""> - 
+							<INPUT TYPE="text" NAME="mobile2" ID="mobile2" size="4" value=""> - 
+							<INPUT TYPE="text" NAME="mobile3" ID="mobile3" size="4" value="">
+							<!--<INPUT TYPE="text" NAME="mobile" ID="mobile" size="20" value="">-->
+						</TD>
+						<th>처리여부</th>
+						<td class='left'>
+							<select name='com_yn' style='width:150px;'>
+								<option value='N' selected>처리대기</option>
+								<option value='Y' >처리완료</option>
+							</select>
+						</td>
+					</tr>
+					<tr height='30px;'>
+						<TH>주소</TH>
+						<td class='left' colspan='3'>
+							<table width='100%'>
+								<tr>
+									<td width='135px'>
+										<input type='text' name='zip' id="zip" value="" style='width:100px;float:left;' >
+										<IMG SRC="../assets/images/btn/zoom.png" WIDTH="16" HEIGHT="16" BORDER="0" ALT="찾기" align="absmiddle" onclick="open_zipcodebook('year_form')" style="cursor:pointer;">
+									</td>
+									<td class='left'>
+										<input type='text' name='addr1' id='addr1' value="" style='width:500px;' >&nbsp;&nbsp;
+										<INPUT TYPE="hidden" NAME="callprice" id="callprice" value="">
+										<!--<input type='text' name='addr2' value="" style='width:100px;' >&nbsp;동&nbsp;&nbsp;
+										<input type='text' name='addr3' value="" style='width:100px;' >&nbsp;호-->
+									</td>
+								</tr>
+							</table>
+						</td>
+												<TH></TH>
+						<td></td>
+											</tr>
+					<tr height='30px;'>
+						<TH>상세주소</TH>
+						<td class='left' colspan='3'>
+							<input type='text' name='addr4' id='addr4' value="" style='width:500px;' >&nbsp;&nbsp;
+							<!--<input type='text' name='addr2' value="" style='width:100px;' >&nbsp;동&nbsp;&nbsp;
+							<input type='text' name='addr3' value="" style='width:100px;' >&nbsp;호-->
+						</td>
+						<TH>구분</TH>
+						<td>
+							<SELECT NAME ="y_select" style="width:90%">
+								<option value="">:: 구분 ::</option>
+								<option value="Y" >연차</option>
+								<option value="F" >팩스</option>
+							</SELECT>
+						</td>
+					</tr>
+					<tr height='30px;'>
+						<TH>장애분류</TH>
+						<td class='left' >
+							<SELECT NAME="err_1" style="width:90%;" onChange="errorselect(this)">
+								<OPTION VALUE="">:: 장애코드[대] ::</OPTION>
+															</SELECT>
+						</td>
+						<TH>장애상세</TH>
+						<td class='left'  colspan='3'>
+							<SELECT NAME="err_2" id="err_2" style="width:60%;">
+								<OPTION VALUE="">:: 장애코드[소] ::</OPTION>
+															</SELECT>
+						</td>
+					</tr>
+					<tr height='30px;'>
+						<TH>특이사항</TH>
+						<td class='left' colspan='5'>
+							<INPUT TYPE="text" NAME="smemo" style="width:90%;" title="" value="">
+						</td>
+					</tr>
+			<!--							<tr height='30px;'>
+						<TH>기사메모</TH>
+						<td class='left' colspan='5'>
+							<INPUT TYPE="text" NAME="kmemo" style="width:90%;" title="" value="" readonly>
+						</td>
+					</tr>
+					-->
+					<tr height='30px;'>
+						<TH>담당지점명</TH>
+						<td class='left' >
+															<SELECT NAME="centerCode" onchange="SEL_AGENCYselect(this)" style='width:98%' >
+								<OPTION VALUE="">:: 담당지점 선택 ::</OPTION>
+															</SELECT>
+														</td>
+						<TH>담당사원명</TH>
+						<td class='left' >
+							<SELECT NAME="chargeName" id='chargeName' style='width:98%' >
+								<OPTION VALUE="">:: 처리기사 선택 ::</OPTION>
+														</SELECT>
+						</td>
+						<td>접수자</td>
+						<td class='left' ><input type='text' name='inName' value="" style='width:100px;' readonly></td>
+					</tr>
+					<tr height='30px;'>
+						<TH>방문약속여부</TH>
+						<td class='left' >
+							<select name='visit_yn' onchange='go_visit(this.value);'>
+								<option value='Y' >방문약속</option>
+								<option value='N' selected>방문약속없음</option>
+							</select>
+						</td>
+						<TH>방문예약일</TH>
+						<td class='left' >
+							<input type='text' name='visitdate' id='visitdate' value="" style='width:100px;' readonly>
+							<script type='text/javascript'>go_visit('

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>주소찾기 - KOCOM</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-white text-xs text-[#333]" x-data="{
+  address: '',
+  mode: 'search',
+  roadSearch: false,
+  results: [],
+  allResults: [
+    { post:'06628', addr:'서울특별시 서초구 반포동', apt:'래미안 퍼스티지' },
+    { post:'06524', addr:'서울특별시 서초구 반포동', apt:'아크로리버파크' },
+    { post:'05288', addr:'서울특별시 강동구 천호동', apt:'자이 아파트' },
+    { post:'16512', addr:'경기도 수원시 영통구 이의동', apt:'힐스테이트 광교' },
+    { post:'12948', addr:'경기도 하남시 신장동', apt:'푸르지오 센트레빌' },
+  ],
+  search() {
+    if(!this.address) { alert('검색하실 동을 입력해주세요.'); return; }
+    this.results = this.allResults.filter(r =>
+      r.addr.includes(this.address) || r.apt.includes(this.address)
+    );
+    if(this.results.length === 0) { this.results = this.allResults; }
+  },
+  select(row) {
+    alert('주소 선택:\n우편번호: ' + row.post + '\n주소: ' + row.addr + '\n아파트: ' + row.apt);
+    window.close();
+  }
+}">
+  <div class="p-2" style="width:480px;">
+    <div class="border border-[#ddd] p-2">
+      <strong class="block mb-2">주소 찾기</strong>
+      <div class="flex items-center gap-1 mb-2">
+        <label class="flex items-center gap-0.5">
+          <input type="checkbox" x-model="roadSearch" class="text-xs"> 도로명 검색
+        </label>
+        <input type="text" x-model="address" class="border border-[#ccc] px-1 py-0.5 flex-1 text-xs" placeholder="동(洞)이나 도로명 입력"
+          @keydown.enter="search()">
+        <button class="bg-[#6699FF] text-white px-2 py-0.5 text-xs rounded" @click="search()">검색</button>
+      </div>
+      <!-- 결과 테이블 -->
+      <table class="w-full border-collapse text-xs" style="border-top:2px solid #959595;" x-show="results.length > 0">
+        <thead>
+          <tr class="bg-[#f3f3f3]">
+            <th class="border border-[#959595] px-2 py-1 text-center w-20">우편번호</th>
+            <th class="border border-[#959595] px-2 py-1 text-center">주소</th>
+            <th class="border border-[#959595] px-2 py-1 text-center">아파트/건물명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="row in results" :key="row.post + row.apt">
+            <tr class="hover:bg-blue-50 cursor-pointer" @click="select(row)">
+              <td class="border border-[#959595] px-2 py-1 text-center" x-text="row.post"></td>
+              <td class="border border-[#959595] px-2 py-1" x-text="row.addr"></td>
+              <td class="border border-[#959595] px-2 py-1" x-text="row.apt"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <div x-show="results.length === 0" class="text-center py-8 text-gray-400">
+        검색어를 입력하고 검색 버튼을 클릭해주세요.
+      </div>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["popup"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

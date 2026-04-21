@@ -1,0 +1,405 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/popup_style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tablescroll.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tooltip.js"></script>
+<script type="text/javascript" src="../assets/js/controller.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script src="../assets/js/addon/jquery_plugin/thickbox-compressed.js" type="text/javascript"></script>
+<!-- daum postcode API removed for offline preview -->
+<link href="../assets/css/thickbox.css" rel="stylesheet" type="text/css" />
+
+<!-- 달력 start -->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
+<link rel="stylesheet" href="../assets/css/jquery-ui.css">
+<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+<script src="../assets/js/jquery-1.10.2.js"></script>
+<script src="../assets/js/jquery-ui.js"></script>
+<!-- 달력 end -->   
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+<script type='text/javascript'>
+	var obtype = getCookie('ob_type');
+
+	function monitor() {
+		ajaxLoader('../dao/admin_scene_list.php?ob_type='+obtype);
+	}
+	
+	function search_next(){
+		var myform = document.eForm ; 
+		myform.pageno.value = 1 ;
+		myform.action = "/html/popup_scene_list.php";
+		myform.target="";
+		myform.submit();
+	}
+
+	function search_next_sort(){
+		setTimeout("search_next()",500);
+	}
+	function update_next(idx,mode){
+		var myform = document.eForm ;
+		myform.idx.value = idx;
+		myform.mode.value = mode;
+		if(mode == 'detail') {
+			myform.action = "popup_scene_detail.php";
+		} else {
+			myform.action = "popup_scene_mode.php";
+		}
+		myform.target="";
+		myform.submit();
+	}
+	function bDel_next(idx){
+		var msg = "삭제 하시겠습니까?";
+		if(confirm(msg)){
+			ajaxLoader("ajax_proc.php?mode=admin_scene_del&idx="+idx);
+		}
+	}
+
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var mode_str = respose.split("^");
+		switch(mode_str[0]){
+			case "ok": 
+				alert("삭제 되었습니다.");
+				search_next();
+			break;
+			case "false": 
+				alert("오류!!! 다시 시도해주세요.");
+				search_next();
+			break;
+		}
+	}
+	
+	function excel_download(){
+		var myform = document.eForm ;
+		var esort = myform.esort.value;
+		myform.action = "../excel/admin_scene_list.php?ob_type"+esort;
+		//myform.target = "ifrm_trans";
+		myform.target = "";
+		myform.submit();
+	}
+
+$(function () {
+	monitor();
+	//alert(obtype);
+
+	$('[id^=orderby_]').css('cursor','pointer');
+
+	if( obtype==null){
+		$("#orderby_no .arrow").text('▲');
+		obtype = 'no_asc';
+	}else{
+		switch(obtype)
+		{
+			case 'no_asc':	$('#orderby_no .arrow').text('▲');	break;
+			case 'no_desc':	$('#orderby_no .arrow').text('▼');	break;
+			case 'ap_asc':	$('#orderby_apt .arrow').text('▲');	break;
+			case 'ap_desc':	$('#orderby_apt .arrow').text('▼');	break;
+			case 'sc_asc':	$('#orderby_scene .arrow').text('▲');	break;
+			case 'sc_desc':	$('#orderby_scene .arrow').text('▼');	break;
+			case 'ma_asc':	$('#orderby_manager .arrow').text('▲');	break;
+			case 'ma_desc':	$('#orderby_manager .arrow').text('▼');	break;
+			case 'md_asc':	$('#orderby_model .arrow').text('▲');	break;
+			case 'md_desc':	$('#orderby_model .arrow').text('▼');	break;
+			case 'cn_asc':	$('#orderby_center .arrow').text('▲');	break;
+			case 'cn_desc':	$('#orderby_center .arrow').text('▼');	break;
+			default: $('#orderby_no .arrow').text('▲'); break;
+		}
+	}
+
+	$('#orderby_no').click(function(){
+			if(obtype == 'no_asc'){
+					obtype = 'no_desc';
+					$('#orderby_no .arrow').text('▼');
+			}else{
+					$('[id^=orderby_] .arrow').text('');;
+					obtype = 'no_asc';
+					$('#orderby_no .arrow').text('▲');
+			}
+			setCookie('ob_type',obtype);
+	});
+
+	$('#orderby_apt').click(function(){
+			if(obtype == 'ap_asc'){
+					obtype = 'ap_desc';
+					$('#orderby_apt .arrow').text('▼');
+			}else{
+					$('[id^=orderby_] .arrow').text('');;
+					obtype = 'ap_asc';
+					$('#orderby_apt .arrow').text('▲');
+			}
+			setCookie('ob_type',obtype);
+	});
+
+	$('#orderby_scene').click(function(){
+			if(obtype == 'sc_asc'){
+					obtype = 'sc_desc';
+					$('#orderby_scene .arrow').text('▼');
+			}else{
+					$('[id^=orderby_] .arrow').text('');;
+					obtype = 'sc_asc';
+					$('#orderby_scene .arrow').text('▲');
+			}
+			setCookie('ob_type',obtype);
+	});
+
+	$('#orderby_manager').click(function(){
+			if(obtype == 'ma_asc'){
+					obtype = 'ma_desc';
+					$('#orderby_manager .arrow').text('▼');
+			}else{
+					$('[id^=orderby_] .arrow').text('');;
+					obtype = 'ma_asc';
+					$('#orderby_manager .arrow').text('▲');
+			}
+			setCookie('ob_type',obtype);
+	});
+
+	$('#orderby_model').click(function(){
+			if(obtype == 'md_asc'){
+					obtype = 'md_desc';
+					$('#orderby_model .arrow').text('▼');
+			}else{
+					$('[id^=orderby_] .arrow').text('');;
+					obtype = 'md_asc';
+					$('#orderby_model .arrow').text('▲');
+			}
+			setCookie('ob_type',obtype);
+	});
+
+	$('#orderby_center').click(function(){
+			if(obtype == 'cn_asc'){
+					obtype = 'cn_desc';
+					$('#orderby_center .arrow').text('▼');
+			}else{
+					$('[id^=orderby_] .arrow').text('');;
+					obtype = 'cn_asc';
+					$('#orderby_center .arrow').text('▲');
+			}
+			setCookie('ob_type',obtype);
+	});
+});
+
+</script>
+<style type="text/css">	
+.imgSelect {
+	cursor: pointer;
+}
+
+.popupLayer {
+	position: absolute;
+	display: none;
+	background-color: #ffffff;
+	border: solid 2px #d0d0d0;
+	width: 350px;
+	height: 100px;
+	padding: 10px;
+	z-index:9999;
+}
+.popupLayer div {
+	position: absolute;
+	top: 5px;
+	right: 5px
+}
+#header .wrapper,
+#contents .wrapper,
+#footer .wrapper {
+  width: 1200px;
+  margin: 0 auto;
+}
+#contents  table th,
+#contents  table td {
+  border-bottom: 1px solid #d7d7d7;
+  border-left: 1px solid #e7e7e7;
+  vertical-align: middle;
+  min-height: 10px;
+}
+#contents  table th:first-child,
+#contents  table td:first-child {
+  border-left: 0;
+}
+#contents  table tr:nth-child(even) {
+background-color: #FBF9C4;
+}
+#contents  table td {
+  text-align: center;
+}
+#contents  .left{
+  text-align:left;
+  padding: 0 0 0 4px;
+}
+#contents  .right{
+  text-align:right;
+  padding: 0 4px 0 4px;
+}
+
+#contents  table > thead > tr > th {
+  background: #f3f3f3;
+  border-top: 1px solid #cfcfcf;
+  color: #545454;
+  font-weight: bold;
+  line-height: 18px;
+  padding: 5px 0;
+}
+
+#contents  table > tr > th {
+  background: #f3f3f3;
+  border-top: 1px solid #cfcfcf;
+  color: #545454;
+  font-weight: bold;
+  line-height: 18px;
+  padding: 8px 0;
+}
+
+#contents  table > tbody > tr > td {
+  padding: 2px 0;
+  color: #545454;
+  font-weight: bold;
+}
+#contents  table > tbody > tr > td:first-child {
+  padding: 5px 0;
+}
+
+#contents  table.tablescroll_body > tbody > tr > td {
+  border-top: 0;
+}
+  </style>
+<div id="contents">
+	<div class="wrapper">
+		<div class="header">
+			<h2>현장 관리</h2>
+			<div class="btns">
+				<a href="#" class="btn1 btn-color5" title="엑셀다운" onclick="javascript:excel_download();">
+					<span class="bg">&nbsp;</span>
+					<span class="text">엑셀다운</span>
+				</a>
+							</div>
+		</div>
+		<div class="search">
+			<form method='get' name='eForm' action="/html/popup_scene_list.php">
+			<input type="hidden" name="esort" value="">
+			<!--<span class="spacer">정렬</span>
+
+				<span class="spacer">오름차순</span>
+				<SELECT NAME="sort1" onchange="search_next()">
+					<OPTION>--전체--</OPTION>
+					<OPTION VALUE="sort1_1">아파트번호</OPTION>
+					<OPTION VALUE="sort1_2">아파트명</OPTION>
+					<OPTION VALUE="sort1_3">현장명</OPTION>
+					<OPTION VALUE="sort1_4">현장담당자</OPTION>
+					<OPTION VALUE="sort1_5">모델명</OPTION>-->
+					<!--<OPTION VALUE="sort1_6">유무상</OPTION>-->
+				<!--</SELECT>
+				&nbsp;-->
+
+				<!--<span class="spacer">내림차순</span>
+				<SELECT NAME="sort2" onchange="search_next()">
+					<OPTION>--전체--</OPTION>
+					<OPTION VALUE="sort2_1">아파트번호</OPTION>
+					<OPTION VALUE="sort2_2">아파트명</OPTION>
+					<OPTION VALUE="sort2_3">현장명</OPTION>
+					<OPTION VALUE="sort2_4">현장담당자</OPTION>
+					<OPTION VALUE="sort2_5">모델명</OPTION>-->
+					<!--<OPTION VALUE="sort2_6">유무상</OPTION>-->
+				<!--</SELECT>
+				&nbsp;&nbsp;&nbsp;-->
+				<span class="spacer">검색</span>
+
+				<!--<span class="spacer">유무상</span>
+				<input type='radio' style="margin-top:4px;" name='orderBy' value = 'all' checked onclick="search_next()"> <span class="spacer_1">전체</span>
+				<input type='radio' style="margin-top:4px;" name='orderBy' value = 'cost'  onclick="search_next()"> <span class="spacer_1">유상</span>
+				<input type='radio' style="margin-top:4px;" name='orderBy' value = 'free'  onclick="search_next()"> <span class="spacer_1">무상</span>
+				&nbsp;&nbsp;-->
+
+				<SELECT NAME="val1" style="margin-top:3px;">
+					<OPTION value="">:: 설치항목1 ::</OPTION>
+								</SELECT>
+				<SELECT NAME="val2" style="margin-top:3px;">
+					<OPTION value="">:: 설치항목2 ::</OPTION>
+								</SELECT>
+				<SELECT NAME="val3" style="margin-top:3px;">
+					<OPTION value="">:: 설치항목3 ::</OPTION>
+								</SELECT>
+
+				<select name="keyfield" style="margin-top:3px;">
+					<option value="" selected>-- 선택--</option>
+					<option value="1" >아파트명</option>
+					<option value="2" >현장명</option>
+					<option value="3" >담당자</option>
+					<option value="4" >모델명</option>
+					<option value="5" >담당지점</option>
+				</select>
+
+				<input type="text" name="keyword" style="margin-top:3px;" size="32" value=""/>
+				<input type="image" style="margin-top:1px;" src="../assets/images/btn/btn-search.png" alt="검색" onkeydown="javascript:keyDown();" onclick="javascript:search_next();"/>
+
+				<input type='hidden' name='idx'>
+				<input type='hidden' name='mode'>
+				<input type='hidden' name='pageno' value='1'>
+				<input type='hidden' name='Tidx' value=''>
+				<input type='hidden' name='Sidx' value=''>
+			</form>
+		</div><br>
+		<div>
+		<b>* 리스트를 더블 클릭하면 현장정보를 상세하게 보실 수 있습니다.</b>
+		</div>
+		
+		<!--<div class="data-table">-->
+		<div style='padding-top:10px;'>
+			<div style="overflow-x:scroll;width:100%;">
+			
+			<table width="1200px">
+				<colgroup>
+					<col width="100px" />
+					<col width="350px" />
+					<col width="350px" />
+					<col width="120px" />
+					<col width="180px" />
+					<!--<col width="200px" />
+					<col width="100px" />-->
+					<col width="100px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th id='orderby_no' onclick="search_next_sort()">아파트번호<span class='arrow'></span></th>
+						<th id='orderby_apt' onclick="search_next_sort()">아파트명<span class='arrow'></span></th>
+						<th id='orderby_scene' onclick="search_next_sort()">현장명<span class='arrow'></span></th>
+						<th id='orderby_manager' onclick="search_next_sort()">현장담당자<span class='arrow'></span></th>
+						<th id='orderby_model' onclick="search_next_sort()">모델명<span class='arrow'></span></th>
+						<!--<th id='orderby_center' onclick="search_next_sort()">담당지점<span class='arrow'></span></th>
+						<th>유상알림</th>-->
+						<th>비고</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+					<tr>
+						<td height='150px;' colspan='7'>데이터가 없습니다.</td>
+					</tr>
+										
+				</tbody>
+			</table>
+			</div>
+		</div>
+						<div class='paging'>
+					<div class='paging-wrapper'>
+			<span class='page-first paging-btn'><a href='/html/popup_scene_list.php?&pageno=1' title='첫 페이지' tabindex='1'>first</a></span><span class='page-prev paging-btn'><a href='#' title='이전 페이지' tabindex='1'>previous</a></span><span class='page-next paging-btn'><a href='#' title='다음 페이지' tabindex='1'>next</a></span><span class='page-last paging-btn'><a href='/html/popup_scene_list.php?&pageno=0' title='마지 막페이지' tabindex='1'>last</a></span>			</div>
+		</div>	</div>
+</div>
+<iframe name="ifrm_trans" width="0" height="0" frameborder="0" marginheight="60" marginwidth="100"></iframe>
+<div id="footer">
+	<div class="wrapper">
+		<div class="copy">Copyright &copy; kocom. All Rights Reserved.</div>
+	</div>
+</div>
+</body>
+</html>

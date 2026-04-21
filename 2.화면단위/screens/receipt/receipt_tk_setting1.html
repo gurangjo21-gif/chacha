@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>TK 설정 (v1) - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script>
+    // 동 행 추가
+    function addRow() {
+      var container = document.getElementById('row-container');
+      var idx = container.children.length + 1;
+      var div = document.createElement('div');
+      div.className = 'flex items-center gap-2 mt-2 border border-k-border rounded p-2 bg-white';
+      div.innerHTML = `
+        <input type="text" name="tkG${idx}" placeholder="동 번호 입력 (예: 101동)" class="border border-gray-300 px-2 py-1 rounded w-32 text-xs">
+        <span class="font-bold text-xs">동</span>
+        <button type="button" onclick="alert('공용부 추가 팝업')" class="bg-k-active text-white px-2 py-1 rounded text-xs">공용부 추가</button>
+        <button type="button" onclick="alert('세대부 추가 팝업')" class="bg-k-primary text-white px-2 py-1 rounded text-xs">세대부 추가</button>
+        <button type="button" onclick="this.closest('div').remove()" class="bg-red-400 text-white px-2 py-1 rounded text-xs">삭제</button>
+      `;
+      container.appendChild(div);
+    }
+  </script>
+</head>
+<body class="bg-k-bg text-k-text text-sm">
+<div id="contents" class="p-4">
+  <div class="wrapper bg-white rounded shadow p-4">
+
+    <!-- 헤더 -->
+    <div class="flex items-center justify-between border-b border-k-border pb-2 mb-4">
+      <h2 class="text-base font-bold">코콤아파트 TK 설정</h2>
+      <div class="flex gap-2">
+        <button onclick="alert('저장되었습니다.')" class="bg-k-primary text-white px-3 py-1 rounded text-xs">저장</button>
+        <button onclick="history.back()" class="bg-gray-400 text-white px-3 py-1 rounded text-xs">목록</button>
+      </div>
+    </div>
+
+    <form name="eForm" method="post">
+      <input type="hidden" name="idx" value="A0001">
+      <input type="hidden" name="mode" value="update">
+
+      <!-- 아파트 기본 정보 -->
+      <div class="bg-k-bg border border-k-border rounded p-3 mb-4 text-xs">
+        <div class="grid grid-cols-2 gap-4">
+          <div><span class="font-bold">아파트코드:</span> A0001</div>
+          <div><span class="font-bold">아파트명:</span> 코콤아파트 1단지</div>
+          <div><span class="font-bold">TK 모드:</span> 수정</div>
+          <div><span class="font-bold">총 등록 동:</span> 3개동</div>
+        </div>
+      </div>
+
+      <!-- 동 추가 영역 -->
+      <div class="mb-3">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-bold">동별 TK 설정</span>
+          <button type="button" onclick="addRow()" class="bg-k-active text-white px-3 py-1 rounded text-xs">+ 동 추가</button>
+        </div>
+
+        <div id="row-container" class="space-y-2">
+          <!-- 기존 동 1 -->
+          <div class="flex items-center gap-2 border border-k-border rounded p-2 bg-white">
+            <input type="text" name="tkG1" value="101동" class="border border-gray-300 px-2 py-1 rounded w-32 text-xs">
+            <span class="font-bold text-xs">동</span>
+            <button type="button" onclick="alert('공용부 추가 팝업')" class="bg-k-active text-white px-2 py-1 rounded text-xs">공용부 추가</button>
+            <button type="button" onclick="alert('세대부 추가 팝업')" class="bg-k-primary text-white px-2 py-1 rounded text-xs">세대부 추가</button>
+            <button type="button" class="bg-red-400 text-white px-2 py-1 rounded text-xs">삭제</button>
+            <!-- 공용부 목록 -->
+            <div class="ml-4 text-xs text-gray-600">
+              공용부: 복도(5개), 로비(1개)
+            </div>
+          </div>
+          <!-- 기존 동 2 -->
+          <div class="flex items-center gap-2 border border-k-border rounded p-2 bg-[#FBF9C4]">
+            <input type="text" name="tkG2" value="102동" class="border border-gray-300 px-2 py-1 rounded w-32 text-xs">
+            <span class="font-bold text-xs">동</span>
+            <button type="button" onclick="alert('공용부 추가 팝업')" class="bg-k-active text-white px-2 py-1 rounded text-xs">공용부 추가</button>
+            <button type="button" onclick="alert('세대부 추가 팝업')" class="bg-k-primary text-white px-2 py-1 rounded text-xs">세대부 추가</button>
+            <button type="button" class="bg-red-400 text-white px-2 py-1 rounded text-xs">삭제</button>
+            <div class="ml-4 text-xs text-gray-600">
+              공용부: 복도(4개), 로비(1개)
+            </div>
+          </div>
+          <!-- 기존 동 3 -->
+          <div class="flex items-center gap-2 border border-k-border rounded p-2 bg-white">
+            <input type="text" name="tkG3" value="103동" class="border border-gray-300 px-2 py-1 rounded w-32 text-xs">
+            <span class="font-bold text-xs">동</span>
+            <button type="button" onclick="alert('공용부 추가 팝업')" class="bg-k-active text-white px-2 py-1 rounded text-xs">공용부 추가</button>
+            <button type="button" onclick="alert('세대부 추가 팝업')" class="bg-k-primary text-white px-2 py-1 rounded text-xs">세대부 추가</button>
+            <button type="button" class="bg-red-400 text-white px-2 py-1 rounded text-xs">삭제</button>
+            <div class="ml-4 text-xs text-gray-600">
+              공용부: 복도(3개)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 저장 버튼 -->
+      <div class="flex justify-center gap-3 mt-4">
+        <button type="button" onclick="alert('저장되었습니다.')" class="bg-k-primary text-white px-6 py-2 rounded text-sm">저장</button>
+        <button type="button" onclick="history.back()" class="bg-gray-400 text-white px-6 py-2 rounded text-sm">취소</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 개발자 스펙 패널 (프론트 개발 참고용) -->
+<div x-data="{ open: false, spec: null }"
+     x-init="Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["receipt"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null })"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg" style="writing-mode: vertical-rl;">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500 text-lg leading-none">&times;</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-1" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-1" x-text="spec?.phpFile"></div>
+    <div class="text-[#333] mb-2 text-[11px]" x-text="'업무: ' + (spec?.workflow || '')"></div>
+    <div class="text-[#555] mb-3 text-[11px] leading-snug" x-text="spec?.purpose"></div>
+
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">검색/입력 필드</div>
+      <table class="w-full text-[10px] border border-gray-200">
+        <template x-for="f in spec?.searchFields">
+          <tr class="border-b">
+            <td class="px-2 py-1 font-mono text-[#6699FF] align-top" x-text="f.name"></td>
+            <td class="px-2 py-1 align-top" x-text="f.label"></td>
+            <td class="px-2 py-1 text-[#999] align-top" x-text="f.type"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">테이블 컬럼</div>
+      <table class="w-full text-[10px] border border-gray-200">
+        <template x-for="c in spec?.tableColumns">
+          <tr class="border-b">
+            <td class="px-2 py-1 align-top" x-text="c.name"></td>
+            <td class="px-2 py-1 font-mono text-[#999] align-top" x-text="c.dbField"></td>
+            <td class="px-2 py-1 text-[#999] align-top" x-text="c.format || ''"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">버튼</div>
+      <template x-for="b in spec?.buttons">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <span class="font-bold" x-text="b.label"></span>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">호출하는 팝업</div>
+      <template x-for="p in spec?.popupsCalled">
+        <div class="text-[10px] mb-1">
+          <span x-text="p.trigger"></span> &rarr; <span class="font-mono text-[#6699FF]" x-text="p.popup"></span>
+          <span class="text-[#999]" x-text="p.size ? '('+p.size+')' : ''"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.ajaxCalls?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">AJAX 호출</div>
+      <template x-for="a in spec?.ajaxCalls">
+        <div class="text-[10px] mb-1">
+          <span x-text="a.trigger"></span> &rarr; <span class="font-mono text-[#6699FF]" x-text="a.url"></span>
+          <span class="text-[#999]" x-text="' ['+a.mode+']'"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.iframes?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">iframe 구성</div>
+      <template x-for="i in spec?.iframes">
+        <div class="text-[10px] mb-1">
+          <span class="font-mono text-[#6699FF]" x-text="i.name"></span>:
+          <span class="text-[#666]" x-text="i.src"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.flowFrom?.length" class="mb-2">
+      <div class="font-bold text-[#333] mb-1">유입 화면</div>
+      <template x-for="t in spec?.flowFrom">
+        <span class="inline-block bg-gray-100 text-[#666] px-2 py-0.5 rounded mr-1 mb-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+
+    <div x-show="spec?.flowTo?.length" class="mb-2">
+      <div class="font-bold text-[#333] mb-1">이동 가능한 화면</div>
+      <template x-for="t in spec?.flowTo">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 mb-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

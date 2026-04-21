@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>접수 등록 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        'k-primary': '#6699FF', 'k-active': '#5acd3e',
+        'k-border': '#d7d7d7', 'k-text': '#333333',
+        'k-sub': '#545454', 'k-bg': '#f2f2f2', 'k-header': '#f3f3f3',
+      }}}
+    }
+  </script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+  <style>
+    body { font-size: 13px; color: #333; }
+    .form-table { border-collapse: collapse; width: 100%; }
+    .form-table th {
+      background: #f3f3f3;
+      border: 1px solid #c8c8c8;
+      padding: 5px 8px;
+      text-align: left;
+      font-weight: bold;
+      width: 100px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .form-table td {
+      border: 1px solid #d7d7d7;
+      padding: 4px 8px;
+      vertical-align: middle;
+    }
+    .form-table input[type="text"],
+    .form-table input[type="date"] {
+      border: 1px solid #bbb;
+      padding: 2px 5px;
+      height: 22px;
+      font-size: 13px;
+      background: #fff;
+    }
+    .form-table input[readonly],
+    .form-table input[disabled] {
+      background: #efefef;
+      color: #555;
+    }
+    .form-table select {
+      border: 1px solid #bbb;
+      background: #e5e5e5;
+      height: 22px;
+      font-size: 13px;
+      padding: 0 4px;
+    }
+    .form-table textarea {
+      border: 1px solid #bbb;
+      font-size: 13px;
+      padding: 4px;
+      width: 98%;
+      resize: vertical;
+    }
+    .tel-sep { margin: 0 2px; color: #888; }
+    .section-header {
+      background: #f3f3f3;
+      border: 1px solid #d7d7d7;
+      border-bottom: none;
+      padding: 6px 10px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    .btn-search {
+      background: #888;
+      color: #fff;
+      border: none;
+      padding: 2px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      height: 22px;
+    }
+    .btn-search:hover { background: #666; }
+    .required { color: #ff0000; font-weight: bold; margin-left: 2px; }
+    .popup-header {
+      background: #f3f3f3;
+      border-bottom: 2px solid #d7d7d7;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .popup-header h1 { font-size: 15px; font-weight: bold; }
+    .btn-register {
+      background: #6699FF;
+      color: #fff;
+      border: none;
+      padding: 4px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+    .btn-register:hover { background: #4477dd; }
+    .btn-modify {
+      background: #5acd3e;
+      color: #fff;
+      border: none;
+      padding: 4px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+    .btn-modify:hover { background: #3faa27; }
+    .btn-close {
+      background: #888;
+      color: #fff;
+      border: none;
+      padding: 4px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+    .btn-close:hover { background: #555; }
+    .section-wrap { margin-bottom: 0; border: 1px solid #d7d7d7; margin-top: 10px; }
+    .section-wrap:first-of-type { margin-top: 0; }
+    /* 상태정보 색상 */
+    .stat-normal { color: #333; }
+    .stat-gangseong { color: #0000CC; }
+    .stat-urgent { color: #CC0000; }
+  </style>
+</head>
+<body class="overflow-y-auto" style="width:720px; min-width:720px; background:#fff;">
+
+<form
+  name="receipt_form"
+  x-data="{
+    mode: 'insert',
+    form: {
+      rctGbn: 'T',
+      rctDate: '2026-04-15',
+      visitDate: '',
+      rctUser: '김상담',
+      custName: '',
+      relation: '본인',
+      tel1: '', tel2: '', tel3: '',
+      phone1: '', phone2: '', phone3: '',
+      mobile1: '010', mobile2: '', mobile3: '',
+      zip: '', addr1: '', addr2: '',
+      aptNo: '', aptName: '',
+      sellGbn: 'HN',
+      modelNo: '', modelName: '',
+      err1: '', err2: '',
+      callPrice: 'N',
+      statGbn: '0',
+      gapGbn: '1구간',
+      agencyNo: '', agencyName: '',
+      agentNo: '', agentName: '',
+      memo: '',
+      smemo: ''
+    },
+    get errorSubList() {
+      if (!this.form.err1) return [];
+      const found = (window.MOCK && window.MOCK.errorCodeList || []).find(e => e.code === this.form.err1);
+      return found ? found.children : [];
+    },
+    get modelList() {
+      return (window.MOCK && window.MOCK.modelList) || [];
+    },
+    get errorCodeList() {
+      return (window.MOCK && window.MOCK.errorCodeList) || [];
+    },
+    onErr1Change() {
+      this.form.err2 = '';
+    },
+    searchAddress() {
+      alert('[주소검색] 목업: 주소 API 연동 예정\n\n예시 결과:\n우편번호: 06234\n주소: 서울시 강남구 테헤란로 123');
+      this.form.zip = '06234';
+      this.form.addr1 = '서울시 강남구 테헤란로 123';
+    },
+    searchApt() {
+      alert('[아파트검색] 목업: CS현장 테이블 연동 예정\n\n예시 결과:\n아파트코드: APT001\n아파트명: xx아파트');
+      this.form.aptNo = 'APT001';
+      this.form.aptName = 'xx아파트';
+    },
+    searchBranch() {
+      alert('[지점검색] 목업: AS지점 테이블 연동 예정\n\n예시 결과:\n지점코드: 11310\n지점명: 강남지점');
+      this.form.agencyNo = '11310';
+      this.form.agencyName = '강남지점';
+    },
+    validate() {
+      if (!this.form.rctGbn) {
+        alert('접수구분을 선택하세요.');
+        return false;
+      }
+      if (!this.form.custName.trim()) {
+        alert('고객명을 입력하세요.');
+        return false;
+      }
+      if (!this.form.rctDate) {
+        alert('접수일자를 입력하세요.');
+        return false;
+      }
+      return true;
+    },
+    submitInsert() {
+      if (!this.validate()) return;
+      if (!confirm('저장하시겠습니까?')) return;
+      const rctNo = '260415-' + String(Math.floor(Math.random() * 9000 + 1000));
+      alert('접수 등록이 완료되었습니다.\n접수번호: ' + rctNo);
+      window.close();
+    },
+    submitUpdate() {
+      if (!this.validate()) return;
+      if (!confirm('수정하시겠습니까?')) return;
+      alert('접수가 수정되었습니다.');
+      window.close();
+    },
+    closeWindow() {
+      if (confirm('창을 닫으시겠습니까?')) window.close();
+    }
+  }"
+  @submit.prevent
+>
+
+  <!-- ===== 팝업 헤더 ===== -->
+  <div class="popup-header">
+    <h1>[서비스 접수] (<span x-text="mode === 'insert' ? '등록' : '수정'"></span>)</h1>
+    <div>
+      <button type="button" class="btn-register" @click="submitInsert()">등록</button>
+      <button type="button" class="btn-modify"   @click="submitUpdate()">수정</button>
+      <button type="button" class="btn-close"    @click="closeWindow()">닫기</button>
+    </div>
+  </div>
+
+  <div style="padding: 10px;">
+
+    <!-- ===== 섹션 1: 기본 정보 ===== -->
+    <div class="section-wrap">
+      <div class="section-header">&#91;기본 정보&#93;</div>
+      <table class="form-table">
+        <tr>
+          <th>접수번호</th>
+          <td style="width:220px;">
+            <input type="text" name="rct_no" value="등록" readonly style="width:120px;">
+          </td>
+          <th style="width:90px;">접수일<span class="required">*</span></th>
+          <td>
+            <input type="date" name="rct_date" x-model="form.rctDate" style="width:140px;">
+          </td>
+        </tr>
+        <tr>
+          <th>접수구분<span class="required">*</span></th>
+          <td>
+            <select name="rct_gbn" x-model="form.rctGbn" style="width:120px;">
+              <option value="">:: 접수구분 ::</option>
+              <option value="T">전화</option>
+              <option value="P">우편</option>
+              <option value="F">팩스</option>
+              <option value="L">LED</option>
+              <option value="S">상담</option>
+              <option value="M">모바일</option>
+            </select>
+          </td>
+          <th>방문예약일</th>
+          <td>
+            <input type="date" name="rct_basedate" x-model="form.visitDate" style="width:140px;">
+          </td>
+        </tr>
+        <tr>
+          <th>접수사원</th>
+          <td colspan="3">
+            <input type="text" name="rct_user" x-model="form.rctUser" readonly style="width:120px;">
+            <span style="color:#888; font-size:12px; margin-left:6px;">※ 로그인 사원 자동 입력</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ===== 섹션 2: 고객 정보 ===== -->
+    <div class="section-wrap">
+      <div class="section-header">&#91;고객 정보&#93;</div>
+      <table class="form-table">
+        <tr>
+          <th>고객명<span class="required">*</span></th>
+          <td style="width:220px;">
+            <input type="text" name="mb_name" x-model="form.custName"
+                   placeholder="고객명 입력" style="width:140px;">
+          </td>
+          <th style="width:90px;">관계</th>
+          <td>
+            <select name="mbr" x-model="form.relation" style="width:120px;">
+              <option value="본인">본인</option>
+              <option value="직계가족">직계가족</option>
+              <option value="대리인">대리인</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>발신번호</th>
+          <td>
+            <input type="text" name="tel1" id="tel1" x-model="form.tel1"
+                   maxlength="4" style="width:38px;" placeholder="02">
+            <span class="tel-sep">-</span>
+            <input type="text" name="tel2" id="tel2" x-model="form.tel2"
+                   maxlength="4" style="width:46px;">
+            <span class="tel-sep">-</span>
+            <input type="text" name="tel3" id="tel3" x-model="form.tel3"
+                   maxlength="4" style="width:46px;">
+          </td>
+          <th>연락처(집)</th>
+          <td>
+            <input type="text" name="phone1" id="phone1" x-model="form.phone1"
+                   maxlength="4" style="width:38px;" placeholder="02">
+            <span class="tel-sep">-</span>
+            <input type="text" name="phone2" id="phone2" x-model="form.phone2"
+                   maxlength="4" style="width:46px;">
+            <span class="tel-sep">-</span>
+            <input type="text" name="phone3" id="phone3" x-model="form.phone3"
+                   maxlength="4" style="width:46px;">
+          </td>
+        </tr>
+        <tr>
+          <th>휴대폰</th>
+          <td>
+            <input type="text" name="mobile1" id="mobile1" x-model="form.mobile1"
+                   maxlength="4" style="width:38px;">
+            <span class="tel-sep">-</span>
+            <input type="text" name="mobile2" id="mobile2" x-model="form.mobile2"
+                   maxlength="4" style="width:46px;">
+            <span class="tel-sep">-</span>
+            <input type="text" name="mobile3" id="mobile3" x-model="form.mobile3"
+                   maxlength="4" style="width:46px;">
+          </td>
+          <th>우편번호</th>
+          <td>
+            <input type="text" name="zip" id="zip" x-model="form.zip"
+                   maxlength="5" style="width:70px;" readonly placeholder="우편번호">
+            <button type="button" class="btn-search" @click="searchAddress()">주소검색</button>
+          </td>
+        </tr>
+        <tr>
+          <th>주소</th>
+          <td colspan="3">
+            <input type="text" name="addr1" id="addr1" x-model="form.addr1"
+                   style="width:96%;" placeholder="주소 (자동 입력)">
+          </td>
+        </tr>
+        <tr>
+          <th>상세주소</th>
+          <td colspan="3">
+            <input type="text" name="addr2" id="addr2" x-model="form.addr2"
+                   style="width:96%;" placeholder="상세주소 입력">
+          </td>
+        </tr>
+        <tr>
+          <th>아파트명</th>
+          <td colspan="3">
+            <input type="hidden" name="apt_no" id="apt_no" x-model="form.aptNo">
+            <input type="text" name="apt_name" id="apt_name" x-model="form.aptName"
+                   style="width:280px;" readonly placeholder="아파트 검색 후 자동 입력">
+            <button type="button" class="btn-search" @click="searchApt()">아파트검색</button>
+            <button type="button" class="btn-search" style="background:#aaa;"
+                    @click="form.aptNo=''; form.aptName='';">삭제</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ===== 섹션 3: 제품/장애 정보 ===== -->
+    <div class="section-wrap">
+      <div class="section-header">&#91;제품 / 장애 정보&#93;</div>
+      <table class="form-table">
+        <tr>
+          <th>판매유형</th>
+          <td style="width:220px;">
+            <select name="sell_gbn" x-model="form.sellGbn" style="width:120px;">
+              <option value="HN">HN</option>
+              <option value="특판">특판</option>
+              <option value="시판">시판</option>
+              <option value="기타">기타</option>
+            </select>
+          </td>
+          <th style="width:90px;">모델</th>
+          <td>
+            <input type="hidden" name="model_no" id="model_no" x-model="form.modelNo">
+            <select name="model_name" id="model_name"
+                    style="width:220px;"
+                    @change="form.modelNo = $event.target.value; form.modelName = $event.target.options[$event.target.selectedIndex].text;">
+              <option value="">:: 모델 선택 ::</option>
+              <template x-for="m in modelList" :key="m.modelCode">
+                <option :value="m.modelCode" x-text="m.modelCode + ' - ' + m.modelName"></option>
+              </template>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>장애증상<br><span style="font-weight:normal;font-size:11px;">(대분류)</span></th>
+          <td>
+            <select name="err_1" id="err_1" x-model="form.err1"
+                    @change="onErr1Change()" style="width:170px;">
+              <option value="">:: 장애코드[대] ::</option>
+              <template x-for="e in errorCodeList" :key="e.code">
+                <option :value="e.code" x-text="e.name"></option>
+              </template>
+            </select>
+          </td>
+          <th>세부증상<br><span style="font-weight:normal;font-size:11px;">(소분류)</span></th>
+          <td>
+            <select name="err_2" id="err_2" x-model="form.err2"
+                    :disabled="!form.err1" style="width:170px;">
+              <option value="">:: 장애코드[소] ::</option>
+              <template x-for="c in errorSubList" :key="c.code">
+                <option :value="c.code" x-text="c.name"></option>
+              </template>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>유상통보</th>
+          <td>
+            <select name="callprice" x-model="form.callPrice" style="width:120px;">
+              <option value="N">무상</option>
+              <option value="Y">유상</option>
+            </select>
+          </td>
+          <th>상태정보</th>
+          <td>
+            <select name="stat_gbn" id="stat_gbn" x-model="form.statGbn"
+                    style="width:120px;"
+                    :style="form.statGbn === '2' ? 'color:#CC0000;font-weight:bold;' :
+                            form.statGbn === '1' ? 'color:#0000CC;font-weight:bold;' : 'color:#333;'">
+              <option value="0" style="color:#333;">일반</option>
+              <option value="1" style="color:#0000CC;">강성</option>
+              <option value="2" style="color:#CC0000;">긴급</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>구간구분<span class="required">*</span></th>
+          <td colspan="3">
+            <select name="gap_gbn" id="gap_gbn" x-model="form.gapGbn" style="width:120px;">
+              <option value="1구간">1구간</option>
+              <option value="2구간">2구간</option>
+              <option value="3구간">3구간</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ===== 섹션 4: 담당자 정보 ===== -->
+    <div class="section-wrap">
+      <div class="section-header">&#91;담당자 정보&#93;</div>
+      <table class="form-table">
+        <tr>
+          <th>담당지점</th>
+          <td style="width:220px;">
+            <input type="hidden" name="agency_no" id="agency_no" x-model="form.agencyNo">
+            <input type="text" name="charge_agency" id="charge_agency"
+                   x-model="form.agencyName" readonly
+                   style="width:150px;" placeholder="지점 검색 후 자동 입력">
+            <button type="button" class="btn-search" @click="searchBranch()">지점검색</button>
+          </td>
+          <th style="width:90px;">담당기사</th>
+          <td>
+            <input type="hidden" name="agent_no" id="agent_no" x-model="form.agentNo">
+            <input type="text" name="charge_name" id="charge_name"
+                   x-model="form.agentName"
+                   style="width:170px;" placeholder="기사명 입력">
+            <button type="button" class="btn-search"
+                    @click="alert('[담당기사검색] 목업: CS사원 테이블 연동 예정\n\n예시 결과:\n사원번호: u1001\n사원명: 이기사'); form.agentNo='u1001'; form.agentName='이기사';">검색</button>
+            <button type="button" class="btn-search" style="background:#aaa;"
+                    @click="form.agentNo=''; form.agentName='';">삭제</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ===== 섹션 5: 메모 ===== -->
+    <div class="section-wrap">
+      <div class="section-header">&#91;메모&#93;</div>
+      <table class="form-table">
+        <tr>
+          <th>상담내용</th>
+          <td colspan="3">
+            <textarea name="memo" x-model="form.memo" rows="5"
+                      placeholder="상담 내용을 입력하세요."></textarea>
+          </td>
+        </tr>
+        <tr>
+          <th>특이사항</th>
+          <td colspan="3">
+            <textarea name="smemo" x-model="form.smemo" rows="3"
+                      style="color:#cc0000;"
+                      placeholder="특이사항을 입력하세요."></textarea>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 하단 버튼 영역 -->
+    <div style="text-align:right; padding: 10px 0 6px;">
+      <button type="button" class="btn-register" @click="submitInsert()">등록</button>
+      <button type="button" class="btn-modify"   @click="submitUpdate()">수정</button>
+      <button type="button" class="btn-close"    @click="closeWindow()">닫기</button>
+    </div>
+
+  </div><!-- /padding -->
+
+  <!-- 숨김 필드 -->
+  <input type="hidden" name="idx"       value="">
+  <input type="hidden" name="mode"      x-model="mode">
+  <input type="hidden" name="smode"     value="">
+  <input type="hidden" name="p_mode"    value="">
+  <input type="hidden" name="g_mode"    value="">
+  <input type="hidden" name="gbn_code"  value="">
+
+</form>
+</body>
+</html>

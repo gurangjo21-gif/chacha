@@ -1,0 +1,609 @@
+{
+  "store_doing_list": {
+    "phpFile": "store_doing_list.php",
+    "htmlFile": "screens/store/store_doing_list.html",
+    "type": "list",
+    "title": "진행상황 - 본사",
+    "purpose": "수리의뢰 진행상황(접수완료/수리중/수리완료)을 본사에서 조회",
+    "workflow": "자재관리 > 진행상황 > 본사용",
+    "searchFields": [
+      { "name": "keyfield", "type": "select", "label": "진행상태", "options": ["전체","1:접수완료","2:수리중","3:수리완료"] },
+      { "name": "sday", "type": "date", "label": "신청일자(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일자(종료)" },
+      { "name": "center_id", "type": "select", "label": "센터" },
+      { "name": "keyword", "type": "text", "label": "신청사원" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "접수번호", "width": 70 },
+      { "name": "접수일", "dbField": "접수일", "width": 80 },
+      { "name": "센터명", "dbField": "센터명", "width": 120 },
+      { "name": "고객명", "dbField": "고객명", "width": 120 },
+      { "name": "코드번호", "dbField": "모델품번", "width": 100 },
+      { "name": "모델명", "dbField": "모델명", "width": 250 },
+      { "name": "신청사원", "dbField": "신청사원", "width": 80 },
+      { "name": "S/N", "dbField": "시리얼번호", "width": 100 },
+      { "name": "송장번호", "dbField": "송장번호", "width": 100 },
+      { "name": "청구금액", "dbField": "청구금액", "width": 80 },
+      { "name": "진행상태", "dbField": "처리상태", "width": 100, "render": "1:접수완료(red) 2:수리중(yellow) 3:수리완료(green)" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download -> ../excel/store_doing_list.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "rowAction": { "event": "dblclick", "action": "update_mode(접수번호,'update') -> store_doing_mode.php" },
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_doing_mode.php"]
+  },
+  "store_doing_list_center": {
+    "phpFile": "store_doing_list_center.php",
+    "htmlFile": "screens/store/store_doing_list_center.html",
+    "type": "list",
+    "title": "[센터명] 진행상황",
+    "purpose": "수리의뢰 진행상황을 센터에서 읽기전용으로 조회",
+    "workflow": "자재관리 > 진행상황 > 센터용",
+    "searchFields": [
+      { "name": "keyfield", "type": "select", "label": "진행상태", "options": ["전체","접수완료","수리중","수리완료"] },
+      { "name": "sday", "type": "date", "label": "신청일자(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일자(종료)" },
+      { "name": "keyword", "type": "text", "label": "신청사원" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호" }, { "name": "접수일" }, { "name": "센터명" }, { "name": "고객명" },
+      { "name": "코드번호", "dbField": "모델품번" }, { "name": "모델명" }, { "name": "신청사원" },
+      { "name": "S/N", "dbField": "시리얼번호" }, { "name": "송장번호" }, { "name": "청구금액" },
+      { "name": "진행상태", "dbField": "처리상태" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download -> ../excel/store_doing_list_center.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "rowAction": { "event": "dblclick", "action": "update_mode(접수번호,'update',smode=read) -> store_doing_mode.php" },
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_doing_mode.php"]
+  },
+  "store_doing_mode": {
+    "phpFile": "store_doing_mode.php",
+    "htmlFile": "screens/store/store_doing_mode.html",
+    "type": "detail",
+    "title": "수리의뢰 상세",
+    "purpose": "수리의뢰 상세 조회/처리 (처리내용, 진행상황 변경)",
+    "workflow": "자재관리 > 진행상황 > 상세페이지",
+    "formFields": [
+      { "name": "고객명", "type": "text", "readonly": true },
+      { "name": "연락처", "type": "text", "readonly": true },
+      { "name": "접수일", "type": "text", "readonly": true, "label": "신청일" },
+      { "name": "센터명", "type": "text", "readonly": true, "label": "신청센터" },
+      { "name": "우편번호/주소/상세주소", "type": "composite" },
+      { "name": "모델품번", "type": "text", "label": "코드번호", "readonly": true },
+      { "name": "모델명", "type": "text", "readonly": true },
+      { "name": "의뢰방법", "type": "display", "options": ["1:택배(송장번호)","2:방문(방문일자)"] },
+      { "name": "시리얼번호", "type": "text", "label": "일련번호" },
+      { "name": "유무상", "type": "display", "options": ["1:유상","2:무상","3:유지보수"] },
+      { "name": "pay_won_modify", "type": "text", "label": "청구금액", "conditional": "user_agency=11323 AND 처리상태=1" },
+      { "name": "불량증상", "type": "text" },
+      { "name": "특이사항", "type": "text" },
+      { "name": "처리일", "type": "text", "label": "수리완료일자", "conditional": "처리상태=3" },
+      { "name": "content", "type": "textarea", "label": "처리내용", "rows": 6, "cols": 120 },
+      { "name": "status", "type": "select", "label": "진행상황", "options": ["1:접수완료","2:수리중","3:수리완료"] }
+    ],
+    "buttons": [
+      { "label": "인쇄", "action": "print_doing -> store_doing_mode_print.php (popup 800x600)" },
+      { "label": "목록으로", "action": "history.back()" },
+      { "label": "변경처리", "action": "req_mode('update') -> store_doing_proc.php", "conditional": "smode!=read" }
+    ],
+    "popupsCalled": [
+      { "trigger": "인쇄", "popup": "store_doing_mode_print.php" }
+    ],
+    "flowFrom": ["store_doing_list.php","store_doing_list_center.php"],
+    "flowTo": ["store_doing_proc.php","store_doing_mode_print.php"]
+  },
+  "store_doing_mode_print": {
+    "phpFile": "store_doing_mode_print.php",
+    "htmlFile": "screens/store/store_doing_mode_print.html",
+    "type": "print",
+    "title": "수리의뢰 (프린트)",
+    "purpose": "수리의뢰 상세를 인쇄용 레이아웃으로 출력",
+    "workflow": "자재관리 > 진행상황 > 인쇄",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "접수번호" }, { "name": "고객명" }, { "name": "연락처" },
+      { "name": "신청일", "dbField": "접수일" }, { "name": "신청센터", "dbField": "센터명" },
+      { "name": "주소" }, { "name": "코드번호", "dbField": "모델품번" }, { "name": "모델명" },
+      { "name": "의뢰방법" }, { "name": "송장번호/방문일자" }, { "name": "일련번호", "dbField": "시리얼번호" },
+      { "name": "유무상" }, { "name": "청구금액" }, { "name": "불량증상" }, { "name": "처리내용" },
+      { "name": "특이사항" }, { "name": "수리완료일자", "dbField": "처리일" }, { "name": "진행상황", "dbField": "처리상태" }
+    ],
+    "buttons": [{ "label": "인쇄", "action": "window.print()" }],
+    "popupsCalled": [],
+    "flowFrom": ["store_doing_mode.php"],
+    "flowTo": []
+  },
+  "store_price_list": {
+    "phpFile": "store_price_list.php",
+    "htmlFile": "screens/store/store_price_list.html",
+    "type": "list",
+    "title": "자재신청 사용이력",
+    "purpose": "자재신청 사용/반납/정산 이력을 조회. 11323(본사)는 단가 정산 가능",
+    "workflow": "재고 > 사용이력",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "반납상태", "options": ["전체","1:미반납","2:반납중","3:반납완료"] },
+      { "name": "sday", "type": "date", "label": "신청일자(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일자(종료)" },
+      { "name": "state2", "type": "select", "label": "신청구분", "options": ["전체","1:접수자재","2:일반자재"] },
+      { "name": "keyfield", "type": "select", "label": "센터", "conditional": "user_agency=11323" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명", "dbField": "신청지점명", "click": "go_center -> store_price_release.php" },
+      { "name": "신청일" }, { "name": "신청사원", "dbField": "신청사원명" },
+      { "name": "신청구분" }, { "name": "코드번호", "dbField": "모델품번/접수품번" },
+      { "name": "모델명" }, { "name": "품번" }, { "name": "품명", "dbField": "CS품명" },
+      { "name": "유/무상", "dbField": "유무" }, { "name": "신청수량", "dbField": "신청량" },
+      { "name": "출고수량" }, { "name": "미출고량", "dbField": "신청잔량" },
+      { "name": "출고상태", "render": "1,4:미출고 2,5:출고중 3:출고완료" },
+      { "name": "반납수량", "dbField": "반납량" }, { "name": "미반납량", "dbField": "반납잔량" },
+      { "name": "반납상태", "render": "1:미반납 4:반납완료 else:반납중" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download -> ../excel/store_price_list.php" },
+      { "label": "단가 정산", "action": "price_next -> ajax mode=price_store", "conditional": "user_agency=11323" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_price_release.php"]
+  },
+  "store_price_release": {
+    "phpFile": "store_price_release.php",
+    "htmlFile": "screens/store/store_price_release.html",
+    "type": "detail",
+    "title": "자재 사용이력 상세",
+    "purpose": "개별 자재신청 건의 사용이력 상세 조회. 센터 청구금액 확인 처리",
+    "workflow": "자재관리 > 사용이력 > 상세보기",
+    "formFields": [
+      { "name": "req_no", "label": "신청번호" }, { "name": "req_dt", "label": "신청일자" },
+      { "name": "req_center", "label": "신청센터" }, { "name": "req_center_id", "label": "센터코드" },
+      { "name": "ps_agent", "label": "신청사원" }, { "name": "gubun_type_str", "label": "구분사항" },
+      { "name": "코드번호/모델명", "conditional": "신청구분=1" }
+    ],
+    "tableColumns": [
+      { "name": "출고일" }, { "name": "반납일" },
+      { "name": "코드번호", "conditional": "신청구분=2" }, { "name": "모델명", "conditional": "신청구분=2" },
+      { "name": "품번" }, { "name": "품명" }, { "name": "유/무상", "dbField": "유무" },
+      { "name": "신청", "dbField": "신청량" }, { "name": "출고", "dbField": "출고수량" },
+      { "name": "반납", "dbField": "반납량" }, { "name": "미반납", "dbField": "반납잔량" },
+      { "name": "양품" }, { "name": "불량" }, { "name": "반납상태" },
+      { "name": "반납가A", "dbField": "센터반납가A" }, { "name": "미반납가A", "dbField": "센터미반납가A" },
+      { "name": "청구금액" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download -> ../excel/store_price_release.php" },
+      { "label": "금액확인완료", "action": "center_ok -> ajax mode=price_center_ok", "conditional": "본사승인=1 AND 센터확인!=1 AND user_agency!=11323" },
+      { "label": "목록으로", "action": "list_go -> store_price_list.php" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["store_price_list.php"],
+    "flowTo": ["store_price_list.php"]
+  },
+  "store_receipt_list": {
+    "phpFile": "store_receipt_list.php",
+    "htmlFile": "screens/store/store_receipt_list.html",
+    "type": "list",
+    "title": "접수 자재 신청",
+    "purpose": "CS접수 리스트에서 자재 신청으로 연결되는 진입 화면",
+    "workflow": "재고 > 접수리스트",
+    "searchFields": [
+      { "name": "psgbn", "type": "select", "label": "처리구분", "options": ["전체","T:처리완료","F:미처리"] },
+      { "name": "ask", "type": "select", "label": "신청구분", "options": ["전체","S:신청완료","R:신청중","K:신청대기"] },
+      { "name": "sday", "type": "date", "label": "접수일(시작)" },
+      { "name": "eday", "type": "date", "label": "접수일(종료)" },
+      { "name": "keyfield", "type": "select", "label": "검색조건", "options": ["접수번호","고객명","주소","CS품명","판매유형","증상분류","세부증상","처리분류","처리상세","원인분류","원인상세","특이사항","담당지점","담당기사","기사연락처","구간","처리일","처리지점","처리사원","요금적용","청구금액","징구금액"] },
+      { "name": "keyword", "type": "text" },
+      { "name": "selgbn", "type": "radio", "label": "판매유형", "options": ["민영","특판","시판"], "conditional": "keyfield=9" },
+      { "name": "gugan", "type": "radio", "label": "구간", "options": ["1구간","2구간","3구간"], "conditional": "keyfield=20" },
+      { "name": "costgbn", "type": "radio", "label": "요금적용", "options": ["Y:유상","N:무상","I:유지보수","C:취소"], "conditional": "keyfield=24" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호", "click": "update_next -> store_request.php" }, { "name": "접수구분" },
+      { "name": "접수일시" }, { "name": "고객명" }, { "name": "진행상황" }, { "name": "주소" },
+      { "name": "모델", "dbField": "품명" }, { "name": "판매유형" }, { "name": "증상분류", "dbField": "장애구분명" },
+      { "name": "세부증상", "dbField": "장애상세명" }, { "name": "처리분류", "dbField": "수리구분명" },
+      { "name": "처리상세", "dbField": "수리상세명" }, { "name": "원인분류", "dbField": "원인구분명" },
+      { "name": "원인상세", "dbField": "원인상세명" }, { "name": "특이사항" }, { "name": "담당지점", "dbField": "담당지점명" },
+      { "name": "담당기사", "dbField": "담당사원명" }, { "name": "기사연락처" }, { "name": "구간", "dbField": "구간구분" },
+      { "name": "처리일", "dbField": "처리일자" }, { "name": "처리지점", "dbField": "처리지점명" },
+      { "name": "처리사원", "dbField": "처리사원명" }, { "name": "요금적용" }, { "name": "청구금액" }, { "name": "징구금액" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/store_receipt_list_excel.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_request.php"]
+  },
+  "store_request": {
+    "phpFile": "store_request.php",
+    "htmlFile": "screens/store/store_request.html",
+    "type": "form",
+    "title": "자재신청 (접수자재)",
+    "purpose": "CS접수 건에 대한 자재 신청서 작성/수정",
+    "workflow": "자재관리 > 자재신청 페이지",
+    "formFields": [
+      { "name": "receipt_no", "label": "접수번호", "readonly": true },
+      { "name": "in_dt", "label": "접수일시", "readonly": true },
+      { "name": "req_no", "label": "신청번호", "readonly": true },
+      { "name": "req_dt", "label": "신청일자", "readonly": true },
+      { "name": "req_center", "label": "신청센터", "readonly": true },
+      { "name": "req_user_name", "label": "신청사원", "readonly": true },
+      { "name": "m_no", "label": "코드번호", "readonly": true },
+      { "name": "m_name", "label": "모델명", "readonly": true }
+    ],
+    "tableColumns": [
+      { "name": "품번", "dbField": "s_no" }, { "name": "품명", "dbField": "s_name" },
+      { "name": "출고구분", "dbField": "s_type", "required": true },
+      { "name": "신청수량", "dbField": "s_cnt", "required": true },
+      { "name": "APP", "dbField": "s_app" }, { "name": "HA", "dbField": "s_ha" },
+      { "name": "OS", "dbField": "s_os" }, { "name": "비고", "dbField": "s_memo" },
+      { "name": "출고상황", "dbField": "s_status", "render": "1,4:미출고 2,5:출고중 3:출고완료" },
+      { "name": "삭제", "action": "update_next -> ajax store_request_delete" }
+    ],
+    "buttons": [
+      { "label": "검색(자재)", "action": "search_model_sub -> popup_model_search_sub.php (popup 610x640)" },
+      { "label": "목록으로", "action": "history.back()" },
+      { "label": "신청의뢰", "action": "req_mode('insert') -> store_request_proc.php" },
+      { "label": "신청수정", "action": "req_mode('update') -> store_request_proc.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "검색", "popup": "popup_model_search_sub.php" }
+    ],
+    "flowFrom": ["store_receipt_list.php"],
+    "flowTo": ["store_request_proc.php"]
+  },
+  "store_request_list": {
+    "phpFile": "store_request_list.php",
+    "htmlFile": "screens/store/store_request_list.html",
+    "type": "list",
+    "title": "자재신청 현황 - 본사",
+    "purpose": "자재신청 전체현황 본사 조회. 센터명 클릭하여 상세로 이동",
+    "workflow": "재고 > 자재신청현황 > 본사용",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "진행상태", "options": ["전체","1:미출고","2:출고중","3:출고완료"] },
+      { "name": "state2", "type": "select", "label": "신청구분", "options": ["전체","1:접수자재","2:일반자재"] },
+      { "name": "sday", "type": "date", "label": "신청일자(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일자(종료)" },
+      { "name": "req_pno", "type": "text", "label": "자재품번" },
+      { "name": "keyfield", "type": "select", "label": "센터" },
+      { "name": "keyword", "type": "text", "label": "신청사원" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명", "click": "go_center -> store_request_release.php" },
+      { "name": "신청일" }, { "name": "신청사원" }, { "name": "코드번호" }, { "name": "모델명" },
+      { "name": "품번" }, { "name": "품명" }, { "name": "출고일" }, { "name": "신청수량" },
+      { "name": "출고수량" }, { "name": "미출고량" }, { "name": "신청구분" }, { "name": "상태", "dbField": "진행상황" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/store_request_list_excel.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_request_release.php"]
+  },
+  "store_request_list_center": {
+    "phpFile": "store_request_list_center.php",
+    "htmlFile": "screens/store/store_request_list_center.html",
+    "type": "list",
+    "title": "[센터명] 자재신청 현황",
+    "purpose": "자재신청 현황을 센터에서 읽기전용으로 조회",
+    "workflow": "재고 > 자재신청현황 > 센터용",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "진행상태", "options": ["전체","1:미출고","2:출고중","3:출고완료"] },
+      { "name": "sday", "type": "date", "label": "신청일자(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일자(종료)" },
+      { "name": "state2", "type": "select", "label": "신청구분", "options": ["전체","1:접수자재","2:일반자재"] },
+      { "name": "keyfield", "type": "select", "label": "검색조건", "options": ["신청번호","접수번호","품번","신청사원","고객명","연락처","신청지점"] },
+      { "name": "keyword", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명" }, { "name": "신청일" }, { "name": "신청사원" },
+      { "name": "코드번호" }, { "name": "모델명" }, { "name": "품번" }, { "name": "품명" },
+      { "name": "출고일" }, { "name": "신청수량" }, { "name": "출고수량" }, { "name": "미출고량" },
+      { "name": "신청구분" }, { "name": "상태" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/store_request_release_center.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_request_release.php"]
+  },
+  "store_request_list_nomal": {
+    "phpFile": "store_request_list_nomal.php",
+    "htmlFile": "screens/store/store_request_list_nomal.html",
+    "type": "list",
+    "title": "일반 자재 신청",
+    "purpose": "접수와 무관한 일반 자재 신청 리스트 (신규 생성 가능)",
+    "workflow": "재고 > 일반자재 접수리스트",
+    "searchFields": [
+      { "name": "status", "type": "select", "label": "진행상태", "options": ["전체","1:신청중","3:신청완료"] },
+      { "name": "sday", "type": "date", "label": "신청일자(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일자(종료)" },
+      { "name": "keyfield", "type": "select", "label": "센터" },
+      { "name": "keyword", "type": "text", "label": "신청사원" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호", "click": "update_next -> store_request_nomal.php" },
+      { "name": "신청일" }, { "name": "신청센터", "dbField": "신청지점명" },
+      { "name": "신청사원" }, { "name": "신청완료건수" }, { "name": "신청대기건수" },
+      { "name": "진행상태" }, { "name": "코드번호", "dbField": "모품번" },
+      { "name": "모델명", "dbField": "모품명" }, { "name": "품번", "dbField": "자품번" },
+      { "name": "품명", "dbField": "자품명" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/store_request_list_normal_excel.php" },
+      { "label": "자재신청", "action": "update_next('','insert') -> store_request_nomal.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_request_nomal.php"]
+  },
+  "store_request_mater": {
+    "phpFile": "store_request_mater.php",
+    "htmlFile": "screens/store/store_request_mater.html",
+    "type": "sublist",
+    "title": "자재목록 리스트 (신청 카트)",
+    "purpose": "자재신청 화면에서 선택된 자재를 유지/삭제하는 iframe용 서브리스트",
+    "workflow": "자재신청 > 자재목록 리스트 (iframe)",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번" }, { "name": "CS품명" }, { "name": "출고구분" }, { "name": "신청수량" },
+      { "name": "APP" }, { "name": "HS" }, { "name": "OS" }, { "name": "비고" },
+      { "name": "진행상황" }, { "name": "삭제", "action": "sub() -> remove from val list" }
+    ],
+    "buttons": [
+      { "label": "삭제", "action": "sub(no) -> form resubmit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["store_request.php (iframe)","store_request_nomal.php (iframe)"],
+    "flowTo": []
+  },
+  "store_request_mater_list": {
+    "phpFile": "store_request_mater_list.php",
+    "htmlFile": "screens/store/store_request_mater_list.html",
+    "type": "popup",
+    "title": "자재조회 (팝업)",
+    "purpose": "자재를 검색 후 체크박스로 선택하여 상위폼에 추가",
+    "workflow": "자재신청 > 자재목록 리스트 (popup)",
+    "searchFields": [
+      { "name": "pp_no", "type": "text", "label": "모품번" },
+      { "name": "p_no", "type": "text", "label": "품번" },
+      { "name": "p_name", "type": "text", "label": "CS품명" },
+      { "name": "keyfield", "type": "select", "label": "재고", "options": ["전체","Y:유(有)"] }
+    ],
+    "tableColumns": [
+      { "name": "체크박스(전체선택)", "dbField": "select_call" },
+      { "name": "품번" }, { "name": "CS품명" }, { "name": "신품", "dbField": "양품수량" },
+      { "name": "재생", "dbField": "재생수량" }, { "name": "소비자가", "dbField": "판매가" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "submit" },
+      { "label": "추가", "action": "add_item() -> parent.mater.list_form.submit()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["store_request_mater.php"],
+    "flowTo": []
+  },
+  "store_request_nomal": {
+    "phpFile": "store_request_nomal.php",
+    "htmlFile": "screens/store/store_request_nomal.html",
+    "type": "form",
+    "title": "자재신청 (일반자재)",
+    "purpose": "일반자재 신규 신청/수정 폼. 코드번호/모델은 팝업으로 검색",
+    "workflow": "자재관리 > 일반 자재 신청 페이지",
+    "formFields": [
+      { "name": "req_no", "label": "신청번호", "readonly": true },
+      { "name": "req_dt", "label": "신청일자", "readonly": true },
+      { "name": "req_center", "label": "신청센터", "readonly": true },
+      { "name": "ps_agent", "label": "신청사원", "type": "select", "required": true },
+      { "name": "model_no", "label": "코드번호", "readonly": true },
+      { "name": "model_name", "label": "모델명", "readonly": true }
+    ],
+    "tableColumns": [
+      { "name": "코드번호", "dbField": "model_no" }, { "name": "모델명", "dbField": "model_name" },
+      { "name": "품번", "dbField": "s_no" }, { "name": "품명", "dbField": "s_name" },
+      { "name": "출고구분", "dbField": "s_type", "required": true },
+      { "name": "신청수량", "dbField": "s_cnt", "required": true },
+      { "name": "APP" }, { "name": "HA" }, { "name": "OS" }, { "name": "비고" },
+      { "name": "출고상황" }, { "name": "삭제" }
+    ],
+    "buttons": [
+      { "label": "자재검색", "action": "search_jaje -> popup_jaje.php (620x640)" },
+      { "label": "검색(자재 by 모품)", "action": "search_model_sub -> popup_model_search_sub.php" },
+      { "label": "모델", "action": "search_model -> modelsel (popup)" },
+      { "label": "목록으로", "action": "history.back()" },
+      { "label": "신청의뢰", "action": "req_mode('insert') -> store_request_proc_nomal.php" },
+      { "label": "신청수정", "action": "req_mode('update') -> store_request_proc_nomal.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "자재검색", "popup": "popup_jaje.php" },
+      { "trigger": "검색", "popup": "popup_model_search_sub.php" },
+      { "trigger": "모델", "popup": "popup_model_search.php (modelsel)" }
+    ],
+    "flowFrom": ["store_request_list_nomal.php"],
+    "flowTo": ["store_request_proc_nomal.php"]
+  },
+  "store_request_release": {
+    "phpFile": "store_request_release.php",
+    "htmlFile": "screens/store/store_request_release.html",
+    "type": "detail",
+    "title": "자재신청 현황 상세 (출고관리)",
+    "purpose": "자재신청 건의 출고상태 변경/송장번호/방문일자 관리",
+    "workflow": "자재관리 > 자재신청현황 > 상세보기",
+    "formFields": [
+      { "name": "req_no", "label": "신청번호" }, { "name": "req_dt", "label": "신청일자" },
+      { "name": "req_center", "label": "신청센터" }, { "name": "req_center_id", "label": "센터코드" },
+      { "name": "ps_agent", "label": "신청사원" }, { "name": "gubun_type_str", "label": "구분사항" },
+      { "name": "deliver", "label": "배송방법 (택배/방문)" }
+    ],
+    "tableColumns": [
+      { "name": "출고예정일" }, { "name": "출고일" },
+      { "name": "코드번호(일반자재)" }, { "name": "모델명(일반자재)" },
+      { "name": "품번" }, { "name": "품명" }, { "name": "유/무상" },
+      { "name": "신청", "dbField": "신청량" }, { "name": "출고", "dbField": "출고수량" },
+      { "name": "미출고량" }, { "name": "출고상태", "dbField": "진행상황" },
+      { "name": "상태변경/S/N 액션" }
+    ],
+    "buttons": [
+      { "label": "목록으로", "action": "history.back()" },
+      { "label": "변경", "action": "update_next('update') -> ajax store_release_update" },
+      { "label": "삭제", "action": "update_next('delete') -> ajax store_release" },
+      { "label": "S/N", "action": "시리얼 팝업" }
+    ],
+    "popupsCalled": [
+      { "trigger": "S/N", "popup": "popup_serial_release.php" }
+    ],
+    "flowFrom": ["store_request_list.php","store_request_list_center.php"],
+    "flowTo": []
+  },
+  "store_return_list": {
+    "phpFile": "store_return_list.php",
+    "htmlFile": "screens/store/store_return_list.html",
+    "type": "list",
+    "title": "자재반납신청 현황 - 본사",
+    "purpose": "자재 반납신청 현황을 본사에서 관리. 미반납/반납중은 반납의뢰 팝업 호출",
+    "workflow": "재고 > 자재반납신청현황 > 본사용",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "반납상태", "options": ["전체","1:미반납","2:반납중","3:반납완료"] },
+      { "name": "sday", "type": "date", "label": "신청일(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일(종료)" },
+      { "name": "state3", "type": "select", "label": "신청구분", "options": ["전체","1:접수자재","2:일반자재"] },
+      { "name": "keyfield", "type": "select", "label": "센터" },
+      { "name": "keyword", "type": "text", "label": "자재품번" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명", "click": "go_center -> store_return_release.php" },
+      { "name": "신청일" }, { "name": "신청사원" }, { "name": "품번" }, { "name": "품명", "dbField": "CS품명" },
+      { "name": "반납일" }, { "name": "신청구분" }, { "name": "신청수량" }, { "name": "출고수량" },
+      { "name": "미출고량" }, { "name": "출고상태" }, { "name": "반납량" }, { "name": "미반납량" },
+      { "name": "반납상태", "click": "return_next -> popup_return.php" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/store_return_release.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [
+      { "trigger": "반납상태(미반납/반납중)", "popup": "popup_return.php (690x600)" }
+    ],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_return_release.php"]
+  },
+  "store_return_list_center": {
+    "phpFile": "store_return_list_center.php",
+    "htmlFile": "screens/store/store_return_list_center.html",
+    "type": "list",
+    "title": "[센터명] 자재반납신청 현황",
+    "purpose": "센터용 반납신청 현황 조회",
+    "workflow": "재고 > 자재반납신청 > 센터용",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "진행상태", "options": ["전체","1:출고중","2:출고완료"] },
+      { "name": "state2", "type": "select", "label": "반납상태", "options": ["전체","1:미반납","2:반납중","3:반납완료"] },
+      { "name": "sday", "type": "date", "label": "신청일(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일(종료)" },
+      { "name": "state3", "type": "select", "label": "신청구분", "options": ["전체","1:접수자재","2:일반자재"] },
+      { "name": "keyword", "type": "text", "label": "자재품번" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명" }, { "name": "신청일" }, { "name": "신청사원" },
+      { "name": "품번" }, { "name": "품명" }, { "name": "촐고일" }, { "name": "신청구분" },
+      { "name": "신청수량" }, { "name": "출고수량" }, { "name": "미출고량" }, { "name": "진행상태" },
+      { "name": "반납량" }, { "name": "미반납량" }, { "name": "반납상태" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/store_return_release_center.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [
+      { "trigger": "반납상태(미반납/반납중)", "popup": "popup_return.php" }
+    ],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_return_release.php"]
+  },
+  "store_return_release": {
+    "phpFile": "store_return_release.php",
+    "htmlFile": "screens/store/store_return_release.html",
+    "type": "detail",
+    "title": "자재반납신청현황 상세",
+    "purpose": "반납신청 건의 상태(미반납/반납중/반납완료) 변경 및 시리얼 관리",
+    "workflow": "자재관리 > 자재반납신청 > 상세보기",
+    "formFields": [
+      { "name": "req_no", "label": "신청번호" }, { "name": "req_dt", "label": "신청일자" },
+      { "name": "req_center", "label": "신청센터" }, { "name": "req_center_id", "label": "센터코드" },
+      { "name": "req_user_nm", "label": "신청사원" }, { "name": "gubun_type_str", "label": "구분사항" },
+      { "name": "model_no", "label": "코드번호", "conditional": "신청구분=1" },
+      { "name": "model_name", "label": "모델명", "conditional": "신청구분=1" }
+    ],
+    "tableColumns": [
+      { "name": "출고일" }, { "name": "반납일", "dbField": "반납일자" },
+      { "name": "코드번호", "dbField": "모델품번", "conditional": "신청구분=2" },
+      { "name": "모델명", "dbField": "모델품명", "conditional": "신청구분=2" },
+      { "name": "품번" }, { "name": "품명" }, { "name": "유/무상" }, { "name": "신청수량", "dbField": "신청량" },
+      { "name": "출고수량" }, { "name": "미출고수량" }, { "name": "출고상태" }, { "name": "반납수량" },
+      { "name": "미반납수량" }, { "name": "양품" }, { "name": "불량" }, { "name": "확정수량" },
+      { "name": "미확정수량" }, { "name": "반납상태(select+변경버튼)" }
+    ],
+    "buttons": [
+      { "label": "목록으로", "action": "history.back()" },
+      { "label": "S/N", "action": "serial_next -> popup_serial_return_release(2).php (610x600)" },
+      { "label": "변경", "action": "update_next('update') -> ajax store_return_update", "conditional": "smode!=center" },
+      { "label": "삭제", "action": "update_next('delete') -> ajax store_return_delete" }
+    ],
+    "popupsCalled": [
+      { "trigger": "S/N(본사)", "popup": "popup_serial_return_release.php" },
+      { "trigger": "S/N(센터)", "popup": "popup_serial_return_release2.php" }
+    ],
+    "flowFrom": ["store_return_list.php","store_return_list_center.php"],
+    "flowTo": []
+  },
+  "store_suri_list": {
+    "phpFile": "store_suri_list.php",
+    "htmlFile": "screens/store/store_suri_list.html",
+    "type": "form",
+    "title": "수리의뢰 신청",
+    "purpose": "신규 수리의뢰 접수/수정 폼",
+    "workflow": "자재관리 > 수리의뢰 > 신청 페이지",
+    "formFields": [
+      { "name": "charge", "label": "고객명", "required": true },
+      { "name": "telno", "label": "연락처", "required": true },
+      { "name": "req_dt", "label": "신청일", "type": "date", "required": true },
+      { "name": "req_center_id", "label": "신청센터", "readonly": true },
+      { "name": "zip", "label": "우편번호", "popup": "open_zipcodebook()" },
+      { "name": "addr1", "label": "주소", "required": true },
+      { "name": "addr2", "label": "상세주소" },
+      { "name": "model_no", "label": "코드번호", "readonly": true },
+      { "name": "model_name", "label": "모델명", "readonly": true, "popup": "modelsel" },
+      { "name": "rgb_type", "label": "의뢰방법", "type": "select", "options": ["1:택배","2:방문"] },
+      { "name": "invoice_no", "label": "송장번호", "conditional": "rgb_type=1" },
+      { "name": "visit_dt", "label": "방문일자", "type": "date", "conditional": "rgb_type=2" },
+      { "name": "serial_no", "label": "S/N" },
+      { "name": "s_type", "label": "유무상", "type": "select", "options": ["1:유상","2:무상","3:유지보수"] },
+      { "name": "pay_won", "label": "청구금액" },
+      { "name": "error_msg", "label": "불량증상" },
+      { "name": "memo", "label": "특이사항", "type": "textarea" }
+    ],
+    "buttons": [
+      { "label": "초기화", "action": "reset() -> location.reload" },
+      { "label": "수리의뢰", "action": "req_mode('insert') -> store_suri_proc.php" },
+      { "label": "수리수정", "action": "req_mode('update') -> store_suri_proc.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "우편번호 찾기", "popup": "zipcodebook" },
+      { "trigger": "모델 찾기", "popup": "popup_model_search.php (modelsel)" }
+    ],
+    "flowFrom": ["main.php"],
+    "flowTo": ["store_suri_proc.php","store_doing_list.php"]
+  }
+}

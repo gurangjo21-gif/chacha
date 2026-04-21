@@ -1,0 +1,1366 @@
+{
+  "popup_apt_search": {
+    "phpFile": "popup_apt_search.php",
+    "htmlFile": "screens/popup/popup_apt_search.html",
+    "type": "popup-search",
+    "title": "현장검색",
+    "purpose": "아파트/현장 검색 및 선택 팝업",
+    "workflow": "부모화면 > 아파트검색 버튼",
+    "searchFields": [
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "아파트코드", "dbField": "apt_code" },
+      { "name": "아파트명", "dbField": "apt_name" },
+      { "name": "현장명", "dbField": "scene_name" },
+      { "name": "선택", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem() → opener로 값 전달" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["admin_member_mode.php", "admin_scene_mode.php", "popup_receipt_*"],
+    "flowTo": []
+  },
+  "popup_apt_search_1": {
+    "phpFile": "popup_apt_search_1.php",
+    "htmlFile": "screens/popup/popup_apt_search_1.html",
+    "type": "popup-search",
+    "title": "현장검색 (변형1)",
+    "purpose": "아파트/현장 검색 변형 팝업 (모델/가격 포함 반환)",
+    "workflow": "부모화면 > 아파트검색 버튼(확장)",
+    "searchFields": [
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "아파트코드", "dbField": "apt_code" },
+      { "name": "아파트명", "dbField": "apt_name" },
+      { "name": "현장명", "dbField": "scene_name" },
+      { "name": "선택", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem(idx,apt_name,zip,addr1,addr2,callprice,품번,model)" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_receipt_*"],
+    "flowTo": []
+  },
+  "popup_center_aff": {
+    "phpFile": "popup_center_aff.php",
+    "htmlFile": "screens/popup/popup_center_aff.html",
+    "type": "popup-assign",
+    "title": "소속센터지정",
+    "purpose": "사원의 소속 센터(복수) 지정",
+    "workflow": "admin_user_mode > 소속센터지정",
+    "searchFields": [
+      { "name": "keyword", "label": "센터명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "지점명", "dbField": "center_name" },
+      { "name": "삭제", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "추가", "action": "센터 추가" },
+      { "label": "삭제", "action": "센터 삭제" },
+      { "label": "저장", "action": "ajax proc" }
+    ],
+    "popupsCalled": [
+      { "trigger": "센터검색", "popup": "popup_center_search.php" }
+    ],
+    "flowFrom": ["admin_user_mode.php"],
+    "flowTo": []
+  },
+  "popup_center_search": {
+    "phpFile": "popup_center_search.php",
+    "htmlFile": "screens/popup/popup_center_search.html",
+    "type": "popup-search",
+    "title": "대리점조회",
+    "purpose": "대리점(센터) 검색 및 선택",
+    "workflow": "부모화면 > 대리점검색",
+    "searchFields": [
+      { "name": "keyfield", "label": "검색구분", "type": "select" },
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "코드", "dbField": "center_code" },
+      { "name": "대리점명", "dbField": "center_name" },
+      { "name": "주소", "dbField": "address" },
+      { "name": "담당자명", "dbField": "manager" },
+      { "name": "전화번호", "dbField": "tel" },
+      { "name": "핸드폰", "dbField": "hp" },
+      { "name": "형태", "dbField": "center_type" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["admin_user_mode.php", "popup_center_aff.php"],
+    "flowTo": []
+  },
+  "popup_charge_select": {
+    "phpFile": "popup_charge_select.php",
+    "htmlFile": "screens/popup/popup_charge_select.html",
+    "type": "popup-search",
+    "title": "담당기사선택",
+    "purpose": "지점별 담당기사 선택 (2단계 선택: 지점 → 사원)",
+    "workflow": "서비스접수/처리 > 담당기사선택",
+    "searchFields": [
+      { "name": "keyword", "label": "지점/사원명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "지점코드", "dbField": "center_code" },
+      { "name": "지점명", "dbField": "center_name" },
+      { "name": "직원수", "dbField": "user_count" },
+      { "name": "사번", "dbField": "user_id" },
+      { "name": "사원명", "dbField": "user_name" },
+      { "name": "전화번호", "dbField": "tel" },
+      { "name": "선택", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "지점선택", "action": "지점 → 사원 목록 조회" },
+      { "label": "사원선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_svc.php", "popup_receipt_read.php"],
+    "flowTo": []
+  },
+  "popup_happycall": {
+    "phpFile": "popup_happycall.php",
+    "htmlFile": "screens/popup/popup_happycall.html",
+    "type": "popup-form",
+    "title": "해피콜 처리",
+    "purpose": "AS 처리 완료 후 고객 만족도 확인 통화(해피콜) 등록",
+    "workflow": "처리완료 접수 > 해피콜",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "확인일자", "dbField": "check_date" },
+      { "name": "확인고객명", "dbField": "check_cust" },
+      { "name": "만족도", "dbField": "satisfaction" },
+      { "name": "상담내역 고객의견", "dbField": "opinion" },
+      { "name": "처리사원", "dbField": "user" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "ajax 저장" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main 접수리스트"],
+    "flowTo": []
+  },
+  "popup_jaje": {
+    "phpFile": "popup_jaje.php",
+    "htmlFile": "screens/popup/popup_jaje.html",
+    "type": "popup-search",
+    "title": "자재 검색",
+    "purpose": "자재(부품) 검색 및 선택 (기본)",
+    "workflow": "부모화면 > 자재검색",
+    "searchFields": [
+      { "name": "keyword", "label": "품번/품명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "선택", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["store_*"],
+    "flowTo": []
+  },
+  "popup_master_search": {
+    "phpFile": "popup_master_search.php",
+    "htmlFile": "screens/popup/popup_master_search.html",
+    "type": "popup-search",
+    "title": "대리점조회 (담당자 포함)",
+    "purpose": "업무담당자 검색 및 선택",
+    "workflow": "부모화면 > 업무담당자검색",
+    "searchFields": [
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "업무부서", "dbField": "dept" },
+      { "name": "담당자", "dbField": "manager" },
+      { "name": "직급", "dbField": "grade" },
+      { "name": "담당업무", "dbField": "duty" },
+      { "name": "전화번호(내선)", "dbField": "tel_ext" },
+      { "name": "핸드폰", "dbField": "hp" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_receipt_*"],
+    "flowTo": []
+  },
+  "popup_model_search": {
+    "phpFile": "popup_model_search.php",
+    "htmlFile": "screens/popup/popup_model_search.html",
+    "type": "popup-search",
+    "title": "자재 검색",
+    "purpose": "모델(자재) 검색 - 기본형",
+    "workflow": "부모화면 > 모델검색",
+    "searchFields": [
+      { "name": "keyword", "label": "품번/품명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "선택", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_receipt_*"],
+    "flowTo": []
+  },
+  "popup_model_search_scene": {
+    "phpFile": "popup_model_search_scene.php",
+    "htmlFile": "screens/popup/popup_model_search_scene.html",
+    "type": "popup-search",
+    "title": "자재 검색 (현장용)",
+    "purpose": "현장 등록용 모델 검색",
+    "workflow": "admin_scene_mode > 모델검색",
+    "searchFields": [
+      { "name": "keyword", "label": "품번/품명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "선택", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["admin_scene_mode.php", "admin_scene_mode1.php"],
+    "flowTo": []
+  },
+  "popup_model_search_sub": {
+    "phpFile": "popup_model_search_sub.php",
+    "htmlFile": "screens/popup/popup_model_search_sub.html",
+    "type": "popup-search",
+    "title": "자재 검색 (부자재)",
+    "purpose": "부자재/하위 모델 검색",
+    "workflow": "부모화면 > 부자재검색",
+    "searchFields": [
+      { "name": "keyword", "label": "품번/품명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "선택", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_svc_master.php"],
+    "flowTo": []
+  },
+  "popup_model_search_svc": {
+    "phpFile": "popup_model_search_svc.php",
+    "htmlFile": "screens/popup/popup_model_search_svc.html",
+    "type": "popup-search",
+    "title": "처리 자재계리 검색",
+    "purpose": "서비스 처리 시 사용한 자재 검색",
+    "workflow": "popup_svc > 자재검색",
+    "searchFields": [
+      { "name": "keyword", "label": "품번/품명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_svc.php", "popup_svc1.php"],
+    "flowTo": []
+  },
+  "popup_receipt_excel_111": {
+    "phpFile": "popup_receipt_excel_111.php",
+    "htmlFile": "screens/popup/popup_receipt_excel_111.html",
+    "type": "popup-form",
+    "title": "연차 접수 (엑셀 업로드 v111)",
+    "purpose": "연차 접수 엑셀 일괄 등록 (구버전)",
+    "workflow": "접수 > 연차접수 > 엑셀업로드",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "파일 업로드", "dbField": "upfile" }
+    ],
+    "buttons": [
+      { "label": "업로드", "action": "receipt_year_proc" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["receipt main"],
+    "flowTo": []
+  },
+  "popup_receipt_excel_upload": {
+    "phpFile": "popup_receipt_excel_upload.php",
+    "htmlFile": "screens/popup/popup_receipt_excel_upload.html",
+    "type": "popup-form",
+    "title": "연차 접수 (엑셀 업로드)",
+    "purpose": "연차 접수 엑셀 일괄 등록",
+    "workflow": "접수 > 연차접수 > 엑셀업로드",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "파일 업로드", "dbField": "upfile" }
+    ],
+    "buttons": [
+      { "label": "업로드", "action": "receipt_year_proc" },
+      { "label": "양식다운", "action": "excel template download" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["receipt main"],
+    "flowTo": []
+  },
+  "popup_receipt_read": {
+    "phpFile": "popup_receipt_read.php",
+    "htmlFile": "screens/popup/popup_receipt_read.html",
+    "type": "popup-detail",
+    "title": "서비스 접수",
+    "purpose": "서비스 접수 상세 조회/수정",
+    "workflow": "접수 목록 > 접수 상세",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "receipt_no" },
+      { "name": "접수일자", "dbField": "receipt_date" },
+      { "name": "발신번호", "dbField": "caller" },
+      { "name": "접수구분", "dbField": "receipt_type" },
+      { "name": "고객명", "dbField": "cust_name" },
+      { "name": "관계", "dbField": "relation" },
+      { "name": "전화번호", "dbField": "tel" },
+      { "name": "휴대폰", "dbField": "hp" },
+      { "name": "우편번호", "dbField": "zip" },
+      { "name": "APT명칭", "dbField": "apt_name" },
+      { "name": "주소", "dbField": "address" },
+      { "name": "상세주소", "dbField": "address_detail" },
+      { "name": "모델", "dbField": "model" },
+      { "name": "판매유형", "dbField": "sale_type" },
+      { "name": "고장증상", "dbField": "error_code" },
+      { "name": "세부증상", "dbField": "error_detail" },
+      { "name": "유상통보", "dbField": "paid_notice" },
+      { "name": "특이사항", "dbField": "special" },
+      { "name": "기사메모", "dbField": "engineer_memo" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "ajax 저장" },
+      { "label": "출력", "action": "popup_svc_print.php" },
+      { "label": "SMS", "action": "popup_sms.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "아파트검색", "popup": "popup_apt_search.php" },
+      { "trigger": "주소검색", "popup": "address_popup.php" },
+      { "trigger": "모델검색", "popup": "popup_model_search.php" },
+      { "trigger": "SMS", "popup": "popup_sms.php" }
+    ],
+    "flowFrom": ["receipt_list.php"],
+    "flowTo": []
+  },
+  "popup_receipt_tk_excel_upload": {
+    "phpFile": "popup_receipt_tk_excel_upload.php",
+    "htmlFile": "screens/popup/popup_receipt_tk_excel_upload.html",
+    "type": "popup-form",
+    "title": "TK접수 (엑셀 업로드)",
+    "purpose": "TK 접수 엑셀 일괄 등록",
+    "workflow": "접수 > TK접수 > 엑셀업로드",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "파일 업로드", "dbField": "upfile" }
+    ],
+    "buttons": [
+      { "label": "업로드", "action": "receipt_tk_proc" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["receipt TK main"],
+    "flowTo": []
+  },
+  "popup_receipt_year_read": {
+    "phpFile": "popup_receipt_year_read.php",
+    "htmlFile": "screens/popup/popup_receipt_year_read.html",
+    "type": "popup-detail",
+    "title": "연차 접수",
+    "purpose": "연차 접수 상세 조회/수정",
+    "workflow": "연차접수 목록 > 상세",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "receipt_no" },
+      { "name": "연차", "dbField": "year_no" },
+      { "name": "접수일자", "dbField": "receipt_date" },
+      { "name": "기준일", "dbField": "base_date" },
+      { "name": "공종명", "dbField": "work_type" },
+      { "name": "타공종유무", "dbField": "other_work_yn" },
+      { "name": "방문약속여부", "dbField": "visit_promise_yn" },
+      { "name": "방문예약일", "dbField": "visit_date" },
+      { "name": "고객명", "dbField": "cust_name" },
+      { "name": "관계", "dbField": "relation" },
+      { "name": "전화번호", "dbField": "tel" },
+      { "name": "휴대폰", "dbField": "hp" },
+      { "name": "우편번호", "dbField": "zip" },
+      { "name": "APT명칭", "dbField": "apt_name" },
+      { "name": "주소", "dbField": "address" },
+      { "name": "상세주소", "dbField": "address_detail" },
+      { "name": "모델", "dbField": "model" },
+      { "name": "유상통보", "dbField": "paid_notice" },
+      { "name": "고장증상", "dbField": "error_code" },
+      { "name": "세부증상", "dbField": "error_detail" },
+      { "name": "기사메모", "dbField": "engineer_memo" },
+      { "name": "상담내용", "dbField": "consult" },
+      { "name": "처리지점", "dbField": "branch" },
+      { "name": "담당기사", "dbField": "engineer" },
+      { "name": "기사연락처", "dbField": "engineer_tel" },
+      { "name": "구간구분", "dbField": "section" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_receipt_year_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "주소검색", "popup": "address_popup.php" },
+      { "trigger": "아파트검색", "popup": "popup_apt_search_1.php" }
+    ],
+    "flowFrom": ["연차접수 목록"],
+    "flowTo": []
+  },
+  "popup_return": {
+    "phpFile": "popup_return.php",
+    "htmlFile": "screens/popup/popup_return.html",
+    "type": "popup-form",
+    "title": "반납 의뢰",
+    "purpose": "자재 반납 의뢰 등록 (시리얼 기반)",
+    "workflow": "재고 > 반납 의뢰",
+    "searchFields": [
+      { "name": "keyword", "label": "품번/품명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "출고시리얼", "dbField": "out_serial" },
+      { "name": "출고일", "dbField": "out_date" },
+      { "name": "반납시리얼", "dbField": "return_serial" },
+      { "name": "반납일", "dbField": "return_date" },
+      { "name": "반납등급", "dbField": "return_grade" },
+      { "name": "비고", "dbField": "remark" },
+      { "name": "반납연장", "dbField": "extension" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_return_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["store list"],
+    "flowTo": []
+  },
+  "popup_satisfaction": {
+    "phpFile": "popup_satisfaction.php",
+    "htmlFile": "screens/popup/popup_satisfaction.html",
+    "type": "popup-form",
+    "title": "해피콜 처리 (만족도)",
+    "purpose": "고객 만족도 조사 (해피콜 변형)",
+    "workflow": "처리완료 > 만족도 조사",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "확인일자", "dbField": "check_date" },
+      { "name": "확인고객명", "dbField": "check_cust" },
+      { "name": "만족도", "dbField": "satisfaction" },
+      { "name": "상담내역 고객의견", "dbField": "opinion" },
+      { "name": "처리사원", "dbField": "user" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "ajax 저장" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["처리완료 접수"],
+    "flowTo": []
+  },
+  "popup_scene_detail": {
+    "phpFile": "popup_scene_detail.php",
+    "htmlFile": "screens/popup/popup_scene_detail.html",
+    "type": "popup-detail",
+    "title": "현장 상세보기",
+    "purpose": "현장 상세 정보 팝업 (읽기)",
+    "workflow": "현장목록 > 상세 (팝업)",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "현장명", "dbField": "scene_name" },
+      { "name": "아파트명", "dbField": "apt_name" },
+      { "name": "세대수", "dbField": "total_unit" },
+      { "name": "보증기간", "dbField": "warranty" },
+      { "name": "입주기간", "dbField": "move_in_period" },
+      { "name": "주소", "dbField": "address" },
+      { "name": "상세주소", "dbField": "address_detail" },
+      { "name": "담당지점", "dbField": "branch" },
+      { "name": "비고", "dbField": "remark" },
+      { "name": "뇌전유무", "dbField": "tdb_yn" },
+      { "name": "설치담당 성명/직함/연락처", "dbField": "install_manager" },
+      { "name": "현장담당 성명/직함/연락처", "dbField": "scene_manager" },
+      { "name": "세대기기 모델/총수량/App/HW Ver", "dbField": "device" },
+      { "name": "게이트웨이 모델/SW Ver", "dbField": "gateway" },
+      { "name": "TK유무/TK점검자", "dbField": "tk_info" },
+      { "name": "현장이슈", "dbField": "scene_issue" },
+      { "name": "Category/코드번호/모델명/수량/제조사/연락처", "dbField": "scene_part" }
+    ],
+    "buttons": [
+      { "label": "닫기", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_scene_list.php", "pop_admin_scene_list.php"],
+    "flowTo": []
+  },
+  "popup_scene_list": {
+    "phpFile": "popup_scene_list.php",
+    "htmlFile": "screens/popup/popup_scene_list.html",
+    "type": "popup-list",
+    "title": "현장 관리 (팝업)",
+    "purpose": "현장 검색/선택 팝업 (목록형)",
+    "workflow": "부모화면 > 현장검색",
+    "searchFields": [
+      { "name": "apt_category", "label": "아파트분류", "type": "select" },
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "아파트번호", "dbField": "apt_no", "sortable": true },
+      { "name": "아파트명", "dbField": "apt_name", "sortable": true },
+      { "name": "현장명", "dbField": "scene_name", "sortable": true },
+      { "name": "현장담당자", "dbField": "scene_manager", "sortable": true },
+      { "name": "모델명", "dbField": "model_name", "sortable": true },
+      { "name": "비고(선택)", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "상세", "popup": "popup_scene_detail.php" }
+    ],
+    "flowFrom": ["receipt_*"],
+    "flowTo": []
+  },
+  "popup_scene_mode": {
+    "phpFile": "popup_scene_mode.php",
+    "htmlFile": "screens/popup/popup_scene_mode.html",
+    "type": "popup-form",
+    "title": "현장 등록/수정 (팝업)",
+    "purpose": "현장 신규등록/수정 팝업",
+    "workflow": "현장목록 > 등록 (팝업)",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "세대수", "dbField": "total_unit" },
+      { "name": "보증기간", "dbField": "warranty" },
+      { "name": "입주기간", "dbField": "move_in_period" },
+      { "name": "상세주소", "dbField": "address_detail" },
+      { "name": "담당지점", "dbField": "branch" },
+      { "name": "비고", "dbField": "remark" },
+      { "name": "뇌전유무", "dbField": "tdb_yn" },
+      { "name": "설치담당 성명/직함/연락처", "dbField": "install_manager" },
+      { "name": "현장담당 성명/직함/연락처", "dbField": "scene_manager" },
+      { "name": "세대기기 모델/총수량/App/HW Ver", "dbField": "device" },
+      { "name": "게이트웨이 모델/SW Ver", "dbField": "gateway" },
+      { "name": "TK유무/TK점검자", "dbField": "tk_info" },
+      { "name": "현장이슈", "dbField": "scene_issue" },
+      { "name": "Category/코드번호/모델명/수량/제조사/연락처/del", "dbField": "scene_part" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_scene_mode_proc.php" },
+      { "label": "취소", "action": "window.close()" },
+      { "label": "주소검색", "action": "address_popup.php" },
+      { "label": "모델검색", "action": "popup_model_search_scene.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "주소검색", "popup": "address_popup.php" },
+      { "trigger": "모델검색", "popup": "popup_model_search_scene.php" }
+    ],
+    "flowFrom": ["popup_scene_list.php"],
+    "flowTo": []
+  },
+  "popup_secen_search": {
+    "phpFile": "popup_secen_search.php",
+    "htmlFile": "screens/popup/popup_secen_search.html",
+    "type": "popup-search",
+    "title": "현장 검색",
+    "purpose": "현장 검색 (접수 등록용)",
+    "workflow": "접수 등록 > 현장검색",
+    "searchFields": [
+      { "name": "keyword", "label": "아파트/현장명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "아파트명", "dbField": "apt_name" },
+      { "name": "현장명", "dbField": "scene_name" },
+      { "name": "담당자", "dbField": "manager" },
+      { "name": "모델명", "dbField": "model_name" },
+      { "name": "뇌전일", "dbField": "tdb_date" },
+      { "name": "비고", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["receipt_*"],
+    "flowTo": []
+  },
+  "popup_secen_search_release": {
+    "phpFile": "popup_secen_search_release.php",
+    "htmlFile": "screens/popup/popup_secen_search_release.html",
+    "type": "popup-search",
+    "title": "현장 검색 (출고용)",
+    "purpose": "출고용 현장 검색",
+    "workflow": "출고 > 현장검색",
+    "searchFields": [
+      { "name": "keyword", "label": "아파트/현장명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "아파트명", "dbField": "apt_name" },
+      { "name": "현장명", "dbField": "scene_name" },
+      { "name": "비고", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["출고화면"],
+    "flowTo": []
+  },
+  "popup_serial": {
+    "phpFile": "popup_serial.php",
+    "htmlFile": "screens/popup/popup_serial.html",
+    "type": "popup-form",
+    "title": "시리얼 번호 등록",
+    "purpose": "자재 출고 시리얼 등록",
+    "workflow": "출고 > 시리얼등록",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "출고시리얼번호", "dbField": "out_serial" },
+      { "name": "등급", "dbField": "grade" },
+      { "name": "출고사원", "dbField": "out_user" },
+      { "name": "출고일", "dbField": "out_date" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_serial_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["store list"],
+    "flowTo": []
+  },
+  "popup_serial_return": {
+    "phpFile": "popup_serial_return.php",
+    "htmlFile": "screens/popup/popup_serial_return.html",
+    "type": "popup-form",
+    "title": "반품 시리얼 번호 등록",
+    "purpose": "반품용 시리얼 번호 등록",
+    "workflow": "반품 > 시리얼등록",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "출고시리얼번호", "dbField": "out_serial" },
+      { "name": "반납시리얼번호", "dbField": "return_serial" },
+      { "name": "반납등급", "dbField": "return_grade" },
+      { "name": "반납사원", "dbField": "return_user" },
+      { "name": "반납일", "dbField": "return_date" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_serial_return_proc" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["반품화면"],
+    "flowTo": []
+  },
+  "popup_serial_return_release": {
+    "phpFile": "popup_serial_return_release.php",
+    "htmlFile": "screens/popup/popup_serial_return_release.html",
+    "type": "popup-form",
+    "title": "반품 확정",
+    "purpose": "반품 확정 처리 (시리얼 기반)",
+    "workflow": "반품 > 확정",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "출고시리얼", "dbField": "out_serial" },
+      { "name": "출고일", "dbField": "out_date" },
+      { "name": "반납시리얼", "dbField": "return_serial" },
+      { "name": "반납일", "dbField": "return_date" },
+      { "name": "반납등급", "dbField": "return_grade" },
+      { "name": "비고", "dbField": "remark" }
+    ],
+    "buttons": [
+      { "label": "확정", "action": "popup_serial_return_release_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["반품목록"],
+    "flowTo": []
+  },
+  "popup_serial_return_release2": {
+    "phpFile": "popup_serial_return_release2.php",
+    "htmlFile": "screens/popup/popup_serial_return_release2.html",
+    "type": "popup-form",
+    "title": "반품 신청",
+    "purpose": "반품 신청 (시리얼 기반 v2)",
+    "workflow": "반품 > 신청",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "출고시리얼", "dbField": "out_serial" },
+      { "name": "출고일", "dbField": "out_date" },
+      { "name": "반납시리얼", "dbField": "return_serial" },
+      { "name": "반납등급", "dbField": "return_grade" }
+    ],
+    "buttons": [
+      { "label": "신청", "action": "popup_serial_return_release2_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["반품목록"],
+    "flowTo": []
+  },
+  "popup_serial_store": {
+    "phpFile": "popup_serial_store.php",
+    "htmlFile": "screens/popup/popup_serial_store.html",
+    "type": "popup-form",
+    "title": "반품 시리얼 번호 등록 (센터)",
+    "purpose": "센터 반품 시리얼 등록",
+    "workflow": "센터반품 > 시리얼등록",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "번호", "dbField": "rownum" },
+      { "name": "출고시리얼번호", "dbField": "out_serial" },
+      { "name": "반납시리얼번호", "dbField": "return_serial" },
+      { "name": "반납등급", "dbField": "return_grade" },
+      { "name": "반납사원", "dbField": "return_user" },
+      { "name": "반납일", "dbField": "return_date" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_serial_store_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["센터반품"],
+    "flowTo": []
+  },
+  "popup_serial_tdb": {
+    "phpFile": "popup_serial_tdb.php",
+    "htmlFile": "screens/popup/popup_serial_tdb.html",
+    "type": "popup-form",
+    "title": "뇌전 출고 등록",
+    "purpose": "뇌전자재(TDB) 출고 수량 등록",
+    "workflow": "뇌전 > 출고등록",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "신청량", "dbField": "req_qty" },
+      { "name": "출고량", "dbField": "out_qty" },
+      { "name": "출고등급", "dbField": "out_grade" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_serial_tdb_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["뇌전출고 목록"],
+    "flowTo": []
+  },
+  "popup_serial_tdb_return": {
+    "phpFile": "popup_serial_tdb_return.php",
+    "htmlFile": "screens/popup/popup_serial_tdb_return.html",
+    "type": "popup-form",
+    "title": "뇌전 반납확정",
+    "purpose": "뇌전자재(TDB) 반납 확정",
+    "workflow": "뇌전 > 반납확정",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "신청량", "dbField": "req_qty" },
+      { "name": "출고량", "dbField": "out_qty" },
+      { "name": "반납량", "dbField": "return_qty" },
+      { "name": "확정수량", "dbField": "confirm_qty" }
+    ],
+    "buttons": [
+      { "label": "확정", "action": "popup_serial_tdb_return_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["뇌전반납 목록"],
+    "flowTo": []
+  },
+  "popup_serial_tdb_return_ins": {
+    "phpFile": "popup_serial_tdb_return_ins.php",
+    "htmlFile": "screens/popup/popup_serial_tdb_return_ins.html",
+    "type": "popup-form",
+    "title": "뇌전 반납신청",
+    "purpose": "뇌전자재(TDB) 반납 신청(양품/불량 구분)",
+    "workflow": "뇌전 > 반납신청",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "신청량", "dbField": "req_qty" },
+      { "name": "출고량", "dbField": "out_qty" },
+      { "name": "양품", "dbField": "good_qty" },
+      { "name": "불량", "dbField": "bad_qty" }
+    ],
+    "buttons": [
+      { "label": "신청", "action": "popup_serial_tdb_return_ins_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["뇌전목록"],
+    "flowTo": []
+  },
+  "popup_sms": {
+    "phpFile": "popup_sms.php",
+    "htmlFile": "screens/popup/popup_sms.html",
+    "type": "popup-form",
+    "title": "자주사용하는 문구",
+    "purpose": "SMS 자주사용 문구 관리 및 전송",
+    "workflow": "SMS 전송 > 문구선택",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "문자내용", "dbField": "content" },
+      { "name": "사용", "dbField": "use_yn" },
+      { "name": "비고", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "추가", "action": "문구 추가" },
+      { "label": "선택", "action": "selectitem()" },
+      { "label": "저장", "action": "ajax 저장" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_sms_main.php"],
+    "flowTo": []
+  },
+  "popup_sms_list": {
+    "phpFile": "popup_sms_list.php",
+    "htmlFile": "screens/popup/popup_sms_list.html",
+    "type": "popup-list",
+    "title": "SMS 리스트",
+    "purpose": "발송된 SMS 이력 조회 및 재전송",
+    "workflow": "SMS > 리스트",
+    "searchFields": [
+      { "name": "sdate", "label": "시작일", "type": "date" },
+      { "name": "edate", "label": "종료일", "type": "date" },
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "No", "dbField": "rownum" },
+      { "name": "전송일시", "dbField": "send_date" },
+      { "name": "수신번호", "dbField": "recv_tel" },
+      { "name": "전송메시지", "dbField": "message" },
+      { "name": "발신자", "dbField": "sender" },
+      { "name": "전송결과", "dbField": "result" },
+      { "name": "재전송", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "재전송", "action": "ajax 재전송" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_sms_main.php"],
+    "flowTo": []
+  },
+  "popup_sms_main": {
+    "phpFile": "popup_sms_main.php",
+    "htmlFile": "screens/popup/popup_sms_main.html",
+    "type": "popup-form",
+    "title": "SMS 전송",
+    "purpose": "SMS 작성 및 전송 메인",
+    "workflow": "SMS 전송 메인",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "수신번호", "dbField": "recv_tel" },
+      { "name": "발신번호", "dbField": "send_tel" },
+      { "name": "메시지내용", "dbField": "message" }
+    ],
+    "buttons": [
+      { "label": "전송", "action": "ajax SMS 전송" },
+      { "label": "자주문구", "action": "popup_sms.php" },
+      { "label": "이력조회", "action": "popup_sms_list.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "자주문구", "popup": "popup_sms.php" },
+      { "trigger": "이력조회", "popup": "popup_sms_list.php" }
+    ],
+    "flowFrom": ["receipt_*", "popup_receipt_read.php"],
+    "flowTo": []
+  },
+  "popup_store_grade": {
+    "phpFile": "popup_store_grade.php",
+    "htmlFile": "screens/popup/popup_store_grade.html",
+    "type": "popup-list",
+    "title": "자재출고등급",
+    "purpose": "자재 출고 등급 관리",
+    "workflow": "자재 > 출고등급 관리",
+    "searchFields": [
+      { "name": "bUse", "label": "사용여부", "type": "select" }
+    ],
+    "tableColumns": [
+      { "name": "코드번호", "dbField": "grade_code" },
+      { "name": "등급명", "dbField": "grade_name" },
+      { "name": "사용", "dbField": "use_yn" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "ajax 저장" },
+      { "label": "추가", "action": "행 추가" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["코드관리"],
+    "flowTo": []
+  },
+  "popup_svc": {
+    "phpFile": "popup_svc.php",
+    "htmlFile": "screens/popup/popup_svc.html",
+    "type": "popup-form",
+    "title": "처리 (서비스)",
+    "purpose": "서비스 처리 등록 (기본)",
+    "workflow": "접수 > 처리등록",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "receipt_no" },
+      { "name": "처리일", "dbField": "proc_date" },
+      { "name": "담당기사", "dbField": "engineer" },
+      { "name": "처리분류", "dbField": "proc_code" },
+      { "name": "처리상세", "dbField": "proc_detail" },
+      { "name": "원인분류", "dbField": "reason_code" },
+      { "name": "원인상세", "dbField": "reason_detail" },
+      { "name": "처리내용", "dbField": "proc_content" },
+      { "name": "청구금액", "dbField": "req_amt" },
+      { "name": "징구금액", "dbField": "recv_amt" },
+      { "name": "사용자재", "dbField": "used_parts" },
+      { "name": "기사의견", "dbField": "engineer_opinion" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_svc_proc.php" },
+      { "label": "자재검색", "action": "popup_svc_master.php" },
+      { "label": "담당기사", "action": "popup_charge_select.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "자재검색", "popup": "popup_svc_master.php" },
+      { "trigger": "담당기사", "popup": "popup_charge_select.php" },
+      { "trigger": "원인코드", "popup": "popup_model_search_svc.php" }
+    ],
+    "flowFrom": ["receipt 목록"],
+    "flowTo": []
+  },
+  "popup_svc1": {
+    "phpFile": "popup_svc1.php",
+    "htmlFile": "screens/popup/popup_svc1.html",
+    "type": "popup-form",
+    "title": "처리 (변형1)",
+    "purpose": "서비스 처리 등록 변형1",
+    "workflow": "접수 > 처리등록(변형)",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "receipt_no" },
+      { "name": "처리일", "dbField": "proc_date" },
+      { "name": "처리분류", "dbField": "proc_code" },
+      { "name": "처리상세", "dbField": "proc_detail" },
+      { "name": "원인분류", "dbField": "reason_code" },
+      { "name": "처리내용", "dbField": "proc_content" },
+      { "name": "청구금액", "dbField": "req_amt" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_svc_proc.php" },
+      { "label": "자재검색", "action": "popup_svc_master.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "자재검색", "popup": "popup_svc_master.php" }
+    ],
+    "flowFrom": ["receipt 목록"],
+    "flowTo": []
+  },
+  "popup_svc_cancel": {
+    "phpFile": "popup_svc_cancel.php",
+    "htmlFile": "screens/popup/popup_svc_cancel.html",
+    "type": "popup-form",
+    "title": "처리 (취소)",
+    "purpose": "서비스 처리 취소",
+    "workflow": "처리완료 > 취소",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "receipt_no" },
+      { "name": "처리일", "dbField": "proc_date" },
+      { "name": "취소사유", "dbField": "cancel_reason" }
+    ],
+    "buttons": [
+      { "label": "취소처리", "action": "popup_svc_proc.php (cancel)" },
+      { "label": "닫기", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["처리완료 목록"],
+    "flowTo": []
+  },
+  "popup_svc_master": {
+    "phpFile": "popup_svc_master.php",
+    "htmlFile": "screens/popup/popup_svc_master.html",
+    "type": "popup-search",
+    "title": "자재 검색 (처리용)",
+    "purpose": "서비스 처리용 자재 선택 및 사용량 등록",
+    "workflow": "popup_svc > 자재검색",
+    "searchFields": [
+      { "name": "keyword", "label": "품번/품명", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "CS품명", "dbField": "part_name" },
+      { "name": "등급", "dbField": "grade" },
+      { "name": "재고량", "dbField": "stock_qty" },
+      { "name": "반납", "dbField": "return_qty" },
+      { "name": "사용량", "dbField": "use_qty" },
+      { "name": "금액", "dbField": "amt" },
+      { "name": "삭제", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_svc.php", "popup_svc1.php"],
+    "flowTo": []
+  },
+  "popup_svc_print": {
+    "phpFile": "popup_svc_print.php",
+    "htmlFile": "screens/popup/popup_svc_print.html",
+    "type": "popup-print",
+    "title": "자재 출력 (서비스 전표)",
+    "purpose": "서비스 접수/처리 전표 인쇄",
+    "workflow": "접수/처리 > 출력",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "receipt_no" },
+      { "name": "접수일", "dbField": "receipt_date" },
+      { "name": "접수자명", "dbField": "receipt_user" },
+      { "name": "고객명", "dbField": "cust_name" },
+      { "name": "접수현장", "dbField": "scene" },
+      { "name": "일반 전화번호", "dbField": "tel" },
+      { "name": "긴급 전화번호", "dbField": "hp" },
+      { "name": "주소", "dbField": "address" },
+      { "name": "제품명", "dbField": "model" },
+      { "name": "고장증상", "dbField": "error_code" },
+      { "name": "세부증상", "dbField": "error_detail" },
+      { "name": "특이사항", "dbField": "special" },
+      { "name": "구입일", "dbField": "buy_date" },
+      { "name": "상담내용", "dbField": "consult" },
+      { "name": "기사명", "dbField": "engineer" },
+      { "name": "처리일", "dbField": "proc_date" },
+      { "name": "제품 일련번호", "dbField": "serial" },
+      { "name": "확인 고객명", "dbField": "check_cust" },
+      { "name": "방문일", "dbField": "visit_date" },
+      { "name": "요금적용", "dbField": "fee_type" },
+      { "name": "부가세", "dbField": "vat" },
+      { "name": "처리내용", "dbField": "proc_content" },
+      { "name": "처리분류", "dbField": "proc_code" },
+      { "name": "처리상세", "dbField": "proc_detail" },
+      { "name": "원인분류", "dbField": "reason_code" },
+      { "name": "원인상세", "dbField": "reason_detail" },
+      { "name": "청구금액", "dbField": "req_amt" },
+      { "name": "징구금액", "dbField": "recv_amt" },
+      { "name": "기사의견", "dbField": "engineer_opinion" },
+      { "name": "고객확인", "dbField": "cust_confirm" },
+      { "name": "부품코드/부품명/등급/수량/금액", "dbField": "parts" }
+    ],
+    "buttons": [
+      { "label": "인쇄", "action": "window.print()" },
+      { "label": "닫기", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_receipt_read.php", "popup_svc.php"],
+    "flowTo": []
+  },
+  "popup_svc_read": {
+    "phpFile": "popup_svc_read.php",
+    "htmlFile": "screens/popup/popup_svc_read.html",
+    "type": "popup-detail",
+    "title": "처리팝업 (조회)",
+    "purpose": "서비스 처리 내역 상세 조회",
+    "workflow": "처리완료 > 상세",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "receipt_no" },
+      { "name": "처리일", "dbField": "proc_date" },
+      { "name": "담당기사", "dbField": "engineer" },
+      { "name": "처리분류/상세", "dbField": "proc_code_detail" },
+      { "name": "원인분류/상세", "dbField": "reason_code_detail" },
+      { "name": "처리내용", "dbField": "proc_content" },
+      { "name": "청구/징구금액", "dbField": "amt" },
+      { "name": "사용자재", "dbField": "used_parts" }
+    ],
+    "buttons": [
+      { "label": "출력", "action": "popup_svc_print.php" },
+      { "label": "닫기", "action": "window.close()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "출력", "popup": "popup_svc_print.php" }
+    ],
+    "flowFrom": ["처리완료 목록"],
+    "flowTo": []
+  },
+  "popup_svc_read_del": {
+    "phpFile": "popup_svc_read_del.php",
+    "htmlFile": "screens/popup/popup_svc_read_del.html",
+    "type": "popup-detail",
+    "title": "처리팝업 (삭제/취소 조회)",
+    "purpose": "취소된 처리 내역 상세 조회",
+    "workflow": "취소 목록 > 상세",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "receipt_no" },
+      { "name": "처리일", "dbField": "proc_date" },
+      { "name": "처리분류/상세", "dbField": "proc_code_detail" },
+      { "name": "원인분류/상세", "dbField": "reason_code_detail" },
+      { "name": "취소사유", "dbField": "cancel_reason" }
+    ],
+    "buttons": [
+      { "label": "닫기", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["취소목록"],
+    "flowTo": []
+  },
+  "popup_tdb_price_modify": {
+    "phpFile": "popup_tdb_price_modify.php",
+    "htmlFile": "screens/popup/popup_tdb_price_modify.html",
+    "type": "popup-form",
+    "title": "뇌전자재 금액 수정",
+    "purpose": "뇌전자재 센터 단가(반납/미반납/유지보수) 수정",
+    "workflow": "뇌전자재 > 단가관리",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "품명", "dbField": "part_name" },
+      { "name": "센터반납가A", "dbField": "return_price_a" },
+      { "name": "센터미반납가A", "dbField": "noreturn_price_a" },
+      { "name": "센터반납가R", "dbField": "return_price_r" },
+      { "name": "센터미반납가R", "dbField": "noreturn_price_r" },
+      { "name": "센터유지보수가", "dbField": "maintain_price" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "ajax 저장" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["tdb 관리"],
+    "flowTo": []
+  },
+  "popup_tdb_store_list": {
+    "phpFile": "popup_tdb_store_list.php",
+    "htmlFile": "screens/popup/popup_tdb_store_list.html",
+    "type": "popup-list",
+    "title": "뇌전자재신청 상세",
+    "purpose": "뇌전자재 신청 상세 목록 조회",
+    "workflow": "뇌전자재신청 > 상세",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "신청번호", "dbField": "req_no" },
+      { "name": "신청일자", "dbField": "req_date" },
+      { "name": "신청센터", "dbField": "req_center" },
+      { "name": "신청사원", "dbField": "req_user" },
+      { "name": "품번", "dbField": "part_code" },
+      { "name": "모델명", "dbField": "model" },
+      { "name": "출고일", "dbField": "out_date" },
+      { "name": "CS품명", "dbField": "cs_part_name" },
+      { "name": "유/무상", "dbField": "paid_yn" },
+      { "name": "미출고량", "dbField": "unout_qty" },
+      { "name": "진행상태", "dbField": "status" },
+      { "name": "상태", "dbField": "state" },
+      { "name": "반납상태", "dbField": "return_state" }
+    ],
+    "buttons": [
+      { "label": "닫기", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["tdb 신청"],
+    "flowTo": []
+  },
+  "popup_tk_G": {
+    "phpFile": "popup_tk_G.php",
+    "htmlFile": "screens/popup/popup_tk_G.html",
+    "type": "popup-form",
+    "title": "TK 공용부 설정",
+    "purpose": "TK 공용부(지하/공동) 설정",
+    "workflow": "TK 관리 > 공용부",
+    "searchFields": [
+      { "name": "keyword", "label": "아파트/동", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "아파트명", "dbField": "apt_name" },
+      { "name": "동", "dbField": "dong" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_tk_G_proc.php" },
+      { "label": "취소", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["TK관리"],
+    "flowTo": []
+  },
+  "popup_tk_S": {
+    "phpFile": "popup_tk_S.php",
+    "htmlFile": "screens/popup/popup_tk_S.html",
+    "type": "popup-form",
+    "title": "TK 세대부 설정",
+    "purpose": "TK 세대부 설정",
+    "workflow": "TK 관리 > 세대부",
+    "searchFields": [
+      { "name": "keyword", "label": "아파트/동", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "아파트명", "dbField": "apt_name" },
+      { "name": "동", "dbField": "dong" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_tk_S_proc.php" },
+      { "label": "상세", "action": "popup_tk_S_detail.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "상세", "popup": "popup_tk_S_detail.php" }
+    ],
+    "flowFrom": ["TK관리"],
+    "flowTo": []
+  },
+  "popup_tk_S_detail": {
+    "phpFile": "popup_tk_S_detail.php",
+    "htmlFile": "screens/popup/popup_tk_S_detail.html",
+    "type": "popup-detail",
+    "title": "TK 세대부 설정 (상세)",
+    "purpose": "TK 세대부 상세 설정",
+    "workflow": "TK 관리 > 세대부 > 상세",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "아파트명", "dbField": "apt_name" },
+      { "name": "동", "dbField": "dong" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "popup_tk_S_proc.php" },
+      { "label": "닫기", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["popup_tk_S.php"],
+    "flowTo": []
+  },
+  "popup_visit_cancel": {
+    "phpFile": "popup_visit_cancel.php",
+    "htmlFile": "screens/popup/popup_visit_cancel.html",
+    "type": "popup-list",
+    "title": "방문예약취소",
+    "purpose": "방문예약 취소 사유 코드 관리",
+    "workflow": "코드관리 > 방문예약취소",
+    "searchFields": [
+      { "name": "bUse", "label": "사용여부", "type": "select" }
+    ],
+    "tableColumns": [
+      { "name": "코드번호", "dbField": "code" },
+      { "name": "예약취소명", "dbField": "name" },
+      { "name": "사용", "dbField": "use_yn" }
+    ],
+    "buttons": [
+      { "label": "저장", "action": "ajax 저장" },
+      { "label": "추가", "action": "행 추가" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["코드관리"],
+    "flowTo": []
+  },
+  "pop_admin_scene_list": {
+    "phpFile": "pop_admin_scene_list.php",
+    "htmlFile": "screens/popup/pop_admin_scene_list.html",
+    "type": "popup-list",
+    "title": "현장 관리 (관리자 팝업)",
+    "purpose": "관리자용 현장 검색/선택 팝업",
+    "workflow": "관리자 부모화면 > 현장검색",
+    "searchFields": [
+      { "name": "keyword", "label": "검색어", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "아파트번호", "dbField": "apt_no" },
+      { "name": "아파트명", "dbField": "apt_name" },
+      { "name": "현장명", "dbField": "scene_name" },
+      { "name": "현장담당자", "dbField": "scene_manager" },
+      { "name": "모델명", "dbField": "model_name" },
+      { "name": "비고(선택)", "dbField": "action" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["admin_*"],
+    "flowTo": []
+  },
+  "address_popup": {
+    "phpFile": "address_popup.php",
+    "htmlFile": "screens/popup/address_popup.html",
+    "type": "popup-search",
+    "title": "주소찾기",
+    "purpose": "우편번호/주소 검색",
+    "workflow": "부모화면 > 주소검색",
+    "searchFields": [
+      { "name": "keyword", "label": "동(읍/면/리)", "type": "text" }
+    ],
+    "tableColumns": [
+      { "name": "우편번호", "dbField": "zip" },
+      { "name": "주소", "dbField": "address" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "선택", "action": "selectitem(zip,address)" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["admin_member_mode.php", "admin_scene_mode.php", "popup_receipt_*"],
+    "flowTo": []
+  },
+  "call_popup": {
+    "phpFile": "call_popup.php",
+    "htmlFile": "screens/popup/call_popup.html",
+    "type": "popup-notification",
+    "title": "수신콜 팝업",
+    "purpose": "CTI 수신 전화 알림 및 고객정보 표시",
+    "workflow": "CTI 연동 > 전화수신",
+    "searchFields": [],
+    "tableColumns": [
+      { "name": "발신번호", "dbField": "tel" },
+      { "name": "고객명", "dbField": "cust_name" },
+      { "name": "주소", "dbField": "address" },
+      { "name": "이전 접수이력", "dbField": "history" }
+    ],
+    "buttons": [
+      { "label": "접수등록", "action": "receipt_mode.php" },
+      { "label": "닫기", "action": "window.close()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["CTI 수신"],
+    "flowTo": ["receipt_mode.php"]
+  }
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>SMS 발송</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+</head>
+<body class="bg-gray-50" style="width:500px; min-height:400px;"
+  x-data="{
+    tel1: '',
+    tel2: '',
+    tel3: '',
+    sender: '0215881234',
+    message: '',
+    maxLen: 80,
+    get msgLen() { return this.message.length; },
+    get fullTel() {
+      const t = [this.tel1, this.tel2, this.tel3].filter(v => v).join('-');
+      return t;
+    },
+    send() {
+      if (!this.tel1 || !this.tel2 || !this.tel3) {
+        alert('수신번호를 입력해 주세요.');
+        return;
+      }
+      if (!this.message.trim()) {
+        alert('메시지 내용을 입력해 주세요.');
+        return;
+      }
+      alert('SMS가 발송되었습니다.');
+      window.close();
+    }
+  }">
+
+  <!-- 헤더 -->
+  <div class="bg-blue-700 text-white px-4 py-2 flex items-center justify-between">
+    <span class="font-semibold text-sm">SMS 발송</span>
+    <button onclick="window.close()" class="text-white hover:text-gray-200 text-lg leading-none">&times;</button>
+  </div>
+
+  <!-- 본문 -->
+  <div class="px-5 py-4 space-y-4">
+
+    <!-- 수신번호 -->
+    <div class="flex items-center gap-2">
+      <label class="text-sm font-medium text-gray-700 w-20 shrink-0">수신번호</label>
+      <div class="flex items-center gap-1 flex-1">
+        <input
+          type="text"
+          x-model="tel1"
+          maxlength="4"
+          placeholder="010"
+          class="w-16 border border-gray-300 rounded px-2 py-1 text-sm text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+        >
+        <span class="text-gray-400">-</span>
+        <input
+          type="text"
+          x-model="tel2"
+          maxlength="4"
+          placeholder="0000"
+          class="w-20 border border-gray-300 rounded px-2 py-1 text-sm text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+        >
+        <span class="text-gray-400">-</span>
+        <input
+          type="text"
+          x-model="tel3"
+          maxlength="4"
+          placeholder="0000"
+          class="w-20 border border-gray-300 rounded px-2 py-1 text-sm text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+        >
+        <span class="text-xs text-gray-400 ml-1" x-text="fullTel ? '(' + fullTel + ')' : ''"></span>
+      </div>
+    </div>
+
+    <!-- 발신번호 -->
+    <div class="flex items-center gap-2">
+      <label class="text-sm font-medium text-gray-700 w-20 shrink-0">발신번호</label>
+      <select
+        x-model="sender"
+        class="flex-1 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+      >
+        <option value="0215881234">02-1588-1234 (대표)</option>
+        <option value="0215882345">02-1588-2345 (강남지점)</option>
+        <option value="0315881000">031-588-1000 (분당지점)</option>
+        <option value="0515881111">051-588-1111 (부산지점)</option>
+        <option value="0215883456">02-1588-3456 (서초지점)</option>
+      </select>
+    </div>
+
+    <!-- 메시지 -->
+    <div class="flex items-start gap-2">
+      <label class="text-sm font-medium text-gray-700 w-20 shrink-0 pt-1">메시지</label>
+      <div class="flex-1">
+        <textarea
+          x-model="message"
+          :maxlength="maxLen"
+          rows="5"
+          placeholder="메시지 내용을 입력하세요 (최대 80자)"
+          class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+        ></textarea>
+        <div class="text-right text-xs mt-1" :class="msgLen >= maxLen ? 'text-red-500 font-semibold' : 'text-gray-400'">
+          <span x-text="msgLen"></span> / <span x-text="maxLen"></span>자
+        </div>
+      </div>
+    </div>
+
+    <!-- 안내 -->
+    <div class="bg-yellow-50 border border-yellow-200 rounded px-3 py-2 text-xs text-yellow-700">
+      SMS는 수신자 1인 기준 발송됩니다. 80자 초과 시 MMS로 전환됩니다.
+    </div>
+
+  </div>
+
+  <!-- 하단 버튼 -->
+  <div class="px-5 py-3 bg-gray-50 border-t border-gray-200 flex justify-end gap-2">
+    <button
+      @click="send()"
+      class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-6 py-1.5 rounded"
+    >발송</button>
+    <button onclick="window.close()" class="bg-gray-500 hover:bg-gray-600 text-white text-sm px-5 py-1.5 rounded">닫기</button>
+  </div>
+
+</body>
+</html>

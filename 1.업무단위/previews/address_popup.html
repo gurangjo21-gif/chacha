@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>주소찾기</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type='text/javascript'>
+	var post_val="";
+	var addr_val="";
+	var apt_val="";
+
+	function go_next(){
+		if($("input[name=address]").val() ==''){
+				alert("검색하실 동을 입력해주세요.");
+				$("input[name=address]").focus();
+				return;
+		}
+		if($("#road_addr:checked").val() == "1"){
+				$("input[name=mode]").val('road_search');
+		}else{
+				$("input[name=mode]").val('search');
+		}
+		$("form[name=addr]").submit();
+	}
+	function addr_next(post,addr,apt){
+		var req = '';
+		if(req == ''){
+			opener.document.eForm.postno.value = post.length == 6 ? 
+				post.substring(0,3) + '-' + post.substring(3,6) : post;
+			opener.document.eForm.addr1.value = addr;
+			opener.document.eForm.addr2.value = apt;
+			opener.document.eForm.addr2.select();
+
+		}else if(req == 'btnFindAddress1'){
+			opener.order_form.txtDeliveryPost.value = post.length == 6 ? 
+				post.substring(0,3) + '-' + post.substring(3,6) : post;
+			opener.order_form.txtDeliveryAddr1.value = addr;
+			opener.order_form.txtDeliveryAddr2.value = apt;
+			opener.order_form.txtDeliveryAddr2.select();
+			opener.location.href="javascript:addr_save1();";
+
+		}else if(req == 'btnFindAddress2'){
+			$('#txtReqPost',opener.document).val( post.length == 6 ? 
+				post.substring(0,3) + '-' + post.substring(3,6) : post);
+			$('#txtReqAddr1',opener.document).val( addr );
+			$('#txtReqAddr2',opener.document).val( apt );
+			$('#txtReqAddr2',opener.document).select();
+
+		}else if(req == 'btnFindAddress3'){
+			opener.order_form.txtPresentPost.value = post.length == 6 ? 
+				post.substring(0,3) + '-' + post.substring(3,6) : post;
+			opener.order_form.txtPresentAddr1.value = addr;
+			opener.order_form.txtPresentAddr2.value = apt;
+			opener.order_form.txtPresentAddr2.select();
+			opener.location.href="javascript:addr_save3();";
+
+		}
+
+		self.close();
+	}
+	//2014-06-09 wonkyu 주소 선택시 주소저장버튼으로만 값 저장하기 
+	function addr_next2(post,addr,apt){
+		
+			$("#rest_addr_tr").css("display","");
+			$("#address").val(addr);
+			$("#rest_addr").val(apt);
+			
+			addr_val=addr;
+			post_val=post;
+			apt_val=apt;
+		
+
+	
+	}
+	function go_save(){
+		if($("#rest_addr").val() ==''){
+			alert("나머지주소(번지)을 입력해주세요.");
+			$("#rest_addr").focus();
+			return;
+		}
+		
+
+		addr_next(post_val,addr_val,$("#rest_addr").val());
+		
+		}
+	
+	function go_keycode(e){
+		if(e.keyCode == 13){
+			go_next();
+		}else if(e.keyCode == 27){
+			self.close();
+		}
+	}
+	function go_keycode2(e){
+		if(e.keyCode == 13){
+			go_save();
+		}else if(e.keyCode == 27){
+			self.close();
+		}
+	}
+
+	$(function(){
+			$("input[name=address]").select();
+	});
+
+</script>
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/address_popup.php</b>
+  <span class="purpose">주소 검색 팝업</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<div class="order-form eworks-form">
+<form method='post' name='addr'>
+	<input type='hidden' name='mode'>
+	<div class="header">
+		<h1><a href="#"><img src="../assets/images/misc/logo_n.png" alt="eworks logo" /></a></h1>
+	</div>
+	<div class="form-content">
+		<h2>&nbsp;</h2>
+		<p class="h3">* 주소찾기</p>
+		<table class="form-table type1" width="765px">
+			<thead>
+				<th>검색하실 주소의 동(읍/면/리)을 입력하시고 검색버튼을 눌러주세요.</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+					<input type="checkbox" name="road_addr" id="road_addr" value="1"><label for="road_addr"> 도로명주소</label>
+					<input type="text" name="address" id="address" size="61" value="" onKeydown="go_keycode(event)" style="ime-mode:active;"/>
+						<a href="javascript:go_next();" class="btn1 btn-color7" title="주소찾기">
+							<span class="bg">&nbsp;</span>
+							<span class="text">주소찾기</span>
+						</a>
+					</td>
+				</tr>
+				<tr style="display:none;" id="rest_addr_tr">
+					<td>
+						<span style="padding-left:50">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;나머지 주소</span>&nbsp;<input type="text" name="rest_addr" id="rest_addr" size="61" onKeydown="go_keycode2(event)" style="ime-mode:active;"></input>
+						<a id='btnAddressSave' href="javascript:go_save();" class="btn1 btn-color7" title="주소저장">
+							<span class="bg">&nbsp;</span>
+							<span class="text">주소저장</span>
+							
+						</a>
+					</td>
+				</tr>
+				<tr >
+					<td>
+						<div style="POSITION:RELATIVE;MARGIN:0PX; TOP:0; LEFT:0; WIDTH:100%; HEIGHT:350px; OVERFLOW:AUTO; MARGIN:0PX;BORDER-RIGHT:0px solid; BORDER-TOP:0px solid; BORDER-LEFT:0px solid; BORDER-BOTTOM:0px solid;BORDER-COLOR: CCCCCC;MARGIN:0PX;">
+							<table  width='100%'>
+								<colgroup>
+									<col width="108px" />
+									<col width="" />
+								</colgroup>
+								<tbody>
+								<tr><td colspan='2' height='150px;' align='center'>데이터가 없습니다.</td></tr>								</tbody>
+							</table>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</form>
+</div>
+</body>
+</html>

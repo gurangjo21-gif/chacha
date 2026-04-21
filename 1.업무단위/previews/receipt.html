@@ -1,0 +1,668 @@
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>서비스 접수</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<!-- daum postcode API removed for offline preview -->
+<!-- 달력 start -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<!-- 달력 end -->   
+<script type="text/javascript">
+	
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var mode_str = respose.split("^");
+		switch(mode_str[0]){
+			case "ERRORSEL" :
+				var str = mode_str[1].split("||");
+				var cnt = str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(str[i] != '') {
+						var sel = str[i].split("@");
+						if(i == 0) $("#err_2").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#err_2").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+					}
+				}
+			break;
+			case "ZIP_SELECT" :
+				var str = mode_str[1].split("|");
+				$("input[name='agency_no']").val(str[0]);	//지점코드
+				$("input[name='agent_no']").val(str[1]);	//담당사원
+				$("input[name='charge_agency']").val(str[2]);	//지점명
+				$("input[name='u_phone']").val(str[3]);	//전화번호
+				$("input[name='charge_name']").val(str[4]);	//사원명
+				$("select[name='gap_gbn']").val(str[5]);	//구간구분
+			break;
+			case "custMOD":
+				alert(mode_str[1]);
+			break;
+			case "ERRORSEL1" :		//값이 있을떄 선택할수있도록 하기
+				var str = mode_str[1].split("||");
+				var cnt = str.length ;
+				for(var i=0; i < cnt ; i++) {
+					if(str[i] != '') {
+						var sel = str[i].split("@");						
+						if(i == 0) $("#err_2").html("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						else $("#err_2").append("<option value='"+sel[1]+"'>"+sel[0]+"</option>");
+						
+						$("#err_2").val(mode_str[2]).attr("selected","selected");
+					}
+				}
+			break;
+			case "m_ok" :
+				alert("등록 되었습니다");
+				location.reload();
+			break;
+			case "m_end" :
+				alert("처리가 완료되어 등록이 불가능합니다");
+				location.reload();
+			break;
+			case "m_false": 
+				alert("오류!!! 다시 시도해주세요");
+				location.reload();
+			break;
+			default :
+				alert(respose);
+			break;
+		}
+	}
+
+	function svc_next(svc_num,mode,rno) {
+		 window.open('popup_svc.php?num='+svc_num+'&mode='+mode+'&rno='+rno,'svc','width=660,height=700')
+	}
+
+	function new_receipt(){
+		location.href='/html/receipt.php?num=insert';
+	}
+	
+	function ZIP_SELECT(zipcode) {
+		if(zipcode.length == 5) {
+		var param = "mode=ZIP_SELECT&form=receipt_form&zip="+zipcode ;
+        ajaxLoader("ajax_proc.php?"+param);
+		}
+	}
+	
+	// 기사메모 등록
+/*	function memo_next(mmode, mend) {
+		var m_no = document.receipt_form.rct_no.value;
+		var m_time = document.receipt_form.m_time.value;
+		var memo = document.receipt_form.kmemo.value;
+		var param = "mode=memo_next&form=receipt_form&mmode="+mmode+"&m_no="+m_no+"&m_time="+m_time+"&memo="+memo+"&end="+mend;
+		ajaxLoader("ajax_proc.php?"+param);
+		}*/
+	
+	
+	//입력/수정 클릭시 이동
+	function go_next(mode,st,com,app) {
+		var myform = document.receipt_form ;
+
+		/*if(mode == 'update' && st == 'Y'){
+			alert("처리완료된건은 수정이 불가능합니다."); 
+			return;
+		}*/
+
+		if(mode == 'update' && com == "결재" && app == "1") {
+			alert("결재가 완료된건은 수정이 불가능 합니다.");
+			return;
+		}
+
+		$("input[name='mode']").val(mode);
+		
+		if(!myform.rct_gbn.value) {
+			alert("접수구분을 선택하세요.");
+			myform.rct_gbn.focus();
+			return;
+		}
+
+		if(!myform.mb_name.value) {
+			alert("고객명을 입력하세요.");
+			myform.mb_name.focus();
+			return ;
+		}
+		if(!myform.rct_date.value){
+			alert("접수일자를 입력하세요.");
+			myform.rct_date.focus();
+			return ;
+		}
+		/*if(!myform.gap_gbn.value){
+			alert("구간구분이 없으면 등록하실수 없습니다.");
+			return;
+		}*/
+
+		// 공백일때 작업
+		// 연락처 숫자만 입력
+/*		if (!/^[0-9]$/.test(myform.tel1.value))
+		{
+			alert("발신번호는 숫자만 입력하실 수 있습니다.");
+			return;
+		}
+		if (!/^[0-9]$/.test(myform.tel2.value))
+		{
+			alert("발신번호는 숫자만 입력하실 수 있습니다.");
+			return;
+		}
+		if (!/^[0-9]$/.test(myform.tel3.value))
+		{
+			alert("발신번호는 숫자만 입력하실 수 있습니다.");
+			return;
+		}
+		if (!/^[0-9]$/.test(myform.phone1.value))
+		{
+			alert("전화번호는 숫자만 입력하실 수 있습니다.");
+			return;
+		}
+		if (!/^[0-9]$/.test(myform.phone2.value))
+		{
+			alert("전화번호는 숫자만 입력하실 수 있습니다.");
+			return;
+		}
+		if (!/^[0-9]$/.test(myform.phone3.value))
+		{
+			alert("전화번호는 숫자만 입력하실 수 있습니다.");
+			return;
+		}
+		if (!/^[0-9]$/.test(myform.mobile1.value))
+		{
+			alert("휴대폰은 숫자만 입력하실 수 있습니다.");
+			return;
+		}
+		if (!/^[0-9]$/.test(myform.mobile2.value))
+		{
+			alert("휴대폰은 숫자만 입력하실 수 있습니다.");
+			return;
+		}
+		if (!/^[0-9]$/.test(myform.mobile3.value))
+		{
+			alert("휴대폰은 숫자만 입력하실 수 있습니다.");
+			return;
+		}*/
+
+		var msg = "";
+		if(mode == 'insert') {
+			msg = "저장하시겠습니까?";
+		} else if( mode =='update') {
+			msg = "수정하시겠습니까?";
+		}		
+		if(confirm(msg)) {
+			myform.action ="receipt_proc.php";
+			//myform.action ="receipt_proc1.php";
+			myform.submit();
+		}
+	}
+	$(function(){
+		/* 클릭 클릭시 클릭을 클릭한 위치 근처에 레이어가 나타난다. */
+		$('.tooltip').mouseover(function(e){
+			//alert($(this).attr('title'));
+			var sWidth = window.innerWidth;
+			var sHeight = window.innerHeight;
+
+			var oWidth = $('.popupLayer').width();
+			var oHeight = $('.popupLayer').height();
+
+			// 레이어가 나타날 위치를 셋팅한다.
+			var divLeft = e.clientX + 10;
+			var divTop = e.clientY + 5;
+
+			// 레이어가 화면 크기를 벗어나면 위치를 바꾸어 배치한다.
+			if( divLeft + oWidth > sWidth ) divLeft -= oWidth;
+			if( divTop + oHeight > sHeight ) divTop -= oHeight;
+
+			// 레이어 위치를 바꾸었더니 상단기준점(0,0) 밖으로 벗어난다면 상단기준점(0,0)에 배치하자.
+			if( divLeft < 0 ) divLeft = 0;
+			if( divTop < 0 ) divTop = 0;
+			
+			$("#tooltip_content").html($(this).attr('value'));
+
+			$('.popupLayer').css({
+				"top": divTop,
+				"left": divLeft,
+				"position": "absolute"
+			}).show();
+		//}).mouseout(function(){
+		//	$('.popupLayer').hide();
+		});
+		
+		/*$( "#rct_date" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });
+	    $( "#rct_basedate" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });*/
+		$( "#rct_date" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+		$( "#rct_basedate" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+
+		//kms 메뉴버튼 선택시 처리
+		$('span[id^="menu"]').click(function(){
+			$('span[id^="menu"]').css("font-weight", "");
+			$('span[id^="menu"]').css("color", "#6e7478");
+			$(this).css("font-weight", "bold");
+			$(this).css("color", "#49a400");
+		});
+		///
+	});
+
+	function stat_color()
+	{
+		var stat_frm = document.receipt_form;
+		var stat_g = stat_frm.stat_gbn.value;
+
+		if(stat_g == "2") {
+			var stat_gbn = document.getElementById('stat_gbn');
+			stat_gbn.style.color = "#FF0000";
+		}
+		else if(stat_g == "1") {
+			var stat_gbn = document.getElementById('stat_gbn');
+			stat_gbn.style.color = "#0000FF";
+		}
+		else {
+			var stat_gbn = document.getElementById('stat_gbn');
+			stat_gbn.style.color = "#000000";
+		}
+	}
+
+	// 초기화
+	function reset_apt()
+	{
+		document.getElementById('apt_no').value="";
+		document.getElementById('apt_name').value="";
+	}
+	function reset_model()
+	{
+		document.getElementById('model_no').value="";
+		document.getElementById('model_name').value="";
+	}
+	function reset_charge()
+	{
+		document.getElementById('charge_agency').value="";
+		document.getElementById('charge_name').value="";
+		document.getElementById('u_phone').value="";
+		document.getElementById('gap_gbn').value="1구간";
+	}
+
+	// 기사메모 보기
+	function memo_btn(receipt_no,end)
+	{
+		var myform = document.receipt_form;
+		window.open('receipt_g_memo.php?receipt_no='+receipt_no+"&end="+end,'pop_memo','width=620,height=600,top=30,left=50');
+	}
+
+	//kms 상단 메뉴버튼 선택시 이동 처리
+	function move_menu(menu){
+		var url = "";
+		var cust_num = $("#custNUM").val();
+		var apt_no = $("#apt_no").val();
+		var g_mode = document.receipt_form.g_mode.value;
+
+		switch(menu){
+			case 1:	//현장정보
+				if(g_mode == "g") {
+					url = "admin_scene_list.php?Tidx=1&Sidx=5&p_mode=g";
+				} else {
+					url = "admin_scene_list.php?Tidx=1&Sidx=5";	//기본 리스트
+				}
+				if(apt_no != ""){
+					//아파트코드가 있는 경우 현장정보 상세화면으로 이동
+					if(g_mode == "g") {
+						url = "admin_scene_detail.php?keyfield=&keyword=&idx="+apt_no+"&mode=detail&Tidx=1&Sidx=5&p_mode=g";
+					} else {
+						url = "admin_scene_detail.php?keyfield=&keyword=&idx="+apt_no+"&mode=detail&Tidx=1&Sidx=5";
+					}
+				}
+				break;
+			case 2:	//상담이력
+				if(g_mode == "g") {
+					url = "receipt_consult_list.php?Tidx=1&Sidx=1&p_mode=g";
+				} else {
+					url = "receipt_consult_list.php?Tidx=1&Sidx=1";
+				}
+				/*if(cust_num != ""){	//고객번호
+					url += "&custNUM="+cust_num;
+				}else {*/
+					var custTEL = "";
+					/*if($("#tel1").val() != "" && $("#tel2").val() != "" && $("#tel3").val() != ""){	//발신번호						
+						custTEL = $("#tel1").val() + $("#tel2").val() + $("#tel3").val();
+					} else if($("#phone1").val() != "" && $("#phone2").val() != "" && $("#phone3").val() != ""){	//연락처						
+						custTEL = $("#phone1").val() + $("#phone2").val() + $("#phone3").val();						
+					} else if($("#mobile1").val() != "" && $("#mobile2").val() != "" && $("#mobile3").val() != ""){	//휴대폰						
+						custTEL = $("#mobile1").val() + $("#mobile2").val() + $("#mobile3").val();					
+					}*/
+					if($("#tel1").val() != "" && $("#tel2").val() != "" && $("#tel3").val() != ""){	//발신번호						
+						custTEL = $("#tel1").val() + "-" + $("#tel2").val() + "-" + $("#tel3").val();
+					} else if($("#phone1").val() != "" && $("#phone2").val() != "" && $("#phone3").val() != ""){	//연락처						
+						custTEL = $("#phone1").val() + "-" + $("#phone2").val() + "-" + $("#phone3").val();						
+					} else if($("#mobile1").val() != "" && $("#mobile2").val() != "" && $("#mobile3").val() != ""){	//휴대폰						
+						custTEL = $("#mobile1").val() + "-" + $("#mobile2").val() + "-" + $("#mobile3").val();					
+					}
+
+					if(custTEL != ""){
+						url += "&custTEL="+custTEL;
+					}
+				//}
+				break;
+			case 3:	//서비스이력
+				if(g_mode == "g") {
+					url="receipt_service_list.php?Tidx=1&Sidx=6&p_mode=g";
+				} else {
+					url="receipt_service_list.php?Tidx=1&Sidx=6";
+				}
+				if(cust_num != ""){	//고객번호
+					url += "&custNUM="+cust_num;
+				}
+				break;
+			case 4:	//매뉴얼
+				if(g_mode == "g") {
+					url="receipt_menual_list.php?Tidx=1&Sidx=4&p_mode=g";
+				} else {
+					url="receipt_menual_list.php?Tidx=1&Sidx=4";				
+				}
+				if($("#model_no").val() != "" && $("#model_name").val() != ""){	//품번
+					url += "&pnum="+$("#model_no").val();
+				} else if(apt_no != ""){
+					url += "&anum="+apt_no;
+				}
+				break;
+			case 5:	//특이사항
+				if(g_mode == "g") {
+					url="receipt_memo_list.php?Tidx=1&Sidx=7&p_mode=g";
+				} else {
+					url="receipt_memo_list.php?Tidx=1&Sidx=7";
+				}
+				if($("#err_1").val() != ""){	//장애코드(대)
+					url += "&find_err_1="+$("#err_1").val();
+				}
+				if($("#err_2").val() != ""){	//장애코드(소)
+					url += "&find_err_2="+$("#err_2").val();
+				}
+				break;
+			case 6:	//콜백
+				if(g_mode == "g") {
+					url="receipt_callback_list.php?Tidx=1&Sidx=2&p_mode=g";
+				} else {
+					url="receipt_callback_list.php?Tidx=1&Sidx=2";
+				}
+				break;
+		}		
+
+		if(url != ""){
+			window.opener.location.href=url;
+		}
+	}
+	///
+
+</script>
+<style type="text/css">
+.ui-datepicker{ z-index: 9999 !important;}
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: justify;
+	font-size: 14px;
+	font-weight: bold;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+	height:20px;
+}
+.form-table.type2 td > input {
+height:20px;
+font-size:13px;
+}
+.form-table.type2 td > select {
+background: #E5E5E5;
+height:20px;
+font-size:13px;
+}
+.form-table.type2 td > select {
+background: #E5E5E5;
+height:20px;
+font-size:13px;
+}
+.form-table.type2 td > textarea {
+font-size:13px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/receipt.php</b>
+  <span class="purpose">수신접수 메인 진입</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<form name="receipt_form" method='post'>
+	<INPUT TYPE="hidden" NAME="idx" value="">
+	<INPUT TYPE="hidden" NAME="mode" value="">
+	<INPUT TYPE="hidden" NAME="smode" value="">
+	<INPUT TYPE="hidden" NAME="m_time" value="2026-04-20 20:56">
+	<INPUT TYPE="hidden" NAME="mobiletime" value="20:56">
+	<INPUT TYPE="hidden" NAME="gbn_code" value="">
+	<INPUT TYPE="hidden" NAME="p_mode" value="">
+	<INPUT TYPE="hidden" NAME="g_mode" value="">
+<div style="overflow:scroll; width:690px; height:750px;">
+<table cellpadding="0" cellspacing="0" width="670">
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 0 0 5px 0;">
+						<table width="100%" >
+							<tr>
+																<td style="padding: 15px 0 10px 0;"><strong>[서비스 접수]</strong></td>
+																<td align="right">
+																<!--kms 메뉴 추가 시작-->
+								<a href='javascript:move_menu(1);' class='btn1 btn-color7' title='현장정보'>
+									<span class="bg">&nbsp;</span>
+									<span class='text' id="menu1">현장정보</span>
+								</a>
+								<a href='javascript:move_menu(2);' class='btn1 btn-color7' title='상담이력'>
+									<span class="bg">&nbsp;</span>
+									<span class='text' id="menu2">상담이력</span>
+								</a>
+								<a href='javascript:move_menu(3);' class='btn1 btn-color7' title='서비스이력'>
+									<span class="bg">&nbsp;</span>
+									<span class='text' id="menu3">서비스이력</span>
+								</a>
+								<a href='javascript:move_menu(4);' class='btn1 btn-color7' title='매뉴얼'>
+									<span class="bg">&nbsp;</span>
+									<span class='text' id="menu4">매뉴얼</span>
+								</a>
+								<a href='javascript:move_menu(5);' class='btn1 btn-color7' title='특이사항'>
+									<span class="bg">&nbsp;</span>
+									<span class='text' id="menu5">특이사항</span>
+								</a>
+								<a href='javascript:move_menu(6);' class='btn1 btn-color7' title='콜백'>
+									<span class="bg">&nbsp;</span>
+									<span class='text' id="menu6">콜백</span>
+								</a>&nbsp;&nbsp;
+																<!--kms 메뉴 추가 끝-->
+								<a href="javascript:go_next('','','','');" class="btn1 btn-color1_s" title="등록">
+									<span class="bg">&nbsp;</span>
+									<span class="text">등록</span>
+								</a>
+								</td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<th width="15%"><IMG class="btn1 icon_1">접수번호</th>
+								<td width="35%"><INPUT TYPE="text" NAME="rct_no" style="width:130px;" value="등록" readonly></td>
+								<th width="15%"><IMG class="btn1 icon_1">접수일자<font class="font1">*</font></th>
+								<td width="35%"><INPUT TYPE="text" NAME="rct_date" id="rct_date" style="width:130px;" value="2026-04-20" readonly></td>
+								<INPUT TYPE="hidden" NAME="rct_datetime" id="rct_datetime" value="">
+							</tr>
+																					<TR>
+								<Th><IMG class="btn1 icon_1">발신번호</Th>
+								<TD>
+									<INPUT TYPE="text" NAME="tel1" ID="tel1" value="" maxlength=3 size="3">
+									<INPUT TYPE="text" NAME="tel2" ID="tel2" value="" maxlength=4 size="4">
+									<INPUT TYPE="text" NAME="tel3" ID="tel3" value="" maxlength=4 size="4">
+								</TD>
+								<Th><IMG class="btn1 icon_1">접수구분<font class="font1">*</font></Th>
+								<TD>
+																		<SELECT NAME="rct_gbn" style="width:100px;">
+										<OPTION VALUE="">::접수구분::</OPTION>
+										<OPTION VALUE="T" >전화</OPTION>
+										<OPTION VALUE="P" >우편</OPTION>
+										<OPTION VALUE="F" >팩스</OPTION>
+										<OPTION VALUE="L" >LED</OPTION>
+										<OPTION VALUE="S" >상담</OPTION>
+									</SELECT>
+																	</TD>
+							</TR>
+							</td>	
+								</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+    <!-- 고객정보 Start -->
+    <tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 0 0 5px 0;">
+						<table width="100%">
+							<tr>
+								<td style="padding: 15px 0 10px 0;"><strong>[고객 정보]</strong></td>
+								<td align="right">
+								<INPUT TYPE="text" NAME="keyword" size="9" value="" style='height:17px;ime-mode:active;'>&nbsp;&nbsp;
+								<a href="javascript:search_user('all');" class="btn1 btn-color5" style="right:5px;" title="고객검색">
+									<span class="bg">&nbsp;</span>
+									<span class="text">고객검색</span>
+								</a>
+								<a href="javascript:user_update();" class="btn1 btn-color5" style="right:5px;" title="고객수정">
+									<span class="bg">&nbsp;</span>
+									<span class="text">고객수정</span>
+								</a>
+								</td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse;" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<th width="15%"><IMG class="btn1 icon_1"><font style="letter-spacing:1px;">고&nbsp;객&nbsp;명</font><font class="font1">*</font></th>
+								<td width="35%">
+									<input type='hidden' name='custNUM' ID="custNUM" value="">
+									<INPUT TYPE="text" NAME="mb_name" style="width:130px;" value="">
+								</td>
+								<th width="15%"><IMG class="btn1 icon_1">관&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;계</th>
+								<td width="35%">
+									<SELECT NAME="mbr" style="width:100px">
+										<OPTION VALUE="본인" >본인</OPTION>
+										<OPTION VALUE="직계가족" >직계가족</OPTION>
+										<OPTION VALUE="대리인" >대리인</OPTION>
+									</SELECT>
+								</td>
+							</tr>
+							<TR>
+								<Th><IMG class="btn1 icon_1">전화번호</Th>
+								<TD>	
+									<INPUT TYPE="text" NAME="phone1" ID="phone1" size="3" value="" onkeyup="if(this.value.length==3)receipt_form.phone2.focus();">
+									<INPUT TYPE="text" NAME="phone2" ID="phone2" size="4" value="" onkeyup="if(this.value.length==4)receipt_form.phone3.focus();">
+									<INPUT TYPE="text" NAME="phone3" ID="phone3" size="4" value="" onkeyup="if(this.value.length==4)receipt_form.mobile1.focus();">
+								</TD>
+								<Th><IMG class="btn1 icon_1"><font style="letter-spacing:1px;">휴&nbsp;대&nbsp;폰</font></Th>
+								<TD>
+									<INPUT TYPE="text" NAME="mobile1" ID="mobile1" size="3" value="" onkeyup="if(this.value.length==3)receipt_form.mobile2.focus();">
+									<INPUT TYPE="text" NAME="mobile2" ID="mobile2" size="4" value="" onkeyup="if(this.value.length==4)receipt_form.mobile3.focus();">
+									<INPUT TYPE="text" NAME="mobile3" ID="mobile3" size="4" value="" onkeyup="if(this.value.length==4)receipt_form.zip.focus();">
+								</TD>
+							</TR>
+							<TR>
+								<Th><IMG class="btn1 icon_1">우편번호</Th>
+								<TD><INPUT TYPE="text" NAME="zip" id="zip" style="width:70px;" value="

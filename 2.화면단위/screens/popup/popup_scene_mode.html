@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>현장 등록/수정 - KOCOM</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-white text-xs text-[#333]" x-data="{
+  mode: 'insert',
+  sceneName: '',
+  aptName: '',
+  zip: '',
+  addr1: '',
+  addr2: '',
+  houseCnt: '',
+  grtTerm1: '',
+  grtTerm2: '',
+  instName: '',
+  instGrade: '3',
+  instPhone: '',
+  scnName: '',
+  scnGrade: '2',
+  scnPhone: '',
+  houseGoods: '',
+  gateway: '',
+  appver: '',
+  hwver: '',
+  swver: '',
+  memo: '',
+  tdbYN: 'N',
+  items: [
+    { category:'세대기기', no:'', name:'', qty:'', maker:'', tel:'' },
+    { category:'게이트웨이', no:'', name:'', qty:'', maker:'', tel:'' },
+  ],
+  save() {
+    if(!this.aptName && !this.sceneName) { alert('현장명 또는 아파트명을 입력해주세요.'); return; }
+    alert('저장되었습니다.'); window.close();
+  }
+}">
+  <div id="contents" class="p-2">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="font-bold text-sm">현장 등록/수정</h2>
+      <div class="flex gap-1">
+        <button class="bg-[#6699FF] text-white px-2 py-0.5 text-xs rounded" @click="save()">저장</button>
+        <button class="bg-[#6699FF] text-white px-2 py-0.5 text-xs rounded" @click="window.close()">목록으로</button>
+      </div>
+    </div>
+    <div class="overflow-y-auto" style="height:700px;">
+      <table class="w-full border-collapse text-xs mb-2">
+        <colgroup>
+          <col class="w-[8%]"><col class="w-[8%]"><col class="w-[13%]">
+          <col class="w-[8%]"><col class="w-[13%]"><col class="w-[8%]">
+          <col class="w-[8%]"><col class="w-[13%]"><col class="w-[8%]"><col class="w-[13%]">
+        </colgroup>
+        <tbody>
+          <tr style="height:35px;">
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">현장명</th>
+            <td class="border border-[#cfcfcf] px-2 py-1" colspan="9">
+              <input type="text" x-model="sceneName" class="border border-[#ccc] px-1 py-0.5 text-xs w-full">
+            </td>
+          </tr>
+          <tr style="height:35px;">
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">아파트명</th>
+            <td class="border border-[#cfcfcf] px-2 py-1" colspan="9">
+              <input type="text" x-model="aptName" class="border border-[#ccc] px-1 py-0.5 text-xs w-full">
+            </td>
+          </tr>
+          <tr style="height:35px;">
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">세대수</th>
+            <td class="border border-[#cfcfcf] px-2 py-1" colspan="2">
+              총 <input type="text" x-model="houseCnt" class="border border-[#ccc] px-1 py-0.5 text-xs w-16"> 세대
+            </td>
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">보증기간</th>
+            <td class="border border-[#cfcfcf] px-2 py-1" colspan="2">
+              <input type="date" x-model="grtTerm1" class="border border-[#ccc] px-1 py-0.5 text-xs w-26">
+              ~<input type="date" x-model="grtTerm2" class="border border-[#ccc] px-1 py-0.5 text-xs w-26">
+            </td>
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">뇌전유무</th>
+            <td class="border border-[#cfcfcf] px-2 py-1">
+              <select x-model="tdbYN" class="border border-[#ccc] px-1 text-xs">
+                <option value="N">뇌전없음</option>
+                <option value="Y">뇌전사용</option>
+              </select>
+            </td>
+            <td class="border border-[#cfcfcf]" colspan="2"></td>
+          </tr>
+          <tr style="height:35px;">
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">주소</th>
+            <td class="border border-[#cfcfcf] px-2 py-1">
+              <input type="text" x-model="zip" class="border border-[#ccc] px-1 text-xs w-16" placeholder="우편번호">
+            </td>
+            <td class="border border-[#cfcfcf] px-2 py-1" colspan="3">
+              <input type="text" x-model="addr1" class="border border-[#ccc] px-1 text-xs w-full" placeholder="주소">
+            </td>
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">상세주소</th>
+            <td class="border border-[#cfcfcf] px-2 py-1" colspan="5">
+              <input type="text" x-model="addr2" class="border border-[#ccc] px-1 text-xs w-full" placeholder="상세주소">
+            </td>
+          </tr>
+          <tr style="height:35px;">
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">설치담당</th>
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">성명/직함</th>
+            <td class="border border-[#cfcfcf] px-2 py-1">
+              <input type="text" x-model="instName" class="border border-[#ccc] px-1 text-xs w-16">
+              <select x-model="instGrade" class="border border-[#ccc] px-1 text-xs">
+                <option value="0">사원</option><option value="1">주임</option><option value="2">대리</option>
+                <option value="3">팀장</option><option value="4">과장</option><option value="5">차장</option>
+              </select>
+            </td>
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">연락처</th>
+            <td class="border border-[#cfcfcf] px-2 py-1">
+              <input type="text" x-model="instPhone" class="border border-[#ccc] px-1 text-xs w-full">
+            </td>
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">현장담당</th>
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">성명/직함</th>
+            <td class="border border-[#cfcfcf] px-2 py-1">
+              <input type="text" x-model="scnName" class="border border-[#ccc] px-1 text-xs w-16">
+              <select x-model="scnGrade" class="border border-[#ccc] px-1 text-xs">
+                <option value="0">사원</option><option value="1">주임</option><option value="2">대리</option>
+                <option value="3">팀장</option>
+              </select>
+            </td>
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">연락처</th>
+            <td class="border border-[#cfcfcf] px-2 py-1">
+              <input type="text" x-model="scnPhone" class="border border-[#ccc] px-1 text-xs w-full">
+            </td>
+          </tr>
+          <tr style="height:35px;">
+            <th class="border border-[#cfcfcf] bg-[#f3f3f3] px-2 py-1 font-bold text-[#545454]">비고</th>
+            <td class="border border-[#cfcfcf] px-2 py-1" colspan="9">
+              <input type="text" x-model="memo" class="border border-[#ccc] px-1 text-xs w-full">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- 설치항목 테이블 -->
+      <table class="w-full border-collapse text-xs mt-2">
+        <thead>
+          <tr class="bg-[#f3f3f3]">
+            <th class="border border-[#cfcfcf] px-2 py-1 w-28">Category</th>
+            <th class="border border-[#cfcfcf] px-2 py-1 w-20">코드번호</th>
+            <th class="border border-[#cfcfcf] px-2 py-1">모델명</th>
+            <th class="border border-[#cfcfcf] px-2 py-1 w-16">수량</th>
+            <th class="border border-[#cfcfcf] px-2 py-1 w-24">제조사</th>
+            <th class="border border-[#cfcfcf] px-2 py-1 w-24">연락처</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="(item, i) in items" :key="i">
+            <tr>
+              <td class="border border-[#cfcfcf] px-2 py-1">
+                <select x-model="item.category" class="border border-[#ccc] px-1 text-xs w-full">
+                  <option>세대기기</option><option>게이트웨이</option><option>통합관리서버</option><option>낙뢰</option>
+                </select>
+              </td>
+              <td class="border border-[#cfcfcf] px-2 py-1"><input type="text" x-model="item.no" class="border border-[#ccc] px-1 text-xs w-full"></td>
+              <td class="border border-[#cfcfcf] px-2 py-1"><input type="text" x-model="item.name" class="border border-[#ccc] px-1 text-xs w-full"></td>
+              <td class="border border-[#cfcfcf] px-2 py-1"><input type="text" x-model="item.qty" class="border border-[#ccc] px-1 text-xs w-full text-right"></td>
+              <td class="border border-[#cfcfcf] px-2 py-1"><input type="text" x-model="item.maker" class="border border-[#ccc] px-1 text-xs w-full"></td>
+              <td class="border border-[#cfcfcf] px-2 py-1"><input type="text" x-model="item.tel" class="border border-[#ccc] px-1 text-xs w-full"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <div class="mt-1">
+        <button class="bg-gray-200 text-xs px-2 py-0.5 rounded border" @click="items.push({category:'세대기기',no:'',name:'',qty:'',maker:'',tel:''})">+ 항목 추가</button>
+      </div>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["popup"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

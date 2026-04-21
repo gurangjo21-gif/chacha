@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>KOCOM CS - TDB 입고 목록</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        'k-primary': '#6699FF', 'k-active': '#5acd3e',
+        'k-border': '#d7d7d7', 'k-text': '#333333',
+        'k-sub': '#545454', 'k-bg': '#f2f2f2', 'k-header': '#f3f3f3',
+      }}}
+    }
+  </script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+  <style>
+    body { font-size: 12px; font-family: 'Malgun Gothic', sans-serif; color: #333; }
+    .tbl-wrap { overflow-x: auto; width: 100%; }
+    table.svc-tbl { border-collapse: collapse; min-width: 1000px; width: 100%; }
+    table.svc-tbl thead th {
+      background: #f3f3f3;
+      border-top: 1px solid #cfcfcf;
+      border-bottom: 1px solid #d7d7d7;
+      border-left: 1px solid #e7e7e7;
+      color: #545454;
+      font-weight: bold;
+      padding: 5px 4px;
+      white-space: nowrap;
+      text-align: center;
+    }
+    table.svc-tbl thead th:first-child { border-left: 0; }
+    table.svc-tbl tbody td {
+      border-bottom: 1px solid #d7d7d7;
+      border-left: 1px solid #e7e7e7;
+      color: #545454;
+      font-weight: bold;
+      padding: 3px 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    table.svc-tbl tbody td:first-child { border-left: 0; }
+    table.svc-tbl tbody tr:nth-child(even) { background-color: #FBF9C4; }
+    table.svc-tbl tbody tr:hover { background-color: #FFF59D !important; }
+    table.svc-tbl tbody td.left { text-align: left; padding-left: 6px; }
+    table.svc-tbl tbody td.right { text-align: right; padding-right: 6px; }
+    .search-label { font-size: 12px; font-weight: bold; color: #333; white-space: nowrap; }
+    select, input[type=text] {
+      border: 1px solid #ccc;
+      padding: 2px 4px;
+      font-size: 12px;
+      height: 24px;
+      border-radius: 2px;
+    }
+    .btn-primary {
+      background: #6699FF; color: #fff; border: none;
+      padding: 4px 12px; border-radius: 2px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-primary:hover { background: #4477dd; }
+    .btn-excel {
+      background: #5acd3e; color: #fff; border: none;
+      padding: 4px 12px; border-radius: 2px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-excel:hover { background: #3fa82e; }
+    .btn-add {
+      background: #6699FF; color: #fff; border: none;
+      padding: 5px 14px; border-radius: 3px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-add:hover { background: #4477dd; }
+    .page-header {
+      background: #f3f3f3;
+      border-bottom: 1px solid #d7d7d7;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .page-header h2 { font-size: 16px; font-weight: bold; color: #333; }
+    .page-header-btns { display: flex; gap: 6px; }
+    .search-bar {
+      background: #fafafa;
+      border-bottom: 1px solid #d7d7d7;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .result-bar {
+      padding: 6px 16px;
+      font-size: 12px;
+      color: #333;
+      font-weight: bold;
+      border-bottom: 1px solid #e7e7e7;
+      background: #fff;
+    }
+    .pagination { display: flex; gap: 2px; align-items: center; justify-content: center; padding: 10px 0; }
+    .page-btn {
+      border: 1px solid #d7d7d7;
+      background: #fff;
+      color: #333;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 12px;
+      border-radius: 2px;
+    }
+    .page-btn.active { background: #6699FF; color: #fff; border-color: #6699FF; font-weight: bold; }
+    .page-btn:hover:not(.active) { background: #f2f2f2; }
+    /* 처리상태 배지 */
+    .sts-wait    { color: #cc0000; font-weight: bold; }
+    .sts-ing     { color: #cc6600; font-weight: bold; }
+    .sts-hold    { color: #999999; font-weight: bold; }
+    .sts-done    { color: #009900; font-weight: bold; }
+  </style>
+  <script>
+    // tdbInList 가 mock-data.js에 없으면 storeDoingList를 입고 데이터로 변환
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.MOCK && !window.MOCK.tdbInList) {
+        // storeDoingList → tdbInList 변환 (현장명=센터명, 진행상황=processStatus 재매핑)
+        const statusMap = { '1': '1', '2': '2', '3': '4' };
+        window.MOCK.tdbInList = window.MOCK.storeDoingList.map(function(r, i) {
+          return {
+            seq:          i + 1,
+            inDate:       r.receiptDate,
+            siteName:     r.centerName + ' ' + r.customerName + ' 현장',
+            insurerType:  i % 2 === 0 ? '1' : '2',
+            insurerName:  i % 2 === 0 ? '삼성화재' : '현대해상',
+            tdbDate:      r.receiptDate,
+            manager:      r.applier,
+            contact:      '02-' + (1000 + i) + '-' + (2000 + i),
+            processStatus: statusMap[r.processStatus] || '1',
+            remark:       r.invoiceNo ? '송장: ' + r.invoiceNo : '',
+          };
+        });
+      }
+    });
+  </script>
+</head>
+<body class="bg-white">
+
+<div x-data="{
+  allRows: [],
+  rows: [],
+  sday: '2026-04-01',
+  eday: '2026-04-15',
+  statusFilter: '',
+  keyword: '',
+  currentPage: 1,
+  pageSize: 15,
+  init() {
+    // DOMContentLoaded 이후 데이터 세팅
+    this.$nextTick(() => {
+      this.allRows = (window.MOCK && window.MOCK.tdbInList) ? MOCK.tdbInList : [];
+      this.doSearch();
+    });
+  },
+  doSearch() {
+    this.rows = this.allRows.filter(r => {
+      if (this.statusFilter && r.processStatus !== this.statusFilter) return false;
+      if (this.keyword) {
+        const kw = this.keyword.toLowerCase();
+        const haystack = (r.siteName + r.insurerName + r.manager).toLowerCase();
+        if (!haystack.includes(kw)) return false;
+      }
+      return true;
+    });
+    this.currentPage = 1;
+  },
+  get totalCount() { return this.rows.length; },
+  get pagedRows() {
+    const s = (this.currentPage - 1) * this.pageSize;
+    return this.rows.slice(s, s + this.pageSize);
+  },
+  get totalPages() { return Math.max(1, Math.ceil(this.rows.length / this.pageSize)); },
+  goPage(p) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; },
+  statusLabel(s) {
+    const m = { '1': '접수대기', '2': '진행중', '3': '보류', '4': '완료' };
+    return m[s] || '-';
+  },
+  statusClass(s) {
+    const m = { '1': 'sts-wait', '2': 'sts-ing', '3': 'sts-hold', '4': 'sts-done' };
+    return m[s] || '';
+  },
+  insurerLabel(r) {
+    const prefix = r.insurerType == '1' ? '보험사' : '손해사정';
+    return r.insurerName ? prefix + ' / ' + r.insurerName : '-';
+  }
+}" x-init="init()">
+
+  <!-- 페이지 헤더 -->
+  <div class="page-header">
+    <h2>뇌전보고 (TDB 입고 목록)</h2>
+    <div class="page-header-btns">
+      <button class="btn-excel" onclick="alert('엑셀 다운로드 (프로토타입)')">엑셀다운</button>
+      <button class="btn-add" onclick="alert('뇌전접수 등록 (프로토타입)')">+ 뇌전접수</button>
+    </div>
+  </div>
+
+  <!-- 검색바 -->
+  <div class="search-bar">
+    <span class="search-label">입고일</span>
+    <input type="text" x-model="sday" style="width:90px;" placeholder="2026-04-01">
+    <span style="color:#666;">~</span>
+    <input type="text" x-model="eday" style="width:90px;" placeholder="2026-04-15">
+
+    <span class="search-label" style="margin-left:6px;">진행상황</span>
+    <select x-model="statusFilter" style="width:90px;">
+      <option value="">-- 전체 --</option>
+      <option value="1">접수대기</option>
+      <option value="2">진행중</option>
+      <option value="3">보류</option>
+      <option value="4">완료</option>
+    </select>
+
+    <span class="search-label" style="margin-left:6px;">현장명</span>
+    <input type="text" x-model="keyword" style="width:200px;" placeholder="현장명 / 보험사 / 담당자" @keydown.enter="doSearch()">
+
+    <button class="btn-primary" @click="doSearch()">검색</button>
+    <button class="btn-excel" onclick="alert('엑셀 다운로드 (프로토타입)')">엑셀다운</button>
+  </div>
+
+  <!-- 결과 건수 -->
+  <div class="result-bar">
+    총 <span x-text="totalCount" style="color:#6699FF;"></span>건
+    &nbsp;<span style="color:#888;font-weight:normal;">* 리스트를 더블클릭하면 뇌전정보를 상세하게 보실 수 있습니다.</span>
+  </div>
+
+  <!-- 테이블 -->
+  <div class="tbl-wrap">
+    <table class="svc-tbl">
+      <thead>
+        <tr>
+          <th style="width:80px;">접수일</th>
+          <th style="width:230px;">현장명</th>
+          <th style="width:200px;">보험사</th>
+          <th style="width:80px;">뇌전일</th>
+          <th style="width:90px;">진행상황</th>
+          <th style="width:70px;">담당자</th>
+          <th style="width:120px;">연락처</th>
+          <th style="width:60px;">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="pagedRows.length === 0">
+          <tr>
+            <td colspan="8" style="text-align:center;padding:20px;color:#999;">검색 결과가 없습니다.</td>
+          </tr>
+        </template>
+        <template x-for="(row, idx) in pagedRows" :key="idx">
+          <tr @dblclick="alert('더블클릭: 뇌전 상세 (프로토타입)')" style="cursor:pointer;" title="더블클릭하면 상세확인 가능합니다.">
+            <!-- 접수일 -->
+            <td x-text="row.inDate || '-'"></td>
+            <!-- 현장명 -->
+            <td class="left" x-text="row.siteName || '-'"></td>
+            <!-- 보험사 -->
+            <td class="left" x-text="insurerLabel(row)"></td>
+            <!-- 뇌전일 -->
+            <td x-text="row.tdbDate || '-'"></td>
+            <!-- 진행상황 -->
+            <td>
+              <span :class="statusClass(row.processStatus)" x-text="statusLabel(row.processStatus)"></span>
+            </td>
+            <!-- 담당자 -->
+            <td x-text="row.manager || '-'"></td>
+            <!-- 연락처 -->
+            <td x-text="row.contact || '-'"></td>
+            <!-- 비고 -->
+            <td class="left" x-text="row.remark || ''"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 페이지네이션 -->
+  <div class="pagination">
+    <button class="page-btn" @click="goPage(1)">&laquo;</button>
+    <button class="page-btn" @click="goPage(currentPage - 1)">&lsaquo;</button>
+    <template x-for="p in totalPages" :key="p">
+      <button class="page-btn" :class="{ active: currentPage === p }" @click="goPage(p)" x-text="p"></button>
+    </template>
+    <button class="page-btn" @click="goPage(currentPage + 1)">&rsaquo;</button>
+    <button class="page-btn" @click="goPage(totalPages)">&raquo;</button>
+    <span style="margin-left:8px;font-size:12px;color:#666;">
+      <span x-text="currentPage"></span> / <span x-text="totalPages"></span> 페이지
+    </span>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>자재목록 팝업 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-white text-k-text text-sm" style="width:600px;">
+  <div class="p-3">
+    <div class="bg-white border border-k-border rounded overflow-hidden">
+      <table class="w-full border-collapse text-xs">
+        <thead>
+          <tr class="bg-k-header border-t border-gray-300">
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">품번</th>
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">CS품명</th>
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">출고구분</th>
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">신청수량</th>
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">APP</th>
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">HS</th>
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">OS</th>
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">비고</th>
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">진행상황</th>
+            <th class="border-b border-k-border px-2 py-2 text-k-sub font-bold">삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-k-border hover:bg-blue-50">
+            <td class="px-2 py-2 text-center">P001234</td>
+            <td class="px-2 py-2 text-left">전원보드 A1</td>
+            <td class="px-2 py-2 text-center">유상</td>
+            <td class="px-2 py-2 text-center">2</td>
+            <td class="px-2 py-2 text-center">-</td>
+            <td class="px-2 py-2 text-center">-</td>
+            <td class="px-2 py-2 text-center">-</td>
+            <td class="px-2 py-2 text-center">빠른 처리 요청</td>
+            <td class="px-2 py-2 text-center">출고완료</td>
+            <td class="px-2 py-2 text-center"></td>
+          </tr>
+          <tr class="border-b border-k-border hover:bg-blue-50 bg-[#FBF9C4]">
+            <td class="px-2 py-2 text-center">P001235</td>
+            <td class="px-2 py-2 text-left">LCD 디스플레이</td>
+            <td class="px-2 py-2 text-center">무상</td>
+            <td class="px-2 py-2 text-center">1</td>
+            <td class="px-2 py-2 text-center">-</td>
+            <td class="px-2 py-2 text-center">-</td>
+            <td class="px-2 py-2 text-center">-</td>
+            <td class="px-2 py-2 text-center"></td>
+            <td class="px-2 py-2 text-center">미출고</td>
+            <td class="px-2 py-2 text-center">
+              <button class="px-2 py-1 bg-gray-400 text-white rounded text-xs">삭제</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/store/')?'store':'tdb'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["store"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    📋 스펙
+  </button>
+  <div x-show="open" @click.away="open = false"
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">✕</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">🔍 검색 필드</div>
+      <template x-for="f in spec?.searchFields">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">📊 테이블 컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">🔘 버튼</div>
+      <template x-for="b in spec?.buttons">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">🪟 호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' → ' + p.popup"></div>
+      </template>
+    </div>
+
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold text-[#333] mb-1">➡️ 연결 화면</div>
+      <template x-for="t in spec?.flowTo">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

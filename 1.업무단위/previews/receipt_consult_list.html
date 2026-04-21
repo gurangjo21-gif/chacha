@@ -1,0 +1,608 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>KOCOM</title>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tablescroll.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tooltip.js"></script>
+<script type="text/javascript" src="../assets/js/controller.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script src="../assets/js/addon/jquery_plugin/thickbox-compressed.js" type="text/javascript"></script>
+<!-- daum postcode API removed for offline preview -->
+<link href="../assets/css/thickbox.css" rel="stylesheet" type="text/css" />
+
+<!-- 달력 start -->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
+<link rel="stylesheet" href="../assets/css/jquery-ui.css">
+<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+<script src="../assets/js/jquery-1.10.2.js"></script>
+<script src="../assets/js/jquery-ui.js"></script>
+<!-- 달력 end -->   
+
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/receipt_consult_list.php</b>
+  <span class="purpose">상담 기록 목록</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<div id="header">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+<script language="javascript">
+function open_receipt(){
+	//window.open('receipt.php','pop_receipt','width=665,height=720');
+	/*var cw = screen.availWidth;
+	var ch = screen.availHeight;
+	var sw = 650;
+	var sh = 650;
+	var ml = (cw-sw)/2;
+	var mt = (ch-sh)/2;*/
+	window.open('receipt.php?num=&mode=insert&cid_num=&UID=','pop_receipt','width=710,height=755top=50,left=1000');
+}
+function highlight(which,color){ 
+    if (document.all||document.getElementById) 
+    which.style.backgroundColor=color 
+}
+
+/*function title_ch(name) {
+	location.href="main.php?title_name"+name;
+	top.document.location.reload();
+}*/
+
+function log_out(){
+	var agent_ext = '1000';
+	var agent_id = 'demo';
+	var agent_pw = '';
+	
+	var server1 = '127.0.0.1'
+	if(server1 == '192.168.239') {
+		var server = '192.168.239.252';
+		var server_ip = '192.168.239.251';
+	} else {
+		var server = '222.108.131.73';
+		var server_ip = '222.108.131.123:888';
+	}
+
+	var params = "mode=LogoutAction&ext_no=" + agent_ext+ "&agent_id=" + agent_id+ "&agent_pw=" + agent_pw;
+	$.getJSON("http://"+server_ip+"/manager/callAPI/login.php?callback=?", 
+		params,
+		function(d)
+		{		
+			$.each(d, function(k, v){				
+				var response = v.data;
+				var res_array = response.split("|");
+				alert(res_array[0]);
+				if(res_array[0] == '-1') {
+					alert('DB접속실패');
+				} else if(res_array[0] == '-2'){
+					alert('DB쿼리에러및 기타');
+				}
+				else if(res_array[0] == '-3'){
+					alert('AMI오류입니다.');
+				}else if(res_array[0] == '0'){					
+					//top.location.replace('../logout.php?id='+agent_id);
+					top.location.replace('../logout.php');
+				}
+			}); 
+		}
+	);
+	//location.href = '../logout.php';
+	top.location.replace('../logout.php');
+}
+</script>
+	<div class="main-menu">
+		<div class="wrapper">
+			<ul class="menu">
+							<li >
+					<a href="/html/receipt_consult_list.php?Tidx=" title=""></a>
+					<ul>
+										</ul>
+				</li>
+						</ul>
+			<div class="btns">
+											<a href="#" class="btn1 btn-edit btn-color4" title="SMS" onclick="sms_open('demo','9');">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">SMS</span>
+				</a>
+								<a href="#" class="btn1 btn-edit btn-color4" title="대리점조회" onclick="window.open('popup_center_search.php','center','width=815,height=530,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">대리점조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color4" title="업무담당자조회" onclick="window.open('popup_master_search.php','master','width=800,height=500,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">업무담당자조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color3" title="정보수정" onclick="window.open('my_info.php','info','width=300,height=320,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">정보수정</span>
+				</a>
+				<!--<a href="../logout.php" target="_top" class="btn1 btn-disconnect btn-color4" title="로그아웃">-->
+				<a href="javascript:log_out();" class="btn1 btn-disconnect btn-color4" title="로그아웃">
+					<span class="bg">&nbsp;</span>
+					<span class="icon" style='  background-position: -39px 0px;'>&nbsp;</span>
+					<span class="text">로그아웃</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="sub-menu">&nbsp;</div>
+</div>
+
+<script type='text/javascript'>
+	var call_search_cid="";
+	
+	if(call_search_cid == "new") {		
+		//window.open('pop_admin_scene_list.php','pop_scene','width=720,height=800,scrollbars=yes');
+		//update_next('','insert','');
+
+		//kms 콜이 들어올 때 전화받기 후 서비스접수 팝업 실행됨.
+		update_next1('new','insert','');
+	}
+
+	function select_change(frm){
+		switch(frm){
+			case '7':
+				$("#keyword").hide();
+				$("span.select_gbn").hide();
+				$("#sel_"+frm).show();
+			break;
+			default:
+				$("#sel_7").hide();
+				$("span.select_gbn").hide();
+				$("#keyword").show();
+			break;
+		}
+	}
+	
+	function search_next(){
+		var myform = document.eForm ; 
+		p_mode = myform.p_mode.value;
+		if(p_mode == "g") {
+			myform.pageno.value = 1 ;
+			myform.p_mode.value = "g";
+			myform.action = "/html/receipt_consult_list.php";
+			myform.target="";
+			myform.submit();
+		} else {
+			myform.pageno.value = 1 ;
+			myform.action = "/html/receipt_consult_list.php";
+			myform.target="";
+			myform.submit();
+		}
+	}
+
+	function update_next(idx,mode,ytype,approval,g_mode){
+		if(ytype == 'Y') {
+			window.open('receipt_year.php?num='+idx+'&mode='+mode,'pop_receipt'+idx,'width=710,height=755,top=50,left=100');
+		} else {
+			if(approval == "Y") {
+				window.open('receipt.php?num='+idx+'&mode='+mode+'&cid_num=&UID=&g_mode='+g_mode,'pop_receipt'+idx,'width=710,height=755,top=50,left=100');
+			} else {
+				alert("모바일접수인 경우 먼저 승인을 해주시기 바랍니다.");
+			}
+		}
+	}
+
+	function update_svc(svc,rno) {
+		window.open('popup_svc.php?num='+svc+'&mode=update&rno='+rno,'svc'+svc,'width=660,height=700');
+	}
+
+		function update_next1(idx,mode,ytype){
+		window.open('receipt.php?num='+idx+'&mode='+mode+'&cid_num=&UID=','pop_receipt','width=710,height=755,top=50,left=100');
+	}
+	
+	//엑셀
+	function excel_download(){
+		var myform = document.eForm ;
+		myform.action = "../excel/receipt_consult_list.php";
+		//myform.target = "ifrm_trans";
+		myform.target = "";
+		myform.submit();
+	}
+
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var mode_str = respose.split("^");
+		switch(mode_str[0]){
+			case "ok": 
+				alert("변경되었습니다.");
+				search_next();
+			break;
+			case "false": 
+				alert("오류!!! 다시 시도해주세요.");
+				search_next();
+			break;
+		}
+	}
+
+	// 문자메시지 보내기
+	function sms_next(num) {
+		window.open("popup_sms_main.php?msg=&sender="+num+"&receiver=",'sms_send','width=1010,height=520,resizable=yes,scrollbars=yes');
+	}
+
+	function mevent(idx,type) {
+		//parent.parent.receipt.location.href='receipt.php?idx='+idx+'&mode=update';
+		if(type == "Y") {
+			top.content.receipt.location.href='receipt_year.php?num='+idx+'&mode=update&p_mode=g';
+		} else {
+			top.content.receipt.location.href='receipt.php?num='+idx+'&mode=update&p_mode=g';
+		}
+	}
+
+	// 녹취 듣기
+	function go_record(day,pn_1,pn_2,pn_3,name) {
+		var myform = document.eForm;
+		var re_hid = myform.re_hid.value;
+		/*if(re_hid == "192.168.239") {
+			window.open('http://192.168.239.251/manager/html/record_list.php?mode=web&day='+day+'&name='+name+'&pn_1='+pn_1+'&pn_2='+pn_2+'&pn_3='+pn_3,'pop_record2','fullscreen,resizable=yes');
+		} else {*/
+			window.open('http://222.108.131.123:888/manager/html/record_list.php?mode=web&day='+day+'&name='+name+'&pn_1='+pn_1+'&pn_2='+pn_2+'&pn_3='+pn_3,'pop_record2','fullscreen,resizable=yes');
+		//}
+		/*if() {
+			window.open('http://192.168.239.251/manager/html/record_list.php?mode=web&day='+day+'&name='+name+'&pn_1='+pn_1+'&pn_2='+pn_2+'&pn_3='+pn_3,'pop_record2','fullscreen');
+		} else {
+			window.open('http://222.108.131.123:888/manager/html/record_list.php?mode=web&day='+day+'&name='+name+'&pn_1='+pn_1+'&pn_2='+pn_2+'&pn_3='+pn_3,'pop_record2','fullscreen');
+		}*/
+		//window.open('http://222.108.131.3/manager/proc_page/proc_record_list_engine_2_cs.php?day='+day+'&name='+name+'&pn_1='+pn_1+'&pn_2='+pn_2+'&pn_3='+pn_3+'&pn_4='+pn_4+'&pn_5='+pn_5+'&pn_6='+pn_6,'pop_record2','fullscreen');
+	}
+	
+	$(function(){
+		/* 클릭 클릭시 클릭을 클릭한 위치 근처에 레이어가 나타난다. */
+		$('.tooltip').click(function(e){
+			//alert($(this).attr('title'));
+			var sWidth = window.innerWidth;
+			var sHeight = window.innerHeight;
+
+			var oWidth = $('.popupLayer').width();
+			var oHeight = $('.popupLayer').height();
+
+			// 레이어가 나타날 위치를 셋팅한다.
+			var divLeft = e.clientX + 10;
+			var divTop = e.clientY + 5;
+
+			// 레이어가 화면 크기를 벗어나면 위치를 바꾸어 배치한다.
+			if( divLeft + oWidth > sWidth ) divLeft -= oWidth;
+			if( divTop + oHeight > sHeight ) divTop -= oHeight;
+
+			// 레이어 위치를 바꾸었더니 상단기준점(0,0) 밖으로 벗어난다면 상단기준점(0,0)에 배치하자.
+			if( divLeft < 0 ) divLeft = 0;
+			if( divTop < 0 ) divTop = 0;
+			
+			$("#tooltip_content").html($(this).attr('value'));
+
+			$('.popupLayer').css({
+				"top": divTop,
+				"left": divLeft,
+				"position": "absolute"
+			}).show();
+		});
+
+		$( "#sday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+		$( "#eday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+	});
+	// 팝업 다른데 클릭시 레이어 닫기
+	$(document).mouseup(function (e) {
+		var container = $("#popupLayer");
+		if (!container.is(e.target) && container.has(e.target).length === 0){
+			$('.popupLayer').hide();
+		}	
+	});
+	
+	function closeLayer(){
+			$('.popupLayer').hide();
+		}
+</script>
+<style type="text/css">	
+.imgSelect {
+	cursor: pointer;
+}
+
+.popupLayer {
+	position: absolute;
+	display: none;
+	background-color: #ffffff;
+	border: solid 2px #d0d0d0;
+	width: 350px;
+	height: 100px;
+	padding: 10px;
+	z-index:9999;
+}
+.popupLayer div {
+	position: absolute;
+	top: 5px;
+	right: 5px
+}
+#contents  table th,
+#contents  table td {
+  border-bottom: 1px solid #d7d7d7;
+  border-left: 1px solid #e7e7e7;
+  vertical-align: middle;
+  min-height: 10px;
+}
+#contents  table tr:nth-child(even) {
+background-color: #FBF9C4;
+}
+#contents  table th:first-child,
+#contents  table td:first-child {
+  border-left: 0;
+}
+#contents  table td {
+  text-align: center;
+}
+#contents  .left{
+  text-align:left;
+  padding: 0 0 0 4px;
+}
+#contents  .right{
+  text-align:right;
+  padding: 0 4px 0 4px;
+}
+
+#contents  table > thead > tr > th {
+  background: #f3f3f3;
+  border-top: 1px solid #cfcfcf;
+  color: #545454;
+  font-weight: bold;
+  line-height: 18px;
+  padding: 5px 0;
+}
+
+#contents  table > tr > th {
+  background: #f3f3f3;
+  border-top: 1px solid #cfcfcf;
+  color: #545454;
+  font-weight: bold;
+  line-height: 18px;
+  padding: 8px 0;
+}
+
+#contents  table > tbody > tr > td {
+  padding: 2px 0;
+  color: #545454;
+  font-weight: bold;
+}
+#contents  table > tbody > tr > td:first-child {
+  padding: 5px 0;
+}
+
+#contents  table.tablescroll_body > tbody > tr > td {
+  border-top: 0;
+}
+  </style>
+<div id="contents">
+	<div class="wrapper">
+		<div class="header">
+			<h2>상담이력</h2>
+						<div class="btns">
+				<!--a href="#" class="btn1 btn-color5" style="right:85px;" title="엑셀다운" onclick="javascript:excel_download();"-->
+				<!--<a href="#" class="btn1 btn-color5" title="엑셀다운" onclick="javascript:excel_download();">
+					<span class="bg">&nbsp;</span>
+					<span class="text">엑셀다운</span>
+				</a>-->
+				<a href="../excel/receipt_consult_list_excel.php?query_where= &from_query= 접수번호,접수일,접수구분,고객명,발신번호,연락처,휴대폰,품번,판매유형,상태정보,방문예약일,승인상태,입력사원,아파트코드,장애구분,장애상세,유상통보여부,특이사항,기사메모,구간구분,자재신청상태,주소,상세주소,담당지점,담당사원,접수종류 from KSIS.CS접수 &order_no=접수번호" class="btn1 btn-color5" title="엑셀다운"><span class="bg">&nbsp;</span><span class="text">엑셀다운</span></a>
+			</div>
+									<!--kms 서비스 접수 상단메뉴에 있으므로 주석처리
+			<div class="btns">
+				<a href="javascript:update_next('','insert','')" class="btn1 btn-sms btn-color6" title="서비스 접수">
+					<span class="bg">&nbsp;</span>
+					<span class="text">서비스 접수</span>
+				</a>
+			</div>
+			-->
+					</div>
+		
+		<div class="search">
+			<form method='get' name='eForm' action="/html/receipt_consult_list.php">
+				<input type="hidden" name="tab_idx" value=''>
+				<input type="hidden" name="re_hid" id="re_hid" value='127.0.0.1'>
+				<span class="spacer">접수일</span>
+				<INPUT TYPE="text" NAME="sday" id="sday" size="11" value="" style="margin-top:3px;">				<font style="margin-top:3px;">~</font>
+				<INPUT TYPE="text" NAME="eday" id="eday" size="11" value="" style="margin-top:3px;">
+		
+				<span class="spacer">접수구분</span>
+				<SELECT NAME="rctgbn" style="margin-top:3px;">
+					<OPTION VALUE="" selected>전체</OPTION>
+					<OPTION VALUE="T" >전화</OPTION>
+					<OPTION VALUE="P" >우편</OPTION>
+					<OPTION VALUE="F" >팩스</OPTION>
+					<OPTION VALUE="L" >LED</OPTION>
+					<OPTION VALUE="S" >상담</OPTION>
+					<OPTION VALUE="M" >모바일</OPTION>
+				</SELECT>
+				
+				<span class="spacer">접수종류</span>
+				<SELECT NAME="rctgbn2" onchange="search_next()" style="margin-top:3px;">
+					<OPTION VALUE="" selected>--- 전체 ---</OPTION>
+					<OPTION VALUE="N" >일반</OPTION>
+					<OPTION VALUE="Y" >연차</OPTION>
+				</SELECT>
+				
+								<span class="spacer">자재신청상태</span>
+				<SELECT NAME="rctgbn3" onchange="search_next()" style="margin-top:3px;">
+					<OPTION VALUE="" selected>--- 전체 ---</OPTION>
+					<OPTION VALUE="Y" >신청완료</OPTION>
+					<OPTION VALUE="P" >신청중</OPTION>
+					<OPTION VALUE="N" >신청대기</OPTION>
+				</SELECT>
+				
+				<select name="keyfield" style="margin-top:3px;" onchange="select_change(this.value)">
+					<option value="" selected>--- 선택 ---</option>
+					<option value="1" >접수번호</option>
+					<option value="2" >접수사원</option>
+					<option value="3" >고객명</option>
+					<option value="4" >발신번호</option>
+					<option value="5" >연락처(휴대폰)</option>
+					<option value="6" >주소</option>
+					<option value="7" >예약취소사유</option>
+				</select>
+
+				<input type="text" name="keyword" id="keyword" size="32" value="" style="margin-top:3px;"  />
+			
+				<select name="cancle" class="select_gbn" id="sel_7" style="display:none; margin-top:3px; width:200px;">
+									</select>
+				
+				<input type="image" src="../assets/images/btn/btn-search.png" alt="검색" onkeydown="javascript:keyDown();" onclick="javascript:search_next();"/>
+
+								
+				<input type='hidden' name='idx'>
+				<input type='hidden' name='mode'>
+				<input type='hidden' name='pageno' value='1'>
+				<input type='hidden' name='Tidx' value='1'>
+				<input type='hidden' name='Sidx' value='1'>
+				<input type='hidden' name='p_mode' value=''>
+			</form>
+		</div>
+				
+		<!--<div class="data-table">-->
+		<div style='padding-top:10px;'>
+						<div style="overflow-x:scroll;width:100%;">
+						<table width="3620px">
+				<colgroup>
+					<col width="90px" />
+					<col width="90px" />
+					<col width="70px" />
+					<col width="80px" />
+					<col width="70px" />
+					<col width="70px" />
+					<col width="80px" />
+					<col width="150px" />
+					<col width="110px" />
+					<col width="110px" />
+					<col width="110px" />
+					<col width="70px" />
+					<col width="600px" />
+					<col width="250px" />
+					<col width="400px" />
+					<col width="70px" />
+					<col width="200px" />
+					<col width="200px" />
+					<col width="70px" />
+					<col width="250px" />
+					<col width="150px" />
+					<col width="80px" />
+					<col width="70px" />
+					<col width="90px" />
+					<col width="90px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>접수번호</th>
+						<th>처리번호</th>
+						<th>접수일</th>
+						<th>방문예약일</th>
+						<th>승인상태</th>
+						<th>접수구분</th>
+						<th>접수사원</th>
+						<th>고객명(상태정보)</th>
+						<th>발신번호</th>
+						<th>연락처</th>
+						<th>휴대폰</th>
+						<th>녹취</th>
+						<th>주소</th>
+						<th>아파트명</th>
+						<th>모델</th>
+						<th>판매유형</th>
+						<th>증상분류</th>
+						<th>세부증상</th>
+						<th>유상통보</th>
+						<th>특이사항</th>
+						<th>담당지점</th>
+						<th>담당기사</th>
+						<th>구간구분</th>
+						<th>자재신청상태</th>
+						<th>자재신청일</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+					<tr>
+						<td height='150px;' colspan='23'>데이터가 없습니다.</td>
+					</tr>
+									<!-- 폼 레이어  -->
+				<!--<div class="popupLayer">
+					<div>
+						<span onClick="closeLayer(this)" style="cursor:pointer;font-size:1.5em" title="닫기">X</span>
+					</div>
+					&nbsp;</br>
+					<span id='tooltip_content'></span>
+				</div>-->
+				<!-- //폼 레이어  -->
+				</tbody>
+			</table>
+			</div>
+		</div>
+		&nbsp;	</div>
+</div>
+<iframe name="ifrm_trans" width="0" height="0" frameborder="0" marginheight="60" marginwidth="100"></iframe>
+<div id="footer">
+	<div class="wrapper">
+		<div class="copy">Copyright &copy; kocom. All Rights Reserved.</div>
+	</div>
+</div>
+</body>
+</html>

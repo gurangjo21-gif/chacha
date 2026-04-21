@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>download.php · preview</title>
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/popup_style.css">
+<style>
+  body{margin:0;padding:0;background:#f5f6f8;font-family:"맑은 고딕","Malgun Gothic",sans-serif;font-size:12px;color:#333}
+  .preview-banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:10px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+  }
+  .preview-banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace}
+  .preview-banner .purpose{color:#cbd5e1;font-size:11px}
+  .preview-banner .tag{
+    background:rgba(96,165,250,.2);color:#93c5fd;padding:2px 8px;border-radius:10px;
+    font-size:10px;letter-spacing:.5px;text-transform:uppercase;
+  }
+  .preview-banner .warn{
+    margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;
+    padding:3px 10px;border-radius:10px;font-size:10px;
+  }
+  .php-var{
+    display:inline-block;background:#fef3c7;color:#92400e;padding:1px 6px;
+    border-radius:4px;font-family:Consolas,monospace;font-size:11px;
+    border:1px dashed #fbbf24;
+  }
+  /* Stub missing images */
+  img{max-height:40px}
+  img[src*="btn"]{background:#ddd;padding:2px 8px;border-radius:3px;min-width:60px;height:22px;}
+  /* 화면 body itself */
+  #contents{padding:20px;background:#fff;margin:0 auto;max-width:1400px}
+  .wrapper{background:#fff;padding:14px 20px;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:14px}
+  .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #e5e7eb}
+  .header h2{font-size:18px;font-weight:700;color:#111}
+  .header .btns{display:flex;gap:6px}
+  .search{background:#f9fafb;padding:10px 14px;border-radius:6px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .data-table table{width:100%;border-collapse:collapse;font-size:12px}
+  .data-table th{background:#f3f4f6;padding:8px;border:1px solid #d1d5db;text-align:center;font-weight:600}
+  .data-table td,.data-table Td{padding:6px 8px;border:1px solid #e5e7eb;text-align:center}
+  .data-table tr:hover td{background:#fffbeb}
+  .btn1,.btn1 .text{display:inline-block;padding:3px 10px;background:#3b82f6;color:#fff;border-radius:4px;text-decoration:none;font-size:11px;cursor:pointer}
+  .btn1 .bg{display:none}
+  .btn1.btn-color5{background:#10b981}
+  .btn1.btn-color6{background:#f59e0b}
+  .btn1.btn-color7{background:#6366f1}
+  input[type=text],select,input[type=password],input[type=date]{padding:4px 8px;border:1px solid #d1d5db;border-radius:3px;font-size:12px}
+  input[type=image]{background:#3b82f6;padding:3px 10px;border-radius:4px;color:#fff}
+  form{margin:0}
+  textarea{padding:6px;border:1px solid #d1d5db;border-radius:3px;font-size:12px;font-family:inherit}
+  /* Hidden iframe */
+  iframe[name="ifrm_trans"]{display:none}
+  iframe{display:block;border:1px dashed #cbd5e1;max-width:100%}
+</style>
+<script>
+// Stub out dynamic behaviors
+function ajaxLoader(){return false}
+function search_next(){alert('[미리보기] 검색 액션 (실제 호출 없음)');return false}
+function update_next(){alert('[미리보기] 등록/수정 화면 이동 (실제 호출 없음)');return false}
+function excel_download(){alert('[미리보기] 엑셀 다운로드 (실제 호출 없음)');return false}
+function confirm(msg){return window.top!==window?false:window.confirm(msg)}
+window.onload=function(){
+  // Defuse all form submits in preview
+  document.querySelectorAll('form').forEach(f=>{
+    f.onsubmit=(e)=>{e.preventDefault();alert('[미리보기] Form 제출 차단됨');return false};
+  });
+  document.querySelectorAll('a[href^="javascript:"],a[href="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{e.preventDefault()});
+  });
+};
+</script>
+</head>
+<body>
+<div class="preview-banner">
+  <span class="tag">미리보기</span>
+  <b>html/download.php</b>
+  <span class="purpose">파일 다운로드</span>
+  <span class="warn">⚠️ PHP 실행 없이 정적 추출 (값 = 샘플)</span>
+</div>
+
+<!-- top.php (간략화) -->
+<div style="background:#1e40af;color:#fff;padding:8px 20px;display:flex;align-items:center;gap:16px">
+  <b style="font-size:14px">KOCOM CS/AS</b>
+  <nav style="display:flex;gap:14px;font-size:12px">
+    <span>수신접수</span><span>서비스</span><span>자재</span><span>TDB</span>
+    <span>관리자</span><span>게시판</span><span>통계</span>
+  </nav>
+  <span style="margin-left:auto;font-size:11px;opacity:.8">user: <span class="php-var">[사원명]</span></span>
+</div>
+
+<script>alert('로그인 후 이용하세요.');location.href='/';</script>
+해당 파일이나 경로가 존재하지 않습니다. 
+
+<!-- tail.php (간략화) -->
+<div style="background:#e5e7eb;padding:10px;text-align:center;font-size:11px;color:#6b7280;border-top:1px solid #d1d5db">
+  © KOCOM CS/AS System · 미리보기 모드
+</div>
+</body>
+</html>

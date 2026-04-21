@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>SMS 리스트 - KOCOM</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-white text-xs text-[#333]" x-data="{
+  sday: '2026-04-01',
+  eday: '2026-04-15',
+  keyfield: '',
+  keyword: '',
+  status: '',
+  results: [
+    { no:5, datetime:'2026-04-15 10:23:45', receiver:'010-1234-5678', msg:'방문 예정입니다. 잠시 후 연락드리겠습니다.', sender:'김상담', result:'전송 성공' },
+    { no:4, datetime:'2026-04-14 15:11:22', receiver:'010-9876-5432', msg:'수리가 완료되었습니다. 감사합니다.', sender:'이상담', result:'전송 성공' },
+    { no:3, datetime:'2026-04-13 09:05:33', receiver:'010-5555-6666', msg:'AS 접수가 완료되었습니다.', sender:'박상담', result:'전송실패' },
+    { no:2, datetime:'2026-04-12 14:44:00', receiver:'010-3333-4444', msg:'부품 준비 중입니다. 빠른 시일 내 연락드리겠습니다.', sender:'김상담', result:'전송 성공' },
+    { no:1, datetime:'2026-04-11 11:22:33', receiver:'010-7777-8888', msg:'방문 예약이 확정되었습니다.', sender:'이상담', result:'전송 성공' },
+  ]
+}">
+  <div class="p-2" style="width:800px;">
+    <div class="border border-[#ddd] p-2">
+      <div class="flex items-center justify-between mb-2 flex-wrap gap-1">
+        <div>
+          <strong>[SMS]</strong>
+          <button class="ml-1 bg-[#5acd3e] text-white px-1 py-0.5 text-xs rounded" onclick="window.open('popup_sms.html','sms_go','width=565,height=475')">문구</button>
+        </div>
+        <div class="flex items-center gap-1 flex-wrap">
+          <input type="date" x-model="sday" class="border border-[#ccc] px-1 py-0.5 text-xs">
+          <span>~</span>
+          <input type="date" x-model="eday" class="border border-[#ccc] px-1 py-0.5 text-xs">
+          <select x-model="status" class="border border-[#ccc] px-1 py-0.5 text-xs">
+            <option value="">전체</option>
+            <option value="T">성공</option>
+            <option value="F">실패</option>
+          </select>
+          <select x-model="keyfield" class="border border-[#ccc] px-1 py-0.5 text-xs">
+            <option value="">전체</option>
+            <option value="T">수신번호</option>
+            <option value="M">전송메시지</option>
+            <option value="S">발신자</option>
+          </select>
+          <input type="text" x-model="keyword" class="border border-[#ccc] px-1 py-0.5 w-24 text-xs" placeholder="검색어">
+          <button class="bg-[#6699FF] text-white px-2 py-0.5 text-xs rounded">검색</button>
+        </div>
+      </div>
+      <table class="w-full border-collapse text-xs" style="border-top:2px solid #959595;">
+        <thead>
+          <tr class="bg-[#f3f3f3]">
+            <th class="border border-[#959595] px-1 py-1 text-center w-8">No</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-32">전송일시</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-24">수신번호</th>
+            <th class="border border-[#959595] px-1 py-1 text-center">전송메시지</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-16">발신자</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-16">전송결과</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-14">재전송</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="row in results" :key="row.no">
+            <tr class="hover:bg-gray-50">
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="row.no"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="row.datetime"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="row.receiver"></td>
+              <td class="border border-[#959595] px-1 py-1 pl-1" x-text="row.msg.substring(0,20) + (row.msg.length > 20 ? '...' : '')"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center" x-text="row.sender"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center"
+                :class="row.result === '전송 성공' ? 'text-blue-600' : 'text-red-600'"
+                x-text="row.result"></td>
+              <td class="border border-[#959595] px-1 py-1 text-center">
+                <button class="bg-yellow-400 text-white px-1 py-0.5 text-xs rounded"
+                  @click="if(confirm('재전송 하시겠습니까?')) alert('재전송 되었습니다.')">재전송</button>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <div class="flex justify-center mt-1 gap-1">
+        <button class="border px-2 py-0.5 text-xs">이전</button>
+        <button class="border px-2 py-0.5 text-xs bg-[#6699FF] text-white">1</button>
+        <button class="border px-2 py-0.5 text-xs">다음</button>
+      </div>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["popup"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

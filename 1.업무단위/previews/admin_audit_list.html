@@ -1,0 +1,681 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>KOCOM</title>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tablescroll.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tooltip.js"></script>
+<script type="text/javascript" src="../assets/js/controller.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script src="../assets/js/addon/jquery_plugin/thickbox-compressed.js" type="text/javascript"></script>
+<!-- daum postcode API removed for offline preview -->
+<link href="../assets/css/thickbox.css" rel="stylesheet" type="text/css" />
+
+<!-- 달력 start -->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
+<link rel="stylesheet" href="../assets/css/jquery-ui.css">
+<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+<script src="../assets/js/jquery-1.10.2.js"></script>
+<script src="../assets/js/jquery-ui.js"></script>
+<!-- 달력 end -->   
+
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/admin_audit_list.php</b>
+  <span class="purpose">감사 로그 목록</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<div id="header">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+<script language="javascript">
+function open_receipt(){
+	//window.open('receipt.php','pop_receipt','width=665,height=720');
+	/*var cw = screen.availWidth;
+	var ch = screen.availHeight;
+	var sw = 650;
+	var sh = 650;
+	var ml = (cw-sw)/2;
+	var mt = (ch-sh)/2;*/
+	window.open('receipt.php?num=&mode=insert&cid_num=&UID=','pop_receipt','width=710,height=755top=50,left=1000');
+}
+function highlight(which,color){ 
+    if (document.all||document.getElementById) 
+    which.style.backgroundColor=color 
+}
+
+/*function title_ch(name) {
+	location.href="main.php?title_name"+name;
+	top.document.location.reload();
+}*/
+
+function log_out(){
+	var agent_ext = '1000';
+	var agent_id = 'demo';
+	var agent_pw = '';
+	
+	var server1 = '127.0.0.1'
+	if(server1 == '192.168.239') {
+		var server = '192.168.239.252';
+		var server_ip = '192.168.239.251';
+	} else {
+		var server = '222.108.131.73';
+		var server_ip = '222.108.131.123:888';
+	}
+
+	var params = "mode=LogoutAction&ext_no=" + agent_ext+ "&agent_id=" + agent_id+ "&agent_pw=" + agent_pw;
+	$.getJSON("http://"+server_ip+"/manager/callAPI/login.php?callback=?", 
+		params,
+		function(d)
+		{		
+			$.each(d, function(k, v){				
+				var response = v.data;
+				var res_array = response.split("|");
+				alert(res_array[0]);
+				if(res_array[0] == '-1') {
+					alert('DB접속실패');
+				} else if(res_array[0] == '-2'){
+					alert('DB쿼리에러및 기타');
+				}
+				else if(res_array[0] == '-3'){
+					alert('AMI오류입니다.');
+				}else if(res_array[0] == '0'){					
+					//top.location.replace('../logout.php?id='+agent_id);
+					top.location.replace('../logout.php');
+				}
+			}); 
+		}
+	);
+	//location.href = '../logout.php';
+	top.location.replace('../logout.php');
+}
+</script>
+	<div class="main-menu">
+		<div class="wrapper">
+			<ul class="menu">
+							<li >
+					<a href="/html/admin_audit_list.php?Tidx=" title=""></a>
+					<ul>
+										</ul>
+				</li>
+						</ul>
+			<div class="btns">
+											<a href="#" class="btn1 btn-edit btn-color4" title="SMS" onclick="sms_open('demo','9');">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">SMS</span>
+				</a>
+								<a href="#" class="btn1 btn-edit btn-color4" title="대리점조회" onclick="window.open('popup_center_search.php','center','width=815,height=530,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">대리점조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color4" title="업무담당자조회" onclick="window.open('popup_master_search.php','master','width=800,height=500,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">업무담당자조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color3" title="정보수정" onclick="window.open('my_info.php','info','width=300,height=320,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">정보수정</span>
+				</a>
+				<!--<a href="../logout.php" target="_top" class="btn1 btn-disconnect btn-color4" title="로그아웃">-->
+				<a href="javascript:log_out();" class="btn1 btn-disconnect btn-color4" title="로그아웃">
+					<span class="bg">&nbsp;</span>
+					<span class="icon" style='  background-position: -39px 0px;'>&nbsp;</span>
+					<span class="text">로그아웃</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="sub-menu">&nbsp;</div>
+</div>
+<style type="text/css">	
+.imgSelect {
+	cursor: pointer;
+}
+
+.popupLayer {
+	position: absolute;
+	display: none;
+	background-color: #ffffff;
+	border: solid 2px #d0d0d0;
+	width: 350px;
+	height: 150px;
+	padding: 10px;
+	z-index:9999;
+}
+.popupLayer div {
+	position: absolute;
+	top: 5px;
+	right: 5px
+}
+#contents  table tr:nth-child(even) {
+background-color: #FBF9C4;
+}
+</style>
+<script type='text/javascript'>
+	function search_next(){
+		var myform = document.eForm ; 
+		myform.pageno.value = 1 ;
+		myform.action = "/html/admin_audit_list.php";
+		myform.target="";
+		//alert("search");
+		myform.submit();
+	}
+	
+	function toggle(mode){
+		var chk = document.getElementsByName("chk[]");
+		var cnt = chk.length;
+		var msg ;
+		var where = "and A.접수일 >= '2026-03-21' and A.접수일 <= '2026-04-20' ";
+		var chk_array = Array();
+		if(mode=="TO"){
+			msg = '전체 승인처리하시겠습니까?' ;
+		}else {
+			var j=0;
+			for (var i=0; i < cnt ; i++ ){
+				if(chk[i].checked == true) {
+					chk_array[j] = chk[i].value ;
+					j++;
+				}
+			}
+	
+			if(j==0){
+				alert("선택된 접수건이 없습니다."); return ;
+			}
+			
+			if(mode=="T"){
+				msg = '승인처리하시겠습니까?';
+			}else if(mode=="F"){
+				msg = '승인취소하시겠습니까?';
+			}else if(mode=="C"){
+				msg = '부적합 처리하시겠습니까?';
+			}
+		}
+		//alert(chk_array);
+		if(confirm(msg)){
+			ajaxLoader("ajax_proc.php?mode=admin_audit&umode="+mode+"&chk="+chk_array+"&where="+encodeURI(where));	//2016.11.28 kms - 전체승인 안되는 오류로 인코딩 처리
+		}
+	}
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		//alert(respose);
+		var mode_str = respose.split("^");
+		//alert(mode_str);exit;
+		switch(mode_str[0]){
+			case "ok": 
+				alert(mode_str[1]);
+				search_next();
+			break;
+			case "false": 
+				alert("오류!!! 다시 시도해주세요.");
+				search_next();
+			break;
+			default :
+				alert(respose);
+			break;
+		}
+	}
+
+	// 사인/성명파일 view
+	function down_file(filenm) {
+		window.open('../sign/Normal/'+filenm,'pdf_viewer','menubar=no,width=400,height=400,resizable=no,scrollbars=no');
+	}
+	function down_fileY(filenm) {
+		window.open('../sign/Annual/'+filenm,'pdf_viewer','menubar=no,width=400,height=400,resizable=no,scrollbars=no');
+	}
+	
+	function excel_download(){
+		var myform = document.eForm ;
+		myform.action = "../excel/admin_audit_list.php";
+		//myform.target = "ifrm_trans";
+		myform.target = "";
+		myform.submit();
+	}
+
+	function apply() {
+		/*var myform = document.eForm;
+		myform.action = "admin_audit_list_apply.php?first_row=1";
+		myform.target="";
+		myform.submit();*/
+		location.href="admin_audit_list_apply.php?first=1";
+	}
+	
+	function select_change(frm){
+		//alert(frm);
+		switch(frm){
+			case '3':
+			case '9':
+			case '20':
+			case '25':
+				$("#keyword").hide();
+				$("span.select_gbn").hide();
+				$("#sel_"+frm).show();
+			break;
+			default:
+				$("span.select_gbn").hide();
+				$("#keyword").show();
+		}
+	}
+	function all_chk(){
+		//kms 전체 선택 처리 수정
+		if($('input:checkbox[name="chk[]"]').length == 0){
+			return;
+		}
+
+		var isCheck = false;		
+		if($('#select_label').attr("title") == "전체선택"){
+			$('#select_label').attr("title", "전체해제");
+			isCheck = true;
+		} else {
+			$('#select_label').attr("title", "전체선택");
+			isCheck = false;
+		}
+
+		var chk = document.getElementsByName("chk[]");
+		for (var i=0 ;i<chk.length ;i++ ) {
+			chk[i].checked= isCheck; //chk[i].checked ? false : true;
+		}
+	}
+	$(function(){
+		/* 클릭 클릭시 클릭을 클릭한 위치 근처에 레이어가 나타난다. */
+		$('.tooltip').mouseover(function(e){
+			//alert($(this).attr('title'));
+			var sWidth = window.innerWidth;
+			var sHeight = window.innerHeight;
+
+			var oWidth = $('.popupLayer').width();
+			var oHeight = $('.popupLayer').height();
+
+			// 레이어가 나타날 위치를 셋팅한다.
+			var divLeft = e.clientX + 10;
+			var divTop = e.clientY + 5;
+
+			// 레이어가 화면 크기를 벗어나면 위치를 바꾸어 배치한다.
+			if( divLeft + oWidth > sWidth ) divLeft -= oWidth;
+			if( divTop + oHeight > sHeight ) divTop -= oHeight;
+
+			// 레이어 위치를 바꾸었더니 상단기준점(0,0) 밖으로 벗어난다면 상단기준점(0,0)에 배치하자.
+			if( divLeft < 0 ) divLeft = 0;
+			if( divTop < 0 ) divTop = 0;
+			
+			$("#tooltip_content").html($(this).attr('value'));
+
+			$('.popupLayer').css({
+				"top": divTop,
+				"left": divLeft,
+				"position": "absolute"
+			}).show();
+		//}).mouseout(function(){
+		//	$('.popupLayer').hide();
+		});
+		
+		/*$( "#sday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });
+	    $( "#eday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });*/
+		$( "#sday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+		$( "#eday" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+	});
+	function closeLayer(){
+		$('.popupLayer').hide();
+	}
+	// 팝업 다른데 클릭시 레이어 닫기
+	$(document).mouseup(function (e) {
+		var container = $("#popupLayer");
+		if (!container.is(e.target) && container.has(e.target).length === 0){
+			$('.popupLayer').hide();
+		}	
+	});
+</script>
+<style type="text/css">	
+#contents  table th,
+#contents  table td {
+  border-bottom: 1px solid #d7d7d7;
+  border-left: 1px solid #e7e7e7;
+  vertical-align: middle;
+  min-height: 10px;
+}
+#contents  table th:first-child,
+#contents  table td:first-child {
+  border-left: 0;
+}
+#contents  table td {
+  text-align: center;
+}
+#contents  .left{
+  text-align:left;
+  padding: 0 0 0 4px;
+}
+#contents  .right{
+  text-align:right;
+  padding: 0 4px 0 4px;
+}
+
+#contents  table > thead > tr > th {
+  background: #f3f3f3;
+  border-top: 1px solid #cfcfcf;
+  color: #545454;
+  font-weight: bold;
+  line-height: 18px;
+  padding: 5px 0;
+}
+
+#contents  table > tr > th {
+  background: #f3f3f3;
+  border-top: 1px solid #cfcfcf;
+  color: #545454;
+  font-weight: bold;
+  line-height: 18px;
+  padding: 8px 0;
+}
+
+#contents  table > tbody > tr > td {
+  padding: 2px 0;
+  color: #545454;
+}
+#contents  table > tbody > tr > td:first-child {
+  padding: 5px 0;
+}
+
+#contents  table.tablescroll_body > tbody > tr > td {
+  border-top: 0;
+}
+</style>
+<div id="contents">
+	<div class="wrapper">
+		<div class="header">
+			<h2>대행료 지급검정</h2>
+			<div class="btns">
+				<!--<a href="#" class="btn1 btn-color5" title="엑셀다운" onclick="javascript:excel_download();">
+					<span class="bg">&nbsp;</span>
+					<span class="text">엑셀다운</span>
+				</a>-->
+				<a href="../excel/admin_audit_list_excel.php?query_where=and A.접수일 >= '2026-03-21' and A.접수일 <= '2026-04-20' &query_order= order by 접수번호 desc " class="btn1 btn-color5" title="엑셀다운"><span class="bg">&nbsp;</span><span class="text">엑셀다운</span></a>
+				<a href="javascript:toggle('TO')" class="btn1 btn-sms btn-color6" title="전체승인">
+					<span class="bg">&nbsp;</span>
+					<span class="text">전체승인</span>
+				</a>
+				<a href="javascript:toggle('T')" class="btn1 btn-sms btn-color6" title="승　　인">
+					<span class="bg">&nbsp;</span>
+					<span class="text">승　　인</span>
+				</a>
+				<a href="javascript:toggle('F')" class="btn1 btn-sms btn-color6" title="승인취소">
+					<span class="bg">&nbsp;</span>
+					<span class="text">승인취소</span>
+				</a>
+				<a href="javascript:toggle('C')" class="btn1 btn-sms btn-color6" title="부적합">
+					<span class="bg">&nbsp;</span>
+					<span class="text">부적합</span>
+				</a>
+				<a href="javascript:apply()" class="btn1 btn-sms btn-color6" title="적용">
+					<span class="bg">&nbsp;</span>
+					<span class="text">적용</span>
+				</a>
+			</div>
+		</div>
+		<div class="search">
+			<form method='get' name='eForm' action="/html/admin_audit_list.php">
+				<span class="spacer">정렬기준</span>
+					<SELECT NAME="orderby" style="margin-top:3px;">
+						<OPTION VALUE="접수번호">접수번호</OPTION>
+						<OPTION VALUE="처리번호">처리번호</OPTION>
+						<OPTION VALUE="접수일">접수일</OPTION>
+						<OPTION VALUE="처리일">처리일</OPTION>
+					</SELECT>
+				&nbsp;
+				<span class="spacer">조회조건</span>
+					<SELECT NAME="baseday" style="margin-top:3px;">
+						<OPTION VALUE="" selected>접수일</OPTION>
+						<OPTION VALUE="2">처리일</OPTION>
+					</SELECT>
+				<INPUT TYPE="text" NAME="sday" id="sday" size="11" value="2026-03-21" style="margin-top:3px;">
+				~
+				<INPUT TYPE="text" NAME="eday" id="eday" size="11" value="2026-04-20" style="margin-top:3px;">
+		
+				<span class="spacer">승인여부</span>
+				<SELECT NAME="state" style="margin-top:3px;">
+					<OPTION VALUE="">전체</OPTION>
+					<OPTION VALUE="1">승인</OPTION>
+					<OPTION VALUE="2">미승인</OPTION>
+					<OPTION VALUE="3">부적합</OPTION>
+					<OPTION VALUE="4">미처리</OPTION>
+				</SELECT>
+				<span class="spacer">검색</span>
+				<select name="keyfield" onchange="select_change(this.value)" style="margin-top:3px;">
+					<option value="" selected>-- 선택--</option>
+					<option value="1" >접수번호</option>
+					<option value="2" >처리번호</option>
+					<option value="3" >접수구분</option>
+					<option value="4" >고객명</option>
+					<option value="5" >발신번호</option>
+					<option value="6" >연락처</option>
+					<option value="7" >주소</option>
+					<option value="8" >CS품명</option>
+					<option value="9" >판매유형</option>
+					<option value="10" >증상분류</option>
+					<option value="11" >세부증상</option>
+					<option value="12" >처리분류</option>
+					<option value="13" >처리상세</option>
+					<option value="14" >원인분류</option>
+					<option value="15" >원인상세</option>
+					<option value="16" >특이사항</option>
+					<option value="17" >담당지점</option>
+					<option value="18" >담당기사</option>
+					<option value="19" >기사연락처</option>
+					<option value="20" >구간구분</option>
+					<!--<option value="21" >처리일</option>-->
+					<option value="22" >처리지점</option>
+					<option value="23" >처리사원</option>
+					<option value="24" >처리내용</option>
+					<option value="25" >요금적용</option>
+					<option value="26" >청구금액</option>
+					<option value="27" >징구금액</option>
+				</select>
+				<input type="text" name="keyword" id="keyword" style="margin-top:3px;" size="32" value=""/>
+				<span class="select_gbn" id="sel_3" style="display:none;">
+					<INPUT TYPE="radio" NAME="rctgbn" value="T" id="sel01"><label for="sel01">전화</label> 
+					<INPUT TYPE="radio" NAME="rctgbn" value="P" id="sel02"><label for="sel02">우편</label> 
+					<INPUT TYPE="radio" NAME="rctgbn" value="F" id="sel03"><label for="sel03">팩스</label>
+					<INPUT TYPE="radio" NAME="rctgbn" value="S" id="sel04"><label for="sel04">상담</label>
+					<INPUT TYPE="radio" NAME="rctgbn" value="M" id="sel05"><label for="sel05">모바일</label>
+					<INPUT TYPE="radio" NAME="rctgbn" value="L" id="sel07"><label for="sel07">LED</label>
+					<INPUT TYPE="radio" NAME="rctgbn" value="Y" id="sel06"><label for="sel06">연차</label>&nbsp;
+				</span>
+		
+				<span class="select_gbn" id="sel_9" style="display:none;">
+					<INPUT TYPE="radio" NAME="selgbn" value="민영" id="sel11"><label for="sel11">민영</label> 
+					<INPUT TYPE="radio" NAME="selgbn" value="특판" id="sel12"><label for="sel12">특판</label> 
+					<INPUT TYPE="radio" NAME="selgbn" value="시판" id="sel13"><label for="sel13">시판</label>&nbsp;
+				</span>
+		
+				<span class="select_gbn" id="sel_20" style="display:none;">
+					<INPUT TYPE="radio" NAME="gugan" value="1구간" id="sel21"><label for="sel21">1구간</label> 
+					<INPUT TYPE="radio" NAME="gugan" value="2구간" id="sel22"><label for="sel22">2구간</label> 
+					<INPUT TYPE="radio" NAME="gugan" value="3구간" id="sel23"><label for="sel23">3구간</label>&nbsp;
+				</span>
+		
+				<span class="select_gbn" id="sel_25" style="display:none;">
+					<INPUT TYPE="radio" NAME="costgbn" value="Y" id="sel31"><label for="sel31">유상</label> 
+					<INPUT TYPE="radio" NAME="costgbn" value="N" id="sel32"><label for="sel32">무상</label> 
+					<INPUT TYPE="radio" NAME="costgbn" value="I" id="sel33"><label for="sel33">유지보수</label>
+				</span>
+				<input type="image" src="../assets/images/btn/btn-search.png" alt="검색" onkeydown="javascript:keyDown();" onclick="javascript:search_next();"/>
+				<input type='hidden' name='idx'>
+				<input type='hidden' name='mode'>
+				<input type='hidden' name='pageno' value='1'>
+				<input type='hidden' name='Tidx' value='1'>
+				<input type='hidden' name='Sidx' value='1'>
+				<span class="spacer" style='float:right;color:red;font-weight: bold;'><U>총 0건</U>&nbsp;</span><!--kms 총건수 추가-->
+			</form>
+		</div>
+		
+			<!--div class='data-table'-->
+			<div style='padding-top:5px;'>
+				<div style="overflow-x:scroll;width:100%;">
+				<table width="4650px">
+					<colgroup>
+						<col width="50px" />
+						<col width="100px" />
+						<col width="90px" />
+						<col width="90px" />
+						<col width="90px" />
+						<col width="90px" />
+						<col width="120px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="350px" />
+						<col width="120px" />
+						<col width="100px" />
+						<col width="400px" />
+						<col width="100px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="150px" />
+						<col width="250px" />
+						<col width="150px" />
+						<col width="100px" />
+						<col width="120px" />
+						<col width="90px" />
+						<col width="90px" />
+						<col width="150px" />
+						<col width="100px" />
+						<col width="250px" />
+						<col width="90px" />
+						<col width="90px" />
+						<col width="90px" />
+						<col width="180px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<TH onclick="all_chk()" style="cursor:pointer"  id='select_label' title='전체선택'><U>선택</U><input type="checkbox" id="allagree" name="allagree" style="display:none" checked></TH>
+							<TH>접수번호</TH>
+							<TH>접수일시</TH>
+							<TH>처리번호</TH>
+							<TH>승인여부</TH>
+							<TH>접수구분</TH>
+							<TH>고객명</TH>
+							<TH>발신번호</TH>
+							<TH>연락처</TH>
+							<TH>주소</TH>
+							<TH>제품일련번호</TH>
+							<TH>품번</TH>
+							<TH>모델</TH>
+							<TH>판매유형</TH>
+							<TH>증상분류</TH>
+							<TH>세부증상</TH>
+							<TH>처리분류</TH>
+							<TH>처리상세</TH>
+							<TH>원인분류</TH>
+							<TH>원인상세</TH>
+							<TH>특이사항</TH>
+							<TH>담당지점</TH>
+							<TH>담당기사</TH>
+							<TH>기사연락처</TH>
+							<TH>구간구분</TH>
+							<TH>처리일</TH>
+							<TH>처리지점</TH>
+							<TH>처리사원</TH>
+							<TH>처리내용</TH>
+							<TH>요금적용</TH>
+							<TH>청구금액</TH>
+							<TH>징구금액</TH>
+							<TH>비고</TH>
+						</tr>
+					</thead>
+					<tbody>
+						
+							<tr>
+								<td height='150px;' colspan='34'>데이터가 없습니다.</td>
+							</tr>
+												
+						<!--<div class="popupLayer">
+							<div><span onClick="closeLayer(this)" style="cursor:pointer;font-size:1.5em" title="닫기">X</span></div>
+							&nbsp;<br>
+							<span id='tooltip_content' style='line-height:20px;'></span>
+						</div>-->
+					</tbody>
+				</table>
+			</div>	
+		</div>
+						<div class='paging'>
+					<div class='paging-wrapper'>
+			<span class='page-first paging-btn'><a href='/html/admin_audit_list.php?&pageno=1' title='첫 페이지' tabindex='1'>first</a></span><span class='page-prev paging-btn'><a href='#' title='이전 페이지' tabindex='1'>previous</a></span><span class='page-next paging-btn'><a href='#' title='다음 페이지' tabindex='1'>next</a></span><span class='page-last paging-btn'><a href='/html/admin_audit_list.php?&pageno=0' title='마지 막페이지' tabindex='1'>last</a></span>			</div>
+		</div>	</div>
+</div>
+<iframe name="ifrm_trans" width="0" height="0" frameborder="0" marginheight="60" marginwidth="100"></iframe>
+<div id="footer">
+	<div class="wrapper">
+		<div class="copy">Copyright &copy; kocom. All Rights Reserved.</div>
+	</div>
+</div>
+</body>
+</html>

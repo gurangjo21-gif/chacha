@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Softphone</title>
+  <script src="libs/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        'k-primary': '#6699FF', 'k-active': '#5acd3e',
+        'k-border': '#d7d7d7', 'k-border2': '#b6babf',
+        'k-text': '#333333', 'k-sub': '#545454',
+        'k-bg': '#f2f2f2', 'k-header': '#f3f3f3',
+      }}}
+    }
+  </script>
+  <script defer src="libs/alpine.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; height: 36px; overflow: hidden; font-size: 11px; }
+  </style>
+</head>
+<body style="background:#ddddff; height:36px;">
+
+  <div
+    x-data="softphone()"
+    class="flex items-center h-full px-3 gap-3"
+    style="height:36px; font-size:11px;"
+  >
+    <!-- 좌측: 상태 뱃지 -->
+    <div class="flex items-center gap-2 shrink-0">
+      <span class="text-[10px] font-semibold text-gray-500 tracking-wide">상태</span>
+      <span
+        :class="status === '통화중'
+          ? 'bg-green-500 text-white'
+          : 'bg-gray-400 text-white'"
+        class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide transition-colors duration-200"
+        x-text="status"
+      ></span>
+      <!-- 통화중 깜빡이 인디케이터 -->
+      <span
+        x-show="status === '통화중'"
+        class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
+      ></span>
+    </div>
+
+    <!-- 구분선 -->
+    <div class="w-px h-5 bg-blue-300 shrink-0"></div>
+
+    <!-- 중앙: 발신번호 표시 -->
+    <div class="flex items-center gap-2 flex-1 min-w-0">
+      <span class="text-[10px] text-gray-500 shrink-0">발신번호</span>
+      <span
+        class="font-mono font-semibold text-gray-700 tracking-wider truncate"
+        style="font-size:12px;"
+        x-text="callerNumber"
+      ></span>
+      <template x-if="callDuration > 0">
+        <span class="text-[10px] text-green-600 font-mono shrink-0" x-text="formatDuration(callDuration)"></span>
+      </template>
+    </div>
+
+    <!-- 구분선 -->
+    <div class="w-px h-5 bg-blue-300 shrink-0"></div>
+
+    <!-- 우측: 제어 버튼 그룹 -->
+    <div class="flex items-center gap-1 shrink-0">
+
+      <!-- 대기 버튼 -->
+      <button
+        @click="setStatus('대기중')"
+        :class="status === '대기중'
+          ? 'bg-gray-500 text-white ring-1 ring-gray-600'
+          : 'bg-white text-gray-600 hover:bg-gray-100'"
+        class="px-2.5 py-0.5 rounded text-[11px] font-medium border border-gray-300 transition-colors duration-100 leading-5"
+      >대기</button>
+
+      <!-- 수신 버튼 -->
+      <button
+        @click="receiveCall()"
+        :class="status === '통화중'
+          ? 'bg-green-500 text-white ring-1 ring-green-600'
+          : 'bg-white text-green-600 hover:bg-green-50 hover:border-green-400'"
+        class="px-2.5 py-0.5 rounded text-[11px] font-medium border border-gray-300 transition-colors duration-100 leading-5"
+      >수신</button>
+
+      <!-- 끊기 버튼 -->
+      <button
+        @click="endCall()"
+        class="px-2.5 py-0.5 rounded text-[11px] font-medium border border-red-300 bg-white text-red-500 hover:bg-red-50 hover:border-red-500 transition-colors duration-100 leading-5"
+      >끊기</button>
+
+      <!-- 보류 버튼 -->
+      <button
+        @click="holdCall()"
+        :class="onHold
+          ? 'bg-yellow-400 text-white ring-1 ring-yellow-500'
+          : 'bg-white text-yellow-600 hover:bg-yellow-50 hover:border-yellow-400'"
+        class="px-2.5 py-0.5 rounded text-[11px] font-medium border border-gray-300 transition-colors duration-100 leading-5"
+      >보류</button>
+
+    </div>
+
+    <!-- 내선번호 표시 -->
+    <div class="w-px h-5 bg-blue-300 shrink-0"></div>
+    <div class="flex items-center gap-1 shrink-0">
+      <span class="text-[10px] text-gray-500">내선</span>
+      <span class="text-[11px] font-semibold text-gray-700">1001</span>
+    </div>
+
+  </div>
+
+  <script>
+    function softphone() {
+      return {
+        status: '대기중',       // '대기중' | '통화중'
+        callerNumber: '010-1234-5678',
+        onHold: false,
+        callDuration: 0,
+        _timer: null,
+
+        setStatus(s) {
+          this.status = s;
+          this.onHold = false;
+          if (s !== '통화중') {
+            this.stopTimer();
+            this.callDuration = 0;
+          }
+        },
+
+        receiveCall() {
+          this.status = '통화중';
+          this.onHold = false;
+          this.callDuration = 0;
+          this.startTimer();
+        },
+
+        endCall() {
+          this.status = '대기중';
+          this.onHold = false;
+          this.stopTimer();
+          this.callDuration = 0;
+          this.callerNumber = '010-1234-5678';
+        },
+
+        holdCall() {
+          if (this.status !== '통화중') return;
+          this.onHold = !this.onHold;
+          if (this.onHold) {
+            this.stopTimer();
+          } else {
+            this.startTimer();
+          }
+        },
+
+        startTimer() {
+          this.stopTimer();
+          this._timer = setInterval(() => { this.callDuration++; }, 1000);
+        },
+
+        stopTimer() {
+          if (this._timer) {
+            clearInterval(this._timer);
+            this._timer = null;
+          }
+        },
+
+        formatDuration(sec) {
+          const m = String(Math.floor(sec / 60)).padStart(2, '0');
+          const s = String(sec % 60).padStart(2, '0');
+          return m + ':' + s;
+        }
+      }
+    }
+  </script>
+</body>
+</html>

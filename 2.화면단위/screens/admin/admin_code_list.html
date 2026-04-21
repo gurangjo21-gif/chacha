@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Code 관리 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm" x-data="{
+  selErr:'', selRepair:'', selReason:'',
+  errCodes: ['전원불량','통신불량','화면불량','소음발생','작동불량','외관손상'],
+  repairCodes: ['부품교체','수리','청소','조정','소프트업데이트','검사'],
+  reasonCodes: ['노후화','사용자실수','설치불량','충격손상','소프트오류','불명'],
+  errItems: [
+    {code:'E001', name:'전원불량', sub:[{code:'E001-01',name:'전원 안켜짐',use:'Y'},{code:'E001-02',name:'간헐적 전원꺼짐',use:'Y'},{code:'E001-03',name:'재부팅 반복',use:'N'}]},
+    {code:'E002', name:'통신불량', sub:[{code:'E002-01',name:'인터폰 연결 안됨',use:'Y'},{code:'E002-02',name:'홈네트워크 오류',use:'Y'}]},
+    {code:'E003', name:'화면불량', sub:[{code:'E003-01',name:'터치 미반응',use:'Y'},{code:'E003-02',name:'화면 깜박임',use:'Y'}]},
+  ],
+  repairItems:[
+    {code:'R001',name:'부품교체',sub:[{code:'R001-01',name:'전원보드 교체',use:'Y'},{code:'R001-02',name:'디스플레이 교체',use:'Y'}]},
+    {code:'R002',name:'수리',sub:[{code:'R002-01',name:'터치패널 수리',use:'Y'},{code:'R002-02',name:'회로 납땜',use:'N'}]},
+  ],
+  reasonItems:[
+    {code:'C001',name:'노후화',sub:[{code:'C001-01',name:'부품 수명',use:'Y'},{code:'C001-02',name:'전기적 열화',use:'Y'}]},
+    {code:'C002',name:'사용자실수',sub:[{code:'C002-01',name:'충격손상',use:'Y'},{code:'C002-02',name:'이물질 투입',use:'Y'}]},
+  ],
+  addMode:null, addText:'',
+  editMode(item){ if(confirm('코드명을 바꾸게 되면 기존 데이터도 변경됩니다.\n그래도 변경하시겠습니까?')){item.editing=!item.editing;} }
+}">
+<div class="max-w-full mx-auto p-4">
+  <div class="flex items-center justify-between mb-4 pb-2 border-b border-k-border">
+    <h2 class="text-lg font-bold">Code 관리</h2>
+    <div class="flex gap-1">
+      <button class="bg-orange-500 text-white px-3 py-1 rounded text-xs hover:opacity-80">방문예약취소</button>
+      <button class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:opacity-80">자재출고등급</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <!-- 장애코드 -->
+    <div class="bg-white border border-k-border rounded overflow-hidden">
+      <div class="bg-k-header border-b border-k-border py-2 px-3 flex items-center gap-2">
+        <span class="font-bold text-xs">장애코드</span>
+        <select x-model="selErr" class="border border-k-border rounded px-2 py-0.5 text-xs flex-1">
+          <option value="">:: 대코드 전체 ::</option>
+          <template x-for="c in errCodes" :key="c"><option :value="c" x-text="c"></option></template>
+        </select>
+      </div>
+      <div class="p-2">
+        <div class="flex gap-1 mb-2">
+          <input type="text" x-model="addText" placeholder="장애명 추가" class="border border-k-border rounded px-2 py-1 text-xs flex-1">
+          <button @click="errItems.push({code:'E00'+(errItems.length+1),name:addText,sub:[]}); addText=''"
+            class="bg-k-primary text-white px-2 py-1 rounded text-xs hover:opacity-80">추가</button>
+        </div>
+        <table class="w-full text-xs border-collapse">
+          <thead>
+            <tr class="bg-k-header">
+              <th class="py-1 px-2 border border-gray-300 text-center">장애코드</th>
+              <th class="py-1 px-2 border border-gray-300">장애내용</th>
+              <th class="py-1 px-2 border border-gray-300 text-center w-10">사용</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="item in errItems" :key="item.code">
+              <template x-for="(sub, si) in [{code:item.code,name:item.name,use:'Y',isBig:true},...item.sub]" :key="sub.code">
+                <tr :class="sub.isBig?'bg-indigo-100 font-bold':'hover:bg-gray-50'" class="border-b border-gray-200 cursor-pointer" @dblclick="sub.editing=!sub.editing">
+                  <td class="py-1 px-2 border-r border-gray-300 text-center" x-text="sub.code"></td>
+                  <td class="py-1 px-2 border-r border-gray-300">
+                    <span x-show="!sub.editing" x-text="sub.name"></span>
+                    <input x-show="sub.editing" type="text" x-model="sub.name" class="border border-k-border rounded px-1 w-full text-xs" @blur="sub.editing=false">
+                  </td>
+                  <td class="py-1 px-2 text-center" :class="sub.use==='Y'?'text-blue-600':'text-red-500'" x-text="sub.use"></td>
+                </tr>
+              </template>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 수리코드 -->
+    <div class="bg-white border border-k-border rounded overflow-hidden">
+      <div class="bg-k-header border-b border-k-border py-2 px-3 flex items-center gap-2">
+        <span class="font-bold text-xs">수리코드</span>
+        <select x-model="selRepair" class="border border-k-border rounded px-2 py-0.5 text-xs flex-1">
+          <option value="">:: 대코드 전체 ::</option>
+          <template x-for="c in repairCodes" :key="c"><option :value="c" x-text="c"></option></template>
+        </select>
+      </div>
+      <div class="p-2">
+        <div class="flex gap-1 mb-2">
+          <input type="text" placeholder="수리명 추가" class="border border-k-border rounded px-2 py-1 text-xs flex-1">
+          <button class="bg-k-primary text-white px-2 py-1 rounded text-xs hover:opacity-80">추가</button>
+        </div>
+        <table class="w-full text-xs border-collapse">
+          <thead>
+            <tr class="bg-k-header">
+              <th class="py-1 px-2 border border-gray-300 text-center">코드번호</th>
+              <th class="py-1 px-2 border border-gray-300">수리내용</th>
+              <th class="py-1 px-2 border border-gray-300 text-center w-10">사용</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="item in repairItems" :key="item.code">
+              <template x-for="(sub) in [{code:item.code,name:item.name,use:'Y',isBig:true},...item.sub]" :key="sub.code">
+                <tr :class="sub.isBig?'bg-indigo-100 font-bold':'hover:bg-gray-50'" class="border-b border-gray-200 cursor-pointer">
+                  <td class="py-1 px-2 border-r border-gray-300 text-center" x-text="sub.code"></td>
+                  <td class="py-1 px-2 border-r border-gray-300" x-text="sub.name"></td>
+                  <td class="py-1 px-2 text-center" :class="sub.use==='Y'?'text-blue-600':'text-red-500'" x-text="sub.use"></td>
+                </tr>
+              </template>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 원인코드 -->
+    <div class="bg-white border border-k-border rounded overflow-hidden">
+      <div class="bg-k-header border-b border-k-border py-2 px-3 flex items-center gap-2">
+        <span class="font-bold text-xs">원인코드</span>
+        <select x-model="selReason" class="border border-k-border rounded px-2 py-0.5 text-xs flex-1">
+          <option value="">:: 대코드 전체 ::</option>
+          <template x-for="c in reasonCodes" :key="c"><option :value="c" x-text="c"></option></template>
+        </select>
+      </div>
+      <div class="p-2">
+        <div class="flex gap-1 mb-2">
+          <input type="text" placeholder="원인명 추가" class="border border-k-border rounded px-2 py-1 text-xs flex-1">
+          <button class="bg-k-primary text-white px-2 py-1 rounded text-xs hover:opacity-80">추가</button>
+        </div>
+        <table class="w-full text-xs border-collapse">
+          <thead>
+            <tr class="bg-k-header">
+              <th class="py-1 px-2 border border-gray-300 text-center">코드번호</th>
+              <th class="py-1 px-2 border border-gray-300">원인내용</th>
+              <th class="py-1 px-2 border border-gray-300 text-center w-10">사용</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="item in reasonItems" :key="item.code">
+              <template x-for="(sub) in [{code:item.code,name:item.name,use:'Y',isBig:true},...item.sub]" :key="sub.code">
+                <tr :class="sub.isBig?'bg-indigo-100 font-bold':'hover:bg-gray-50'" class="border-b border-gray-200 cursor-pointer">
+                  <td class="py-1 px-2 border-r border-gray-300 text-center" x-text="sub.code"></td>
+                  <td class="py-1 px-2 border-r border-gray-300" x-text="sub.name"></td>
+                  <td class="py-1 px-2 text-center" :class="sub.use==='Y'?'text-blue-600':'text-red-500'" x-text="sub.use"></td>
+                </tr>
+              </template>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <p class="text-xs text-gray-500 mt-3">* 코드명을 더블 클릭하면 수정할 수 있습니다. 사용여부를 더블 클릭하면 상태를 변경합니다.</p>
+</div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["admin"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

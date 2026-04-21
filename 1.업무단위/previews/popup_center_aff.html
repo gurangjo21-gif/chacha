@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>소속센터지정</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script> 
+
+<script type="text/javascript">
+	function ajaxLoader(url){ 
+		if (document.getElementById) { 
+			var xmlHttp = (window.ActiveXObject) ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest(); 
+		}
+		if (xmlHttp){ 
+			xmlHttp.onreadystatechange = function(){ 
+				if (xmlHttp.readyState == 4){// 객체의 상태(0:비초기화, 1:로딩, 3:상호작용, 4: 완료)
+					if(xmlHttp.status == 200){ 
+						ajaxResponse(xmlHttp.responseText); 
+					}else{
+						alert('시스템 오류. CODE :'+ xmlHttp.status);
+					}
+				} 
+			} 
+			xmlHttp.open("GET", url, true); 
+			xmlHttp.send(null); 
+		}else{
+			alert("지원되지 않는 브라우저입니다.");
+		}
+	}
+
+	function search_next(val) {
+		var myform = document.searchForm;
+	//	ajaxLoader('../dao/popup_center_aff.php?code='+val);
+		myform.action = "../html/popup_center_aff.php?code="+val;
+		myform.target = "";
+		myform.submit();
+		//location.replace('../dao/popup_center_aff.php?code='+val);
+	}
+
+	function center_add() {
+		var myform = document.searchForm;
+		var center_name = myform.center_one.value;
+		var aff_name = myform.center_two.value;
+		ajaxLoader("ajax_proc.php?mode=aff_add&center_name="+center_name+"&aff_name="+aff_name);
+	}
+
+	function update_next(idx,mode) {
+		var myform = document.searchForm;
+		var center_name = myform.center_one.value;
+		ajaxLoader("ajax_proc.php?mode=aff_del&center_name="+center_name+"&aff_name="+idx);
+	}
+
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var str = respose.split("^");
+		switch(str[0]){
+			case "ok" :
+				alert("추가되었습니다.");
+				location.reload();
+			break;
+			case "false" :
+				alert("오류!!! 다시 시도해주세요.");
+				return;
+			break;
+			case "del_ok" :
+				alert("삭제 되었습니다.");
+				location.reload();
+			break;
+			default:
+				alert(respose);
+			break;
+		}
+	}
+</script>
+
+<style type="text/css">
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/popup_center_aff.php</b>
+  <span class="purpose">센터 제휴</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+
+<form name="searchForm" method='post'>
+<table cellpadding="0" cellspacing="0" width="390px" >
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 15px 0 5px 0;">
+						<div style="padding:0 0 2px; 2px;" align='center'>
+							광역센터 선택 : 
+							<SELECT NAME="center_one" style="margin-top:3px;" onChange="search_next(this.value)">
+								<option value="" selected>:: 광역센터 선택 ::</option>
+															</select>
+						</div>
+						<div style="padding:0 0 2px; 2px;" align='center'>
+							소속센터 선택 : 
+							<SELECT NAME="center_two" style="margin-top:3px;">
+								<option value="" selected>:: 소속센터 선택 ::</option>
+															</select>
+							<a href="#" class="btn1 btn-sms btn-color6" title="추가" onclick="javascript:center_add();">
+								<span class="bg">&nbsp;</span>
+								<span class="text">추가</span>
+							</a>
+						</div>
+						<div style="overflow:scroll; width:390px; height:350px;">
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<colgroup>
+								<col width="*" />
+								<col width="70px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th>지점명</th>
+									<th>삭제</th>
+								</tr>
+							</thead>
+							<tbody>
+															</tbody>
+						</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+</table> 
+ 
+</form>
+</body>
+</html>

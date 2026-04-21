@@ -1,0 +1,1120 @@
+{
+  "receipt": {
+    "phpFile": "receipt.php",
+    "htmlFile": "screens/receipt/receipt.html",
+    "type": "form",
+    "title": "접수 등록/수정 폼",
+    "purpose": "상담 접수건을 신규 등록하거나 기존 접수 내용을 수정",
+    "workflow": "접수 > 등록",
+    "searchFields": [
+      { "name": "num", "type": "hidden", "label": "접수번호(PK)", "required": false },
+      { "name": "mode", "type": "hidden", "label": "insert|update", "required": true },
+      { "name": "cid_num", "type": "text", "label": "발신번호", "required": false },
+      { "name": "UID", "type": "hidden", "label": "고객번호", "required": false },
+      { "name": "rct_gbn", "type": "select", "label": "접수구분", "options": ["T:전화","P:우편","F:팩스","L:LED","S:상담","M:모바일"] },
+      { "name": "고객명", "type": "text", "label": "고객명", "required": true },
+      { "name": "연락처", "type": "text", "label": "연락처" },
+      { "name": "휴대폰", "type": "text", "label": "휴대폰" },
+      { "name": "우편번호", "type": "text", "label": "우편번호" },
+      { "name": "주소", "type": "text", "label": "주소" },
+      { "name": "상세주소", "type": "text", "label": "상세주소" },
+      { "name": "동", "type": "text", "label": "동" },
+      { "name": "호", "type": "text", "label": "호" },
+      { "name": "아파트코드", "type": "popup", "label": "아파트명", "popup": "popup_apt_search.php" },
+      { "name": "품번", "type": "popup", "label": "모델", "popup": "popup_model_search.php" },
+      { "name": "장애구분", "type": "select", "label": "증상분류(대)" },
+      { "name": "장애상세", "type": "select", "label": "세부증상(소)" },
+      { "name": "유상통보여부", "type": "radio", "label": "유상통보(Y/N)" },
+      { "name": "담당지점", "type": "select", "label": "담당지점" },
+      { "name": "담당사원", "type": "select", "label": "담당기사" },
+      { "name": "방문예약일", "type": "date", "label": "방문예약일" },
+      { "name": "특이사항", "type": "textarea", "label": "특이사항" },
+      { "name": "상담내용", "type": "textarea", "label": "상담내용" },
+      { "name": "구간구분", "type": "radio", "label": "구간구분", "options": ["1구간","2구간","3구간"] }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "저장(등록/수정)", "action": "submit form to receipt_proc.php" },
+      { "label": "기사메모", "action": "popup receipt_g_memo.php 620x600" },
+      { "label": "닫기", "action": "self.close()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "아파트 검색", "popup": "popup_apt_search.php", "size": "615x500" },
+      { "trigger": "모델 검색", "popup": "popup_model_search.php", "size": "615x500" },
+      { "trigger": "기사메모 버튼", "popup": "receipt_g_memo.php", "size": "620x600" },
+      { "trigger": "처리 팝업", "popup": "popup_svc.php", "size": "660x700" }
+    ],
+    "ajaxCalls": [
+      { "trigger": "고객조회", "url": "ajax_proc.php", "mode": "search_cust_number" },
+      { "trigger": "장애구분 소메뉴 조회", "url": "ajax_proc.php", "mode": "get_err_detail" }
+    ],
+    "flowFrom": ["main.php","receipt_all.php","receipt_consult_list.php","receipt_callback_list.php","receipt_m_list.php","receipt_service_list.php"],
+    "flowTo": ["receipt_proc.php","popup_svc.php","receipt_g_memo.php"]
+  },
+  "receipt_all": {
+    "phpFile": "receipt_all.php",
+    "htmlFile": "screens/receipt/receipt_all.html",
+    "type": "layout",
+    "title": "접수등록(2단 레이아웃 - receipt_main 사용)",
+    "purpose": "좌측 접수 입력폼 + 우측 상세/이력(FRAMESET 형식)을 한 화면에 배치",
+    "workflow": "접수 > 등록(복합)",
+    "searchFields": [
+      { "name": "call", "type": "hidden", "label": "call=ok 여부" },
+      { "name": "cid_num", "type": "hidden", "label": "발신번호" },
+      { "name": "stmode", "type": "hidden", "label": "상태 모드" }
+    ],
+    "tableColumns": [],
+    "buttons": [],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "iframes": [
+      { "name": "receipt", "src": "receipt.php?p_mode=g&mode=insert", "width": "40%", "height": "730px" },
+      { "name": "info", "src": "receipt_main.php", "width": "60%", "height": "780px" }
+    ],
+    "flowFrom": ["main.php"],
+    "flowTo": ["receipt.php","receipt_main.php"]
+  },
+  "receipt_all_1": {
+    "phpFile": "receipt_all_1.php",
+    "htmlFile": "screens/receipt/receipt_all_1.html",
+    "type": "layout",
+    "title": "접수등록(2단 레이아웃 - receipt_info 사용)",
+    "purpose": "receipt_all.php 변형. 우측을 receipt_info.php (iframe 형식)로 표시",
+    "workflow": "접수 > 등록(복합)",
+    "searchFields": [
+      { "name": "call", "type": "hidden", "label": "call=ok 여부" },
+      { "name": "cid_num", "type": "hidden", "label": "발신번호" }
+    ],
+    "tableColumns": [],
+    "buttons": [],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "iframes": [
+      { "name": "receipt", "src": "receipt.php?p_mode=g&mode=insert", "width": "40%", "height": "730px" },
+      { "name": "info", "src": "receipt_info.php", "width": "60%", "height": "780px" }
+    ],
+    "flowFrom": ["main.php"],
+    "flowTo": ["receipt.php","receipt_info.php"]
+  },
+  "receipt_callback_list": {
+    "phpFile": "receipt_callback_list.php",
+    "htmlFile": "screens/receipt/receipt_callback_list.html",
+    "type": "list",
+    "title": "콜백 리스트",
+    "purpose": "부재중/콜백 대기 전화 목록 관리. 상담원이 전화 회신 후 처리완료 처리.",
+    "workflow": "처리 > 콜백",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "접수일(시작)", "required": false },
+      { "name": "eday", "type": "date", "label": "접수일(종료)", "required": false },
+      { "name": "keyword", "type": "text", "label": "전화번호" },
+      { "name": "p_mode", "type": "hidden", "label": "g=갤러리(info 내장)" },
+      { "name": "agent_id", "type": "hidden", "label": "상담원 ID" }
+    ],
+    "tableColumns": [
+      { "name": "선택", "dbField": "checkbox(cust_id-uniq_id)", "width": "10%", "format": "checkbox" },
+      { "name": "입력일시", "dbField": "in_time", "width": "15%", "format": "datetime" },
+      { "name": "전화번호", "dbField": "tel_num", "width": "15%", "format": "tel" },
+      { "name": "콜백처리 상담원", "dbField": "agent_name", "width": "15%", "format": "string" },
+      { "name": "처리상태", "dbField": "state", "width": "15%", "format": "enum(0:미처리,1:확인,2:처리완료)" },
+      { "name": "녹취", "dbField": "rec_file", "width": "10%", "format": "icon" },
+      { "name": "녹음시간", "dbField": "cost_time", "width": "10%", "format": "duration" },
+      { "name": "고객부재", "dbField": "(계산)", "width": "10%", "format": "string" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "link ../excel/receipt_callback_list_excel.php" },
+      { "label": "선택처리", "action": "complete_with() - 일괄 처리완료" },
+      { "label": "검색", "action": "search_next()" },
+      { "label": "전체선택(checkbox)", "action": "all_check()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "전화번호 클릭 (미등록)", "popup": "receipt.php?num=new&mode=insert", "size": "685x755" },
+      { "trigger": "녹취 아이콘", "popup": "record_list.php", "size": "fullscreen" }
+    ],
+    "ajaxCalls": [
+      { "trigger": "전화번호 클릭", "url": "ajax_proc.php", "mode": "search_cust_number" },
+      { "trigger": "선택처리", "url": "ajax_proc_mysql.php", "mode": "callback_complete_with" },
+      { "trigger": "상태 더블클릭", "url": "ajax_proc_mysql.php", "mode": "callback_complete|callback_uncompleted" }
+    ],
+    "flowFrom": ["receipt_top.php","receipt_info.php","main.php"],
+    "flowTo": ["receipt.php","receipt_consult_list.php"]
+  },
+  "receipt_consult_list": {
+    "phpFile": "receipt_consult_list.php",
+    "htmlFile": "screens/receipt/receipt_consult_list.html",
+    "type": "list",
+    "title": "상담이력",
+    "purpose": "접수된 상담 이력 전체 목록 조회. 접수번호 클릭 시 접수수정/처리 팝업.",
+    "workflow": "접수 > 상담 조회",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "접수일(시작)" },
+      { "name": "eday", "type": "date", "label": "접수일(종료)" },
+      { "name": "rctgbn", "type": "select", "label": "접수구분", "options": ["T:전화","P:우편","F:팩스","L:LED","S:상담","M:모바일"] },
+      { "name": "rcttype", "type": "select", "label": "접수종류" },
+      { "name": "mt_status", "type": "select", "label": "자재신청상태" },
+      { "name": "keyfield", "type": "select", "label": "검색필드" },
+      { "name": "keyword", "type": "text", "label": "검색어" },
+      { "name": "p_mode", "type": "hidden", "label": "g=갤러리" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "접수번호", "format": "clickable-popup" },
+      { "name": "처리번호", "dbField": "처리번호", "format": "clickable-popup" },
+      { "name": "접수일", "dbField": "접수일", "format": "date" },
+      { "name": "방문예약일", "dbField": "방문예약일", "format": "date" },
+      { "name": "승인상태", "dbField": "승인상태", "format": "enum" },
+      { "name": "접수구분", "dbField": "접수구분", "format": "enum" },
+      { "name": "접수사원", "dbField": "접수사원명" },
+      { "name": "고객명(상태정보)", "dbField": "고객명", "format": "string" },
+      { "name": "발신번호", "dbField": "발신번호", "format": "tel" },
+      { "name": "연락처", "dbField": "연락처", "format": "tel" },
+      { "name": "휴대폰", "dbField": "휴대폰", "format": "tel" },
+      { "name": "녹취", "dbField": "녹취여부", "format": "icon" },
+      { "name": "주소", "dbField": "주소" },
+      { "name": "아파트명", "dbField": "아파트명" },
+      { "name": "모델", "dbField": "품명" },
+      { "name": "판매유형", "dbField": "판매유형" },
+      { "name": "증상분류", "dbField": "장애구분명" },
+      { "name": "세부증상", "dbField": "장애상세명" },
+      { "name": "유상통보", "dbField": "유상통보여부" },
+      { "name": "특이사항", "dbField": "특이사항" },
+      { "name": "담당지점", "dbField": "담당지점명" },
+      { "name": "담당기사", "dbField": "담당사원명" },
+      { "name": "구간구분", "dbField": "구간구분" },
+      { "name": "자재신청상태", "dbField": "자재신청상태" },
+      { "name": "자재신청일", "dbField": "자재신청일", "format": "date" }
+    ],
+    "buttons": [
+      { "label": "검색", "action": "search_next()" },
+      { "label": "엑셀다운(주석처리)", "action": "excel_download()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "접수번호 클릭(연차)", "popup": "receipt_year.php", "size": "710x755" },
+      { "trigger": "접수번호 클릭(일반)", "popup": "receipt.php", "size": "710x755" },
+      { "trigger": "처리번호 클릭", "popup": "popup_svc.php", "size": "660x700" },
+      { "trigger": "녹취 아이콘", "popup": "record_list.php", "size": "fullscreen" },
+      { "trigger": "SMS", "popup": "popup_sms_main.php", "size": "1010x520" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_top.php","receipt_info.php","main.php"],
+    "flowTo": ["receipt.php","receipt_year.php","popup_svc.php"]
+  },
+  "receipt_g_memo": {
+    "phpFile": "receipt_g_memo.php",
+    "htmlFile": "screens/receipt/receipt_g_memo.html",
+    "type": "popup",
+    "title": "기사메모",
+    "purpose": "접수건 기사 메모 등록/수정/삭제 팝업 (500px)",
+    "workflow": "처리 > 기사메모",
+    "searchFields": [
+      { "name": "receipt_no", "type": "hidden", "label": "접수번호" },
+      { "name": "end", "type": "hidden", "label": "처리완료 여부(Y/N)" },
+      { "name": "mode", "type": "hidden", "label": "모드" },
+      { "name": "kmemo", "type": "text", "label": "메모 내용(500 byte)" },
+      { "name": "memo_update", "type": "text", "label": "메모 수정 입력란" }
+    ],
+    "tableColumns": [
+      { "name": "순번", "dbField": "(seq)" },
+      { "name": "내용", "dbField": "메모" },
+      { "name": "작성자", "dbField": "작성자" },
+      { "name": "작성일", "dbField": "접수일시" },
+      { "name": "비고", "dbField": "(수정/삭제 버튼)" }
+    ],
+    "buttons": [
+      { "label": "등록", "action": "memo_next() -> ajax mode=memo_next" },
+      { "label": "수정(입력모드)", "action": "update_memo() -> ajax mode=memo_update" },
+      { "label": "수정(행)", "action": "update_next(idx,'update',memo)" },
+      { "label": "삭제", "action": "update_next(idx,'delete') -> ajax mode=memo_del" },
+      { "label": "닫기", "action": "self.close()" }
+    ],
+    "popupsCalled": [],
+    "ajaxCalls": [
+      { "trigger": "등록/수정/삭제", "url": "ajax_proc.php", "mode": "memo_next|memo_update|memo_del" }
+    ],
+    "flowFrom": ["receipt.php","receipt_year.php","receipt_year_mode.php","resolve_year_mode.php"],
+    "flowTo": []
+  },
+  "receipt_happycall_list": {
+    "phpFile": "receipt_happycall_list.php",
+    "htmlFile": "screens/receipt/receipt_happycall_list.html",
+    "type": "list",
+    "title": "해피콜 리스트",
+    "purpose": "처리 완료건에 대한 해피콜(만족도 조사) 대상 관리",
+    "workflow": "처리 > 해피콜",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "시작일" },
+      { "name": "eday", "type": "date", "label": "종료일" },
+      { "name": "orderby", "type": "select", "label": "정렬" },
+      { "name": "keyfield", "type": "select", "label": "검색필드" },
+      { "name": "keyword", "type": "text", "label": "검색어" }
+    ],
+    "tableColumns": [
+      { "name": "순서", "dbField": "(seq)" },
+      { "name": "센터명", "dbField": "센터명" },
+      { "name": "접수번호", "dbField": "접수번호", "format": "clickable-popup" },
+      { "name": "처리번호", "dbField": "처리번호", "format": "clickable-popup" },
+      { "name": "고객명", "dbField": "고객명" },
+      { "name": "연락처", "dbField": "연락처", "format": "tel" },
+      { "name": "유상여부", "dbField": "유상여부", "format": "enum(Y/N/I)" },
+      { "name": "해피콜여부", "dbField": "해피콜여부", "format": "enum" },
+      { "name": "처리사원", "dbField": "처리사원명" },
+      { "name": "확인일", "dbField": "확인일", "format": "date" },
+      { "name": "만족도", "dbField": "만족도", "format": "star|link" },
+      { "name": "상담내용", "dbField": "상담내용", "format": "text" }
+    ],
+    "buttons": [
+      { "label": "해피콜초기화", "action": "happycall_reset()" },
+      { "label": "해피콜 적용", "action": "accept(finishrow)" },
+      { "label": "엑셀다운(주석)", "action": "excel_download()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "접수번호 클릭", "popup": "popup_receipt_read.php", "size": "685x705" },
+      { "trigger": "해피콜 입력", "popup": "popup_happycall.php", "size": "400x420" },
+      { "trigger": "만족도 조회", "popup": "popup_satisfaction.php", "size": "400x400" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["popup_receipt_read.php","popup_happycall.php","popup_satisfaction.php"]
+  },
+  "receipt_info": {
+    "phpFile": "receipt_info.php",
+    "htmlFile": "screens/receipt/receipt_info.html",
+    "type": "layout",
+    "title": "접수 정보 탭 컨테이너(단일뷰-상담이력)",
+    "purpose": "receipt_top.php 메뉴 선택 후 우측에 상담이력 iframe을 출력하는 컨테이너",
+    "workflow": "접수 > 상담(탭)",
+    "searchFields": [
+      { "name": "call", "type": "hidden", "label": "call=ok 여부" },
+      { "name": "cid_num", "type": "hidden", "label": "발신번호" },
+      { "name": "UID", "type": "hidden", "label": "고객번호" },
+      { "name": "p_mode", "type": "hidden", "label": "g" }
+    ],
+    "tableColumns": [],
+    "buttons": [],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "iframes": [
+      { "name": "rct", "src": "receipt_consult_list.php?p_mode=g", "height": "715px" }
+    ],
+    "flowFrom": ["receipt_main.php","receipt_all_1.php"],
+    "flowTo": ["receipt_consult_list.php"]
+  },
+  "receipt_info_1": {
+    "phpFile": "receipt_info_1.php",
+    "htmlFile": "screens/receipt/receipt_info_1.html",
+    "type": "layout",
+    "title": "접수 정보 탭 컨테이너(멀티탭)",
+    "purpose": "상담/서비스/현장/매뉴얼/특이사항/콜백/모바일 탭을 iframe으로 토글 표시",
+    "workflow": "접수 > 상세탭",
+    "searchFields": [
+      { "name": "call", "type": "hidden", "label": "call=ok" },
+      { "name": "cid_num", "type": "hidden", "label": "발신번호" },
+      { "name": "UID", "type": "hidden", "label": "고객번호" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "상담이력 탭", "action": "show rct iframe" },
+      { "label": "서비스이력 탭", "action": "show svc iframe" },
+      { "label": "현장정보 탭", "action": "show scn iframe" },
+      { "label": "매뉴얼 탭", "action": "show mnu iframe" },
+      { "label": "특이사항 탭", "action": "show sct iframe" },
+      { "label": "콜백 탭", "action": "show cbl iframe" },
+      { "label": "모바일 탭", "action": "show m iframe" }
+    ],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "iframes": [
+      { "name": "rct", "src": "receipt_consult_list.php?p_mode=g" },
+      { "name": "svc", "src": "receipt_service_list.php?p_mode=g" },
+      { "name": "scn", "src": "admin_scene_list.php?p_mode=g" },
+      { "name": "mnu", "src": "receipt_menual_list.php?p_mode=g" },
+      { "name": "sct", "src": "receipt_memo_list.php?p_mode=g" },
+      { "name": "cbl", "src": "receipt_callback_list.php?p_mode=g" },
+      { "name": "cbl(M)", "src": "receipt_m_list.php?p_mode=g" }
+    ],
+    "flowFrom": ["receipt_all_1.php"],
+    "flowTo": ["receipt_consult_list.php","receipt_service_list.php","admin_scene_list.php","receipt_menual_list.php","receipt_memo_list.php","receipt_callback_list.php","receipt_m_list.php"]
+  },
+  "receipt_m_list": {
+    "phpFile": "receipt_m_list.php",
+    "htmlFile": "screens/receipt/receipt_m_list.html",
+    "type": "list",
+    "title": "모바일 접수이력",
+    "purpose": "모바일(M)로 접수된 건만 필터링하여 조회",
+    "workflow": "접수 > 모바일 접수",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "접수일(시작)" },
+      { "name": "eday", "type": "date", "label": "접수일(종료)" },
+      { "name": "keyfield", "type": "select", "label": "검색필드" },
+      { "name": "keyword", "type": "text", "label": "검색어" },
+      { "name": "p_mode", "type": "hidden", "label": "g=갤러리" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "접수번호", "format": "clickable-popup" },
+      { "name": "접수일", "dbField": "접수일", "format": "date" },
+      { "name": "접수구분", "dbField": "접수구분" },
+      { "name": "접수사원", "dbField": "접수사원명" },
+      { "name": "고객명", "dbField": "고객명" },
+      { "name": "휴대폰", "dbField": "휴대폰", "format": "tel" },
+      { "name": "연락처", "dbField": "연락처", "format": "tel" },
+      { "name": "아파트명", "dbField": "아파트명" },
+      { "name": "모델", "dbField": "품명" },
+      { "name": "판매유형", "dbField": "판매유형" },
+      { "name": "증상분류", "dbField": "장애구분명" },
+      { "name": "세부증상", "dbField": "장애상세명" },
+      { "name": "유상통보", "dbField": "유상통보여부" },
+      { "name": "특이사항", "dbField": "특이사항" },
+      { "name": "담당지점", "dbField": "담당지점명" },
+      { "name": "담당기사", "dbField": "담당사원명" },
+      { "name": "구간구분", "dbField": "구간구분" },
+      { "name": "녹취", "dbField": "녹취파일", "format": "icon" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download()" },
+      { "label": "검색", "action": "search_next()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "접수번호 클릭", "popup": "receipt.php?smode=M", "size": "670x775" },
+      { "trigger": "녹취", "popup": "proc_record_list_engine_1_cs.php", "size": "fullscreen" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_info_1.php","main.php"],
+    "flowTo": ["receipt.php"]
+  },
+  "receipt_main": {
+    "phpFile": "receipt_main.php",
+    "htmlFile": "screens/receipt/receipt_main.html",
+    "type": "layout",
+    "title": "접수 정보 프레임셋",
+    "purpose": "receipt_all에서 우측에 표시되는 FRAMESET. 상단(receipt_top) + 본문(receipt_info)",
+    "workflow": "접수 > 등록(우측 패널)",
+    "searchFields": [
+      { "name": "call", "type": "hidden", "label": "call=ok" },
+      { "name": "cid_num", "type": "hidden", "label": "발신번호" }
+    ],
+    "tableColumns": [],
+    "buttons": [],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "iframes": [
+      { "name": "r_top", "src": "receipt_top.php", "rows": "20" },
+      { "name": "r_content", "src": "receipt_info.php", "rows": "*" }
+    ],
+    "flowFrom": ["receipt_all.php"],
+    "flowTo": ["receipt_top.php","receipt_info.php"]
+  },
+  "receipt_memo_list": {
+    "phpFile": "receipt_memo_list.php",
+    "htmlFile": "screens/receipt/receipt_memo_list.html",
+    "type": "list",
+    "title": "특이사항",
+    "purpose": "장애구분별 특이사항(FAQ/노하우) 등록/조회",
+    "workflow": "접수 > 특이사항",
+    "searchFields": [
+      { "name": "keyfield", "type": "select", "label": "검색필드", "options": ["장애구분","장애상세","모델명","등록자"] },
+      { "name": "keyword", "type": "text", "label": "검색어" },
+      { "name": "p_mode", "type": "hidden", "label": "g" }
+    ],
+    "tableColumns": [
+      { "name": "번호", "dbField": "(seq)" },
+      { "name": "장애구분", "dbField": "장애구분명" },
+      { "name": "장애상세", "dbField": "장애상세명" },
+      { "name": "모델명", "dbField": "품명" },
+      { "name": "등록자", "dbField": "등록자명" },
+      { "name": "최종수정일", "dbField": "수정일", "format": "date" },
+      { "name": "조회수", "dbField": "조회수", "format": "number" },
+      { "name": "비고", "dbField": "(상세 버튼)" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download()" },
+      { "label": "신규등록", "action": "goto receipt_memo_mode.php?mode=insert" },
+      { "label": "검색", "action": "search_next()" }
+    ],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_info_1.php","main.php"],
+    "flowTo": ["receipt_memo_mode.php"]
+  },
+  "receipt_memo_mode": {
+    "phpFile": "receipt_memo_mode.php",
+    "htmlFile": "screens/receipt/receipt_memo_mode.html",
+    "type": "form",
+    "title": "특이사항 등록/수정",
+    "purpose": "장애구분별 특이사항 신규 등록 또는 기존 건 수정",
+    "workflow": "접수 > 특이사항 등록",
+    "searchFields": [
+      { "name": "idx", "type": "hidden", "label": "PK" },
+      { "name": "mode", "type": "hidden", "label": "insert|update" },
+      { "name": "장애구분", "type": "select", "label": "장애구분(대)" },
+      { "name": "장애상세", "type": "select", "label": "세부증상(소)" },
+      { "name": "품번", "type": "popup", "label": "모델", "popup": "popup_model_search.php" },
+      { "name": "상담질문", "type": "textarea", "label": "상담질문" },
+      { "name": "처리결과", "type": "textarea", "label": "처리결과" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "등록/수정", "action": "go_next(mode)" },
+      { "label": "취소", "action": "go_next('cencle')" }
+    ],
+    "popupsCalled": [
+      { "trigger": "모델검색", "popup": "popup_model_search.php", "size": "615x500" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_memo_list.php"],
+    "flowTo": ["receipt_memo_proc.php"]
+  },
+  "receipt_menual_list": {
+    "phpFile": "receipt_menual_list.php",
+    "htmlFile": "screens/receipt/receipt_menual_list.html",
+    "type": "list",
+    "title": "메뉴얼 리스트",
+    "purpose": "제품/현장 매뉴얼(PDF) 목록. 열기 버튼으로 PDF 뷰어 팝업.",
+    "workflow": "접수 > 매뉴얼",
+    "searchFields": [
+      { "name": "keyfield", "type": "select", "label": "검색필드", "options": ["제목","품번","모델명","현장명"] },
+      { "name": "keyword", "type": "text", "label": "검색어" },
+      { "name": "p_mode", "type": "hidden", "label": "g" }
+    ],
+    "tableColumns": [
+      { "name": "제목", "dbField": "제목" },
+      { "name": "품번", "dbField": "품번" },
+      { "name": "모델명", "dbField": "품명" },
+      { "name": "파일명", "dbField": "파일명" },
+      { "name": "현장명", "dbField": "아파트명" },
+      { "name": "열기", "dbField": "(pdf 열기 버튼)" },
+      { "name": "비고", "dbField": "(수정/삭제 버튼)" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download()" },
+      { "label": "신규등록", "action": "goto receipt_menual_mode.php?mode=insert" },
+      { "label": "검색", "action": "search_next()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "열기", "popup": "../manual/{mno}/{file}", "size": "1000x800" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_info_1.php","main.php"],
+    "flowTo": ["receipt_menual_mode.php"]
+  },
+  "receipt_menual_list_link": {
+    "phpFile": "receipt_menual_list_link.php",
+    "htmlFile": "screens/receipt/receipt_menual_list_link.html",
+    "type": "list",
+    "title": "메뉴얼 리스트(링크 전용)",
+    "purpose": "다른 화면에서 연결될 때 사용하는 축약형 메뉴얼 리스트 (제목 컬럼 없음)",
+    "workflow": "접수 > 매뉴얼(링크)",
+    "searchFields": [
+      { "name": "keyfield", "type": "select", "label": "검색필드" },
+      { "name": "keyword", "type": "text", "label": "검색어" }
+    ],
+    "tableColumns": [
+      { "name": "품번", "dbField": "품번" },
+      { "name": "모델명", "dbField": "품명" },
+      { "name": "파일명", "dbField": "파일명" },
+      { "name": "현장명", "dbField": "아파트명" },
+      { "name": "열기", "dbField": "(pdf 뷰어)" },
+      { "name": "비고", "dbField": "(비고)" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download()" },
+      { "label": "검색", "action": "search_next()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "열기", "popup": "../manual/{mno}/{file}", "size": "1000x800" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt.php (모델정보 연동)"],
+    "flowTo": []
+  },
+  "receipt_menual_mode": {
+    "phpFile": "receipt_menual_mode.php",
+    "htmlFile": "screens/receipt/receipt_menual_mode.html",
+    "type": "form",
+    "title": "메뉴얼 등록/수정",
+    "purpose": "매뉴얼 PDF 파일 신규 업로드 또는 기존 건 수정",
+    "workflow": "접수 > 매뉴얼 등록",
+    "searchFields": [
+      { "name": "idx", "type": "hidden", "label": "PK" },
+      { "name": "mode", "type": "hidden", "label": "insert|update" },
+      { "name": "제목", "type": "text", "label": "제목" },
+      { "name": "apt_name", "type": "popup", "label": "현장명", "popup": "popup_apt_search.php" },
+      { "name": "model_name", "type": "popup", "label": "모델", "popup": "popup_model_search.php" },
+      { "name": "file", "type": "file", "label": "PDF 파일" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "목록으로", "action": "go_next('list')" },
+      { "label": "등록/수정", "action": "go_next(mode)" },
+      { "label": "취소", "action": "go_next('cencle')" }
+    ],
+    "popupsCalled": [
+      { "trigger": "현장검색", "popup": "popup_apt_search.php", "size": "615x500" },
+      { "trigger": "모델검색", "popup": "popup_model_search.php", "size": "615x500" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_menual_list.php"],
+    "flowTo": ["receipt_menual_proc.php"]
+  },
+  "receipt_service_list": {
+    "phpFile": "receipt_service_list.php",
+    "htmlFile": "screens/receipt/receipt_service_list.html",
+    "type": "list",
+    "title": "서비스이력",
+    "purpose": "처리 완료된 서비스(출장수리) 이력 조회",
+    "workflow": "처리 > 서비스이력",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "접수일(시작)" },
+      { "name": "eday", "type": "date", "label": "접수일(종료)" },
+      { "name": "keyfield", "type": "select", "label": "검색필드", "options": ["접수번호","처리번호","처리지점","처리사원","고객명","발신번호","주소"] },
+      { "name": "keyword", "type": "text", "label": "검색어" },
+      { "name": "p_mode", "type": "hidden", "label": "g" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "접수번호", "width": "100px", "format": "clickable-popup" },
+      { "name": "처리번호", "dbField": "처리번호", "width": "80px", "format": "clickable-popup" },
+      { "name": "처리일", "dbField": "처리일", "width": "90px", "format": "date" },
+      { "name": "처리지점", "dbField": "처리지점명", "width": "120px" },
+      { "name": "처리사원", "dbField": "처리사원명", "width": "90px" },
+      { "name": "고객명", "dbField": "고객명", "width": "150px" },
+      { "name": "요금적용", "dbField": "유상여부", "width": "90px", "format": "enum(Y:유상,N:무상,I:유지보수,C:취소)" },
+      { "name": "청구금액", "dbField": "청구금액", "width": "90px", "format": "number" },
+      { "name": "징구금액", "dbField": "징구금액", "width": "90px", "format": "number" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "link ../excel/receipt_service_list_excel.php" },
+      { "label": "검색", "action": "search_next()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "접수번호 클릭", "popup": "receipt.php?mode=update&smode=S", "size": "685x785" },
+      { "trigger": "처리번호 클릭", "popup": "popup_svc_read.php", "size": "650x670" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_top.php","receipt_info_1.php","main.php"],
+    "flowTo": ["receipt.php","popup_svc_read.php"]
+  },
+  "receipt_tk_detail_list": {
+    "phpFile": "receipt_tk_detail_list.php",
+    "htmlFile": "screens/receipt/receipt_tk_detail_list.html",
+    "type": "list",
+    "title": "TK 세대 리스트",
+    "purpose": "TK(탁상) 현장의 세대부(개별 세대) 하자 리스트",
+    "workflow": "TK > 세대 리스트",
+    "searchFields": [
+      { "name": "keyfield", "type": "select", "label": "검색필드" },
+      { "name": "keyword", "type": "text", "label": "검색어" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "접수번호" },
+      { "name": "아파트명", "dbField": "아파트명" },
+      { "name": "동", "dbField": "동" },
+      { "name": "호", "dbField": "호" },
+      { "name": "하자내용", "dbField": "하자내용" },
+      { "name": "보수결과", "dbField": "보수결과" },
+      { "name": "성명파일", "dbField": "성명파일", "format": "link" },
+      { "name": "전유파일", "dbField": "전유파일", "format": "link" },
+      { "name": "공용파일", "dbField": "공용파일", "format": "link" },
+      { "name": "점검자", "dbField": "점검자" },
+      { "name": "처리일", "dbField": "처리일", "format": "date" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "link ../excel/receipt_tk_detail_list_excel.php" },
+      { "label": "목록으로", "action": "go_list()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "서명파일 보기", "popup": "../sign/TkPers/{file}", "size": "400x400" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_tk_list.php"],
+    "flowTo": []
+  },
+  "receipt_tk_list": {
+    "phpFile": "receipt_tk_list.php",
+    "htmlFile": "screens/receipt/receipt_tk_list.html",
+    "type": "list",
+    "title": "TK 공용 리스트",
+    "purpose": "TK(탁상/특수) 현장의 공용부 하자 리스트 조회 및 엑셀 일괄업로드",
+    "workflow": "TK > 공용부 리스트",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "접수일(시작)" },
+      { "name": "eday", "type": "date", "label": "접수일(종료)" },
+      { "name": "keyfield", "type": "select", "label": "검색필드" },
+      { "name": "keyword", "type": "text", "label": "검색어" }
+    ],
+    "tableColumns": [
+      { "name": "접수건수", "dbField": "(count)", "format": "number" },
+      { "name": "완료건수", "dbField": "(count)", "format": "number" },
+      { "name": "처리율", "dbField": "(%)", "format": "percent" },
+      { "name": "아파트명", "dbField": "아파트명" },
+      { "name": "동", "dbField": "동" },
+      { "name": "공용부분", "dbField": "공용부분" },
+      { "name": "하자내용", "dbField": "하자내용" },
+      { "name": "보수결과", "dbField": "보수결과" },
+      { "name": "접수자", "dbField": "접수자" },
+      { "name": "접수일자", "dbField": "접수일", "format": "date" },
+      { "name": "점검자", "dbField": "점검자" },
+      { "name": "처리일", "dbField": "처리일", "format": "date" },
+      { "name": "비고", "dbField": "(서명파일)" }
+    ],
+    "buttons": [
+      { "label": "샘플", "action": "excel_sample()" },
+      { "label": "업로드", "action": "go_excel() - popup_receipt_tk_excel_upload.php" },
+      { "label": "엑셀다운", "action": "link ../excel/receipt_tk_list_excel.php" },
+      { "label": "목록으로", "action": "go_list()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "업로드", "popup": "popup_receipt_tk_excel_upload.php", "size": "520x320" },
+      { "trigger": "서명파일", "popup": "../sign/TkPubl/{file}", "size": "400x400" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_tk_main_list.php"],
+    "flowTo": ["receipt_tk_detail_list.php"]
+  },
+  "receipt_tk_main_list": {
+    "phpFile": "receipt_tk_main_list.php",
+    "htmlFile": "screens/receipt/receipt_tk_main_list.html",
+    "type": "list",
+    "title": "TK접수",
+    "purpose": "TK 현장 단위 메인 리스트. 공용부/세대부 처리율 요약.",
+    "workflow": "TK > 접수",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "시작일" },
+      { "name": "eday", "type": "date", "label": "종료일" },
+      { "name": "keyfield", "type": "select", "label": "검색필드" },
+      { "name": "keyword", "type": "text", "label": "검색어" }
+    ],
+    "tableColumns": [
+      { "name": "순번", "dbField": "(seq)" },
+      { "name": "현장명", "dbField": "현장명" },
+      { "name": "아파트명", "dbField": "아파트명" },
+      { "name": "공용부전체", "dbField": "(count)" },
+      { "name": "공용부완료", "dbField": "(count)" },
+      { "name": "처리율", "dbField": "(%)", "format": "percent" },
+      { "name": "세대부전체", "dbField": "(count)" },
+      { "name": "세대부완료", "dbField": "(count)" },
+      { "name": "처리율", "dbField": "(%)", "format": "percent" },
+      { "name": "상태", "dbField": "상태" },
+      { "name": "입력년도", "dbField": "입력년도" },
+      { "name": "비고", "dbField": "(비고)" },
+      { "name": "설정", "dbField": "(TK 설정 버튼)" }
+    ],
+    "buttons": [
+      { "label": "샘플", "action": "excel_sample() (주석)" },
+      { "label": "업로드", "action": "go_excel()" },
+      { "label": "엑셀다운", "action": "excel_download()" }
+    ],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["receipt_tk_list.php","receipt_tk_setting.php"]
+  },
+  "receipt_tk_setting": {
+    "phpFile": "receipt_tk_setting.php",
+    "htmlFile": "screens/receipt/receipt_tk_setting.html",
+    "type": "form",
+    "title": "TK 설정",
+    "purpose": "TK 현장별 동/담당기사/담당자 설정 - 메인 설정 화면",
+    "workflow": "TK > 설정",
+    "searchFields": [
+      { "name": "apt_no", "type": "hidden", "label": "아파트코드" },
+      { "name": "dong", "type": "text", "label": "동" },
+      { "name": "tkman", "type": "popup", "label": "TK담당기사" },
+      { "name": "tkuser", "type": "popup", "label": "TK담당자" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "동 추가하기", "action": "add_dong()" },
+      { "label": "목록으로", "action": "list_go()" },
+      { "label": "공용부 설정", "action": "popup_tk_G.php" },
+      { "label": "세대부 설정", "action": "popup_tk_S.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "공용부 설정", "popup": "popup_tk_G.php", "size": "600x650" },
+      { "trigger": "세대부 설정", "popup": "popup_tk_S.php", "size": "600x650" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_tk_main_list.php"],
+    "flowTo": ["receipt_tk_setting1.php","receipt_tk_setting2.php"]
+  },
+  "receipt_tk_setting1": {
+    "phpFile": "receipt_tk_setting1.php",
+    "htmlFile": "screens/receipt/receipt_tk_setting1.html",
+    "type": "form",
+    "title": "TK 설정 - variant 1",
+    "purpose": "receipt_tk_setting의 축약/대체 변형 (185 라인). 동 단위 설정.",
+    "workflow": "TK > 설정(v1)",
+    "searchFields": [
+      { "name": "apt_no", "type": "hidden", "label": "아파트코드" },
+      { "name": "dong", "type": "text", "label": "동" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "저장", "action": "submit" },
+      { "label": "목록으로", "action": "list_go()" }
+    ],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_tk_setting.php"],
+    "flowTo": []
+  },
+  "receipt_tk_setting2": {
+    "phpFile": "receipt_tk_setting2.php",
+    "htmlFile": "screens/receipt/receipt_tk_setting2.html",
+    "type": "form",
+    "title": "TK 설정 - variant 2",
+    "purpose": "receipt_tk_setting의 두번째 변형 (168 라인)",
+    "workflow": "TK > 설정(v2)",
+    "searchFields": [
+      { "name": "apt_no", "type": "hidden", "label": "아파트코드" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "저장", "action": "submit" },
+      { "label": "목록으로", "action": "list_go()" }
+    ],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_tk_setting.php"],
+    "flowTo": []
+  },
+  "receipt_tk_setting3": {
+    "phpFile": "receipt_tk_setting3.php",
+    "htmlFile": "screens/receipt/receipt_tk_setting3.html",
+    "type": "form",
+    "title": "TK 설정 - variant 3 (빈 파일)",
+    "purpose": "예약된 슬롯이지만 원본 PHP는 0 라인(빈 파일). 향후 확장용.",
+    "workflow": "TK > 설정(v3)",
+    "searchFields": [],
+    "tableColumns": [],
+    "buttons": [],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "flowFrom": [],
+    "flowTo": []
+  },
+  "receipt_top": {
+    "phpFile": "receipt_top.php",
+    "htmlFile": "screens/receipt/receipt_top.html",
+    "type": "layout",
+    "title": "접수 상단 탭 바",
+    "purpose": "현장정보/상담이력/서비스이력/매뉴얼/특이사항/콜백/모바일 - 7개 탭 메뉴 버튼 바. move_menu()로 우측 프레임 href 변경.",
+    "workflow": "접수 > 탭 네비게이션",
+    "searchFields": [
+      { "name": "call", "type": "hidden", "label": "call=ok" },
+      { "name": "cid_num", "type": "hidden", "label": "발신번호" },
+      { "name": "p_mode", "type": "hidden", "label": "g" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "현장정보", "action": "move_menu(1) -> admin_scene_list|admin_scene_detail" },
+      { "label": "상담이력", "action": "move_menu(2) -> receipt_consult_list.php" },
+      { "label": "서비스이력", "action": "move_menu(3) -> receipt_service_list.php" },
+      { "label": "매뉴얼", "action": "move_menu(4) -> receipt_menual_list.php" },
+      { "label": "특이사항", "action": "move_menu(5) -> receipt_memo_list.php" },
+      { "label": "콜백", "action": "move_menu(6) -> receipt_callback_list.php" },
+      { "label": "모바일", "action": "move_menu(7) -> receipt_m_list.php" }
+    ],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_main.php"],
+    "flowTo": ["admin_scene_list.php","admin_scene_detail.php","receipt_consult_list.php","receipt_service_list.php","receipt_menual_list.php","receipt_memo_list.php","receipt_callback_list.php","receipt_m_list.php"]
+  },
+  "receipt_year": {
+    "phpFile": "receipt_year.php",
+    "htmlFile": "screens/receipt/receipt_year.html",
+    "type": "form",
+    "title": "연차 접수",
+    "purpose": "연차(건설사 AS 의무기간) 접수 등록/수정 팝업 폼",
+    "workflow": "연차 > 접수",
+    "searchFields": [
+      { "name": "num", "type": "hidden", "label": "접수번호" },
+      { "name": "mode", "type": "hidden", "label": "insert|update" },
+      { "name": "idx", "type": "hidden", "label": "PK" },
+      { "name": "연차", "type": "select", "label": "연차" },
+      { "name": "접수일자", "type": "date", "label": "접수일" },
+      { "name": "기준일", "type": "date", "label": "기준일" },
+      { "name": "고객번호", "type": "hidden", "label": "고객번호" },
+      { "name": "고객명", "type": "text", "label": "고객명" },
+      { "name": "연락처", "type": "text", "label": "연락처" },
+      { "name": "휴대폰", "type": "text", "label": "휴대폰" },
+      { "name": "우편번호", "type": "text", "label": "우편번호" },
+      { "name": "주소", "type": "text", "label": "주소" },
+      { "name": "상세주소", "type": "text", "label": "상세주소" },
+      { "name": "동", "type": "text", "label": "동" },
+      { "name": "호", "type": "text", "label": "호" },
+      { "name": "아파트코드", "type": "popup", "label": "아파트명", "popup": "popup_apt_search.php" },
+      { "name": "품번", "type": "popup", "label": "모델", "popup": "popup_model_search.php" },
+      { "name": "장애구분", "type": "select", "label": "증상분류" },
+      { "name": "장애상세", "type": "select", "label": "세부증상" },
+      { "name": "특이사항", "type": "textarea", "label": "특이사항" },
+      { "name": "기사메모", "type": "text", "label": "기사메모" },
+      { "name": "담당지점", "type": "select", "label": "담당지점" },
+      { "name": "담당사원", "type": "select", "label": "담당기사" },
+      { "name": "방문예약일", "type": "date", "label": "방문예약일" },
+      { "name": "유상통보여부", "type": "radio", "label": "유상통보" },
+      { "name": "상담내용", "type": "textarea", "label": "상담내용" },
+      { "name": "구간구분", "type": "radio", "label": "구간구분" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "저장", "action": "submit to receipt_year_proc.php" },
+      { "label": "기사메모", "action": "window.open receipt_g_memo.php 620x600" },
+      { "label": "닫기", "action": "self.close()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "기사메모", "popup": "receipt_g_memo.php", "size": "620x600" },
+      { "trigger": "아파트검색", "popup": "popup_apt_search.php" },
+      { "trigger": "모델검색", "popup": "popup_model_search.php" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_year_list.php","receipt_consult_list.php"],
+    "flowTo": ["receipt_year_proc.php","receipt_g_memo.php"]
+  },
+  "receipt_year_list": {
+    "phpFile": "receipt_year_list.php",
+    "htmlFile": "screens/receipt/receipt_year_list.html",
+    "type": "list",
+    "title": "연차 접수 리스트",
+    "purpose": "연차 접수건 목록. 엑셀 샘플 다운로드/업로드로 대량 등록 지원.",
+    "workflow": "연차 > 접수 리스트",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "접수일(시작)" },
+      { "name": "eday", "type": "date", "label": "접수일(종료)" },
+      { "name": "keyfield", "type": "select", "label": "검색필드" },
+      { "name": "keyword", "type": "text", "label": "검색어" },
+      { "name": "tab_idx", "type": "hidden", "label": "탭 인덱스" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "접수번호", "format": "clickable-popup" },
+      { "name": "공종명", "dbField": "공종명" },
+      { "name": "연차", "dbField": "연차" },
+      { "name": "구분", "dbField": "구분" },
+      { "name": "접수일", "dbField": "접수일", "format": "date" },
+      { "name": "기준일", "dbField": "기준일", "format": "date" },
+      { "name": "접수사원", "dbField": "접수사원명" },
+      { "name": "고객명", "dbField": "고객명" },
+      { "name": "연락처", "dbField": "연락처", "format": "tel" },
+      { "name": "아파트명", "dbField": "아파트명" },
+      { "name": "상세주소", "dbField": "상세주소" },
+      { "name": "모델", "dbField": "품명" },
+      { "name": "증상분류", "dbField": "장애구분명" },
+      { "name": "세부증상", "dbField": "장애상세명" },
+      { "name": "특이사항", "dbField": "특이사항" },
+      { "name": "담당지점", "dbField": "담당지점명" },
+      { "name": "담당기사", "dbField": "담당사원명" },
+      { "name": "비고", "dbField": "(수정 버튼)" }
+    ],
+    "buttons": [
+      { "label": "연차접수", "action": "update_next('','insert') -> receipt_year.php" },
+      { "label": "샘플_연차", "action": "excel_sample()" },
+      { "label": "샘플_팩스", "action": "excel_sample_fax()" },
+      { "label": "업로드", "action": "go_excel() -> popup_receipt_excel_upload.php" },
+      { "label": "엑셀다운", "action": "excel_download()" },
+      { "label": "검색", "action": "search_next()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "업로드", "popup": "popup_receipt_excel_upload.php", "size": "500x320" },
+      { "trigger": "접수번호 클릭", "popup": "receipt_year.php", "size": "710x755" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["receipt_year.php","receipt_year_mode.php"]
+  },
+  "receipt_year_mode": {
+    "phpFile": "receipt_year_mode.php",
+    "htmlFile": "screens/receipt/receipt_year_mode.html",
+    "type": "form",
+    "title": "연차접수 등록/수정(처리 포함)",
+    "purpose": "연차 접수 등록/수정 + 처리(자재, 공임비, 출장비, 파일 등) 포함 대형 폼 (1000+ 라인)",
+    "workflow": "연차 > 접수/처리",
+    "searchFields": [
+      { "name": "num", "type": "hidden", "label": "접수번호" },
+      { "name": "mode", "type": "hidden", "label": "insert|update" },
+      { "name": "모델명", "type": "popup", "label": "모델" },
+      { "name": "공종명", "type": "select", "label": "공종명" },
+      { "name": "처리여부", "type": "radio", "label": "처리여부" },
+      { "name": "특이사항", "type": "textarea", "label": "특이사항" },
+      { "name": "기사메모", "type": "textarea", "label": "기사메모(readonly)" },
+      { "name": "처리번호", "type": "hidden", "label": "처리번호" },
+      { "name": "입력일", "type": "date", "label": "입력일" },
+      { "name": "입력사원", "type": "text", "label": "입력사원" },
+      { "name": "처리 고객명", "type": "text", "label": "처리 고객명" },
+      { "name": "특별처리", "type": "checkbox", "label": "특별처리" },
+      { "name": "출고위치", "type": "select", "label": "출고위치" },
+      { "name": "요금적용", "type": "select", "label": "요금적용" },
+      { "name": "자재추가", "type": "popup", "label": "자재 추가" },
+      { "name": "기사의견", "type": "textarea", "label": "기사의견" },
+      { "name": "부가세", "type": "number", "label": "부가세" },
+      { "name": "공임비", "type": "number", "label": "공임비" },
+      { "name": "출장비", "type": "number", "label": "출장비" },
+      { "name": "파일명", "type": "file", "label": "파일명" }
+    ],
+    "tableColumns": [
+      { "name": "모델명/공종명/처리여부/처리번호/입력일/입력사원", "dbField": "상단 요약 테이블" },
+      { "name": "처리 고객명/특별처리/출고위치/요금적용/자재추가/기사의견/부가세/공임비/출장비/파일명", "dbField": "처리정보 테이블" }
+    ],
+    "buttons": [
+      { "label": "메모보기", "action": "memo_btn(접수번호,처리완료)" },
+      { "label": "작성하기", "action": "memo_btn(접수번호,처리완료)" },
+      { "label": "메모 등록", "action": "message_next()" },
+      { "label": "메모 수정", "action": "message_update()" },
+      { "label": "저장(insert|update)", "action": "go_next(mode,complete,complete1)" },
+      { "label": "취소", "action": "go_next('cencle','')" }
+    ],
+    "popupsCalled": [
+      { "trigger": "기사메모", "popup": "receipt_g_memo.php", "size": "620x600" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["receipt_year_list.php","resolve_year_list.php"],
+    "flowTo": ["receipt_year_proc.php","receipt_g_memo.php"]
+  },
+  "resolve_year_list": {
+    "phpFile": "resolve_year_list.php",
+    "htmlFile": "screens/receipt/resolve_year_list.html",
+    "type": "list",
+    "title": "연차 처리 리스트",
+    "purpose": "연차 접수 중 처리(기사 출동/수리) 대상 목록. 기사메모/방문예약일 컬럼 추가.",
+    "workflow": "연차 > 처리 리스트",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "접수일(시작)" },
+      { "name": "eday", "type": "date", "label": "접수일(종료)" },
+      { "name": "keyfield", "type": "select", "label": "검색필드" },
+      { "name": "keyword", "type": "text", "label": "검색어" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호", "dbField": "접수번호", "format": "clickable-popup" },
+      { "name": "공종명", "dbField": "공종명" },
+      { "name": "연차", "dbField": "연차" },
+      { "name": "접수일", "dbField": "접수일", "format": "date" },
+      { "name": "기준일", "dbField": "기준일", "format": "date" },
+      { "name": "접수사원", "dbField": "접수사원명" },
+      { "name": "고객명", "dbField": "고객명" },
+      { "name": "연락처", "dbField": "연락처", "format": "tel" },
+      { "name": "아파트명", "dbField": "아파트명" },
+      { "name": "상세주소", "dbField": "상세주소" },
+      { "name": "모델", "dbField": "품명" },
+      { "name": "증상분류", "dbField": "장애구분명" },
+      { "name": "세부증상", "dbField": "장애상세명" },
+      { "name": "특이사항", "dbField": "특이사항" },
+      { "name": "기사메모", "dbField": "기사메모" },
+      { "name": "담당지점", "dbField": "담당지점명" },
+      { "name": "담당기사", "dbField": "담당사원명" },
+      { "name": "방문예약일", "dbField": "방문예약일", "format": "date" },
+      { "name": "비고", "dbField": "(처리 버튼)" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "link ../excel/resolve_year_list_excel.php" },
+      { "label": "검색", "action": "search_next()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "접수번호 클릭", "popup": "resolve_year_mode.php", "size": "710x755" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["resolve_year_mode.php","resolve_year_mode1.php"]
+  },
+  "resolve_year_mode": {
+    "phpFile": "resolve_year_mode.php",
+    "htmlFile": "screens/receipt/resolve_year_mode.html",
+    "type": "form",
+    "title": "연차처리 폼(풀 버전)",
+    "purpose": "연차 접수건 처리 입력(요금, 자재, 공임비, 출장비, 파일 포함) - 1041 라인 풀 버전",
+    "workflow": "연차 > 처리 등록",
+    "searchFields": [
+      { "name": "num", "type": "hidden", "label": "접수번호" },
+      { "name": "mode", "type": "hidden", "label": "insert|update" },
+      { "name": "모델명", "type": "popup", "label": "모델" },
+      { "name": "공종명", "type": "select", "label": "공종명" },
+      { "name": "처리여부", "type": "radio", "label": "처리여부" },
+      { "name": "처리번호", "type": "hidden", "label": "처리번호" },
+      { "name": "입력일", "type": "date", "label": "입력일" },
+      { "name": "입력사원", "type": "text", "label": "입력사원" },
+      { "name": "처리 고객명", "type": "text", "label": "처리 고객명" },
+      { "name": "특별처리", "type": "checkbox", "label": "특별처리" },
+      { "name": "출고위치", "type": "select", "label": "출고위치" },
+      { "name": "요금적용", "type": "radio", "label": "요금적용" },
+      { "name": "자재추가", "type": "popup", "label": "자재 추가" },
+      { "name": "기사의견", "type": "textarea", "label": "기사의견" },
+      { "name": "부가세", "type": "number", "label": "부가세" },
+      { "name": "공임비", "type": "number", "label": "공임비" },
+      { "name": "출장비", "type": "number", "label": "출장비" },
+      { "name": "파일명", "type": "file", "label": "파일 첨부" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "메모보기/작성하기", "action": "memo_btn()" },
+      { "label": "등록/수정", "action": "go_next(mode,complete,complete1)" },
+      { "label": "취소", "action": "go_next('cencle','')" }
+    ],
+    "popupsCalled": [
+      { "trigger": "기사메모", "popup": "receipt_g_memo.php", "size": "620x600" }
+    ],
+    "ajaxCalls": [],
+    "flowFrom": ["resolve_year_list.php"],
+    "flowTo": ["resolve_year_proc.php","receipt_g_memo.php"]
+  },
+  "resolve_year_mode1": {
+    "phpFile": "resolve_year_mode1.php",
+    "htmlFile": "screens/receipt/resolve_year_mode1.html",
+    "type": "form",
+    "title": "연차처리 폼(경량 버전)",
+    "purpose": "resolve_year_mode의 경량 변형 (552 라인). 지연사유 컬럼 활성화, 상단 요약 구조 동일.",
+    "workflow": "연차 > 처리 등록(경량)",
+    "searchFields": [
+      { "name": "num", "type": "hidden", "label": "접수번호" },
+      { "name": "mode", "type": "hidden", "label": "insert|update" },
+      { "name": "모델명", "type": "popup", "label": "모델" },
+      { "name": "공종명", "type": "select", "label": "공종명" },
+      { "name": "처리여부", "type": "radio", "label": "처리여부" },
+      { "name": "지연사유", "type": "textarea", "label": "지연사유" },
+      { "name": "출고위치", "type": "select", "label": "출고위치" },
+      { "name": "요금적용", "type": "radio", "label": "요금적용" },
+      { "name": "공임비", "type": "number", "label": "공임비" },
+      { "name": "출장비", "type": "number", "label": "출장비" },
+      { "name": "기사의견", "type": "textarea", "label": "기사의견" },
+      { "name": "파일명", "type": "file", "label": "파일 첨부" }
+    ],
+    "tableColumns": [],
+    "buttons": [
+      { "label": "등록/수정", "action": "go_next(mode)" },
+      { "label": "취소", "action": "go_next('cencle')" }
+    ],
+    "popupsCalled": [],
+    "ajaxCalls": [],
+    "flowFrom": ["resolve_year_list.php"],
+    "flowTo": ["resolve_year_proc.php"]
+  },
+  "svc_list": {
+    "phpFile": "svc_list.php",
+    "htmlFile": "screens/receipt/svc_list.html",
+    "type": "list",
+    "title": "접수 처리 리스트",
+    "purpose": "전체 접수+처리 통합 리스트. 28개 세부 검색 필드, 전체/미처리/처리완료 라디오 필터.",
+    "workflow": "처리 > 통합 리스트",
+    "searchFields": [
+      { "name": "baseday", "type": "select", "label": "조회조건(접수일/처리일)", "options": ["접수일","처리일"] },
+      { "name": "sday", "type": "date", "label": "시작일" },
+      { "name": "eday", "type": "date", "label": "종료일" },
+      { "name": "svc_check", "type": "radio", "label": "처리상태", "options": ["svc0:전체","svc2:미처리","svc1:처리완료"] },
+      { "name": "keyfield", "type": "select", "label": "검색필드(28종)", "options": ["1:접수번호","2:처리번호","3:접수구분","4:고객명","5:발신번호","6:연락처","7:주소","8:CS품명","9:판매유형","10:증상분류","11:세부증상","12:처리분류","13:처리상세","14:원인분류","15:원인상세","16:특이사항","29:기사메모","17:담당지점","18:담당기사","19:기사연락처","20:구간구분","21:처리일","22:처리지점","23:처리사원","24:처리내용","25:요금적용","26:청구금액","27:징구금액","28:접수사원"] },
+      { "name": "keyword", "type": "text", "label": "검색어" },
+      { "name": "rctgbn", "type": "radio", "label": "접수구분", "options": ["Y:연차","T:전화","P:우편","F:팩스","L:LED","S:상담","M:모바일"] },
+      { "name": "selgbn", "type": "radio", "label": "판매유형", "options": ["민영","특판","시판"] },
+      { "name": "gugan", "type": "radio", "label": "구간구분", "options": ["1구간","2구간","3구간"] },
+      { "name": "costgbn", "type": "radio", "label": "요금적용", "options": ["Y:유상","N:무상","I:유지보수"] }
+    ],
+    "tableColumns": [
+      { "name": "(동적 생성 - svc_list DAO에서 echo)", "dbField": "접수번호/처리번호/접수일/처리일/접수구분/고객명/연락처/주소/아파트명/모델/증상/담당지점/담당기사/처리지점/처리사원/요금적용/청구금액/징구금액 등" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download() or svc_list_excel.php" },
+      { "label": "검색", "action": "search_next()" }
+    ],
+    "popupsCalled": [
+      { "trigger": "접수번호 클릭", "popup": "receipt.php?mode=update", "size": "685x785" },
+      { "trigger": "처리번호 클릭", "popup": "popup_svc_read.php", "size": "650x670" }
+    ],
+    "ajaxCalls": [
+      { "trigger": "검색필드 변경", "url": "select_change(value)", "mode": "show/hide dependent radio groups" }
+    ],
+    "flowFrom": ["main.php"],
+    "flowTo": ["receipt.php","popup_svc_read.php"]
+  }
+}

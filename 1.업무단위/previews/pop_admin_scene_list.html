@@ -1,0 +1,119 @@
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type='text/javascript'>
+	
+	function search_next(){
+		var myform = document.eForm ; 
+		myform.pageno.value = 1 ;
+		myform.action = "/html/pop_admin_scene_list.php";
+		myform.target="";
+		myform.submit();
+	}
+	
+	function update_next(idx,mode){
+		var myform = document.eForm ;
+		myform.idx.value = idx;
+		myform.mode.value = mode;
+		if(mode == 'detail') {
+			myform.action = "admin_scene_detail.php";
+		}else{
+			myform.action = "admin_scene_mode.php";
+		}
+		myform.target="";
+		myform.submit();
+	}
+	function bDel_next(idx){
+		var msg = "삭제 하시겠습니까?";
+		if(confirm(msg)){
+			ajaxLoader("ajax_proc.php?mode=admin_scene_del&idx="+idx);
+		}
+	}
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var mode_str = respose.split("^");
+		switch(mode_str[0]){
+			case "ok": 
+				alert("삭제 되었습니다.");
+				search_next();
+			break;
+			case "false": 
+				alert("오류!!! 다시 시도해주세요.");
+				search_next();
+			break;
+		}
+	}
+	
+	function excel_download(){
+		var myform = document.eForm ;
+		myform.action = "../excel/admin_scene_list.php";
+		myform.target = "ifrm_trans";
+		myform.submit();
+	}
+</script>
+<div id="contents">
+	<div class="wrapper">
+		<!-- <div class="header">
+			<h2>현장 관리</h2>
+			<div class="btns">
+				<a href="#" class="btn1 btn-color5" title="엑셀다운" onclick="javascript:excel_download();">
+					<span class="bg">&nbsp;</span>
+					<span class="text">엑셀다운</span>
+				</a>
+							</div>
+		</div> -->
+		<div class="search">
+			<form method='get' name='eForm' action="/html/pop_admin_scene_list.php">
+				<span class="spacer">검색</span>
+
+				<select name="keyfield">
+					<option value="" selected>-- 선택--</option>
+					<option value="1" >아파트명</option>
+					<option value="2" >현장명</option>
+					<option value="3" >담당자</option>
+					<option value="4" >모델명</option>
+				</select>
+				<input type="text" name="keyword" size="32" value="" class="w_placeholder" />
+				<input type="image" src="../assets/images/btn/btn-search.png" alt="검색" onkeydown="javascript:keyDown();" onclick="javascript:search_next();"/>
+				<input type='hidden' name='idx'>
+				<input type='hidden' name='mode'>
+				<input type='hidden' name='pageno' value='1'>
+				<input type='hidden' name='Tidx' value=''>
+				<input type='hidden' name='Sidx' value=''>
+			</form>
+		</div>
+		
+		<div class="data-table">
+			
+			<table id="data_table" width="100%">
+				<colgroup>
+					<col width="100px" />
+					<col width="300px" />
+					<col width="" />
+					<col width="120px" />
+					<col width="200px" />
+					<col width="100px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>아파트번호</th>
+						<th>아파트명</th>
+						<th>현장명</th>
+						<th>현장담당자</th>
+						<th>모델명</th>
+						<th>비고</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+					<tr>
+						<td height='150px;' colspan='8'>데이터가 없습니다.</td>
+					</tr>
+										
+				</tbody>
+			</table>	
+		</div>
+						<div class='paging'>
+					<div class='paging-wrapper'>
+			<span class='page-first paging-btn'><a href='/html/pop_admin_scene_list.php?&pageno=1' title='첫 페이지' tabindex='1'>first</a></span><span class='page-prev paging-btn'><a href='#' title='이전 페이지' tabindex='1'>previous</a></span><span class='page-next paging-btn'><a href='#' title='다음 페이지' tabindex='1'>next</a></span><span class='page-last paging-btn'><a href='/html/pop_admin_scene_list.php?&pageno=0' title='마지 막페이지' tabindex='1'>last</a></span>			</div>
+		</div>	</div>
+</div>
+<iframe name="ifrm_trans" width="0" height="0" frameborder="0" marginheight="0" marginwidth="0"></iframe>

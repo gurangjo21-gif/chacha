@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>아파트 검색</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+</head>
+<body class="bg-gray-50" style="width:600px; min-height:500px;"
+  x-data="{
+    keyword: '',
+    results: [],
+    init() { this.results = MOCK.aptList; },
+    search() {
+      const kw = this.keyword.trim().toLowerCase();
+      if (!kw) {
+        this.results = MOCK.aptList;
+      } else {
+        this.results = MOCK.aptList.filter(a =>
+          a.aptName.toLowerCase().includes(kw) ||
+          a.address.toLowerCase().includes(kw)
+        );
+      }
+    },
+    select(apt) {
+      alert('선택: ' + apt.aptName);
+    }
+  }">
+
+  <!-- 헤더 -->
+  <div class="bg-blue-700 text-white px-4 py-2 flex items-center justify-between">
+    <span class="font-semibold text-sm">현장(아파트) 검색</span>
+    <button onclick="window.close()" class="text-white hover:text-gray-200 text-lg leading-none">&times;</button>
+  </div>
+
+  <!-- 검색 영역 -->
+  <div class="px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-2">
+    <label class="text-sm font-medium text-gray-700 whitespace-nowrap">아파트명</label>
+    <input
+      type="text"
+      x-model="keyword"
+      @keydown.enter="search()"
+      placeholder="아파트명 또는 주소 입력"
+      class="flex-1 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+    >
+    <button
+      @click="search()"
+      class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-1.5 rounded whitespace-nowrap"
+    >검색</button>
+  </div>
+
+  <!-- 결과 테이블 -->
+  <div class="px-4 py-3 overflow-auto" style="max-height: 380px;">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="bg-gray-100 text-gray-700">
+          <th class="border border-gray-300 px-3 py-2 text-left font-semibold">아파트명</th>
+          <th class="border border-gray-300 px-3 py-2 text-left font-semibold">주소</th>
+          <th class="border border-gray-300 px-3 py-2 text-center font-semibold w-16">세대수</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="results.length === 0">
+          <tr>
+            <td colspan="3" class="border border-gray-300 px-3 py-4 text-center text-gray-400">검색 결과가 없습니다.</td>
+          </tr>
+        </template>
+        <template x-for="apt in results" :key="apt.aptCode">
+          <tr
+            @click="select(apt)"
+            class="cursor-pointer hover:bg-blue-50 even:bg-gray-50"
+          >
+            <td class="border border-gray-300 px-3 py-2 text-blue-700 font-medium" x-text="apt.aptName"></td>
+            <td class="border border-gray-300 px-3 py-2 text-gray-600" x-text="apt.address"></td>
+            <td class="border border-gray-300 px-3 py-2 text-center text-gray-700" x-text="apt.totalUnits.toLocaleString()"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 하단 버튼 -->
+  <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex justify-end">
+    <button onclick="window.close()" class="bg-gray-500 hover:bg-gray-600 text-white text-sm px-5 py-1.5 rounded">닫기</button>
+  </div>
+
+</body>
+</html>

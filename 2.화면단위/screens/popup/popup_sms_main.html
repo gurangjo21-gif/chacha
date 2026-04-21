@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>SMS 발송 - KOCOM</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-white text-xs text-[#333]">
+  <!-- SMS 메인: 좌(발송폼) + 우(발송목록) 2분할 레이아웃 -->
+  <div class="flex" style="height:100vh;">
+    <!-- 좌: SMS 발송 폼 -->
+    <div class="border-r border-[#ddd]" style="width:200px; padding:8px; flex-shrink:0;">
+      <strong class="block mb-2 text-xs">SMS 발송</strong>
+      <div class="mb-1">
+        <label class="block text-[10px] text-gray-500 mb-0.5">발신번호</label>
+        <input type="text" value="1588-0000" readonly class="border border-[#ccc] px-1 py-0.5 text-xs w-full bg-gray-100">
+      </div>
+      <div class="mb-1">
+        <label class="block text-[10px] text-gray-500 mb-0.5">수신번호</label>
+        <input type="text" id="receiver" value="010-1234-5678" class="border border-[#ccc] px-1 py-0.5 text-xs w-full">
+      </div>
+      <div class="mb-1">
+        <label class="block text-[10px] text-gray-500 mb-0.5">메시지</label>
+        <textarea id="han_msg" rows="8" class="border border-[#ccc] px-1 py-0.5 text-xs w-full resize-none" placeholder="메시지 입력..."></textarea>
+        <div class="text-right text-[10px] text-gray-400">0/80byte</div>
+      </div>
+      <button class="bg-[#6699FF] text-white px-3 py-1 text-xs rounded w-full"
+        onclick="if(document.getElementById('han_msg').value) { alert('SMS 발송되었습니다.') } else alert('메시지를 입력해주세요.')">발송</button>
+    </div>
+    <!-- 우: SMS 목록 (iframe 역할) -->
+    <div class="flex-1 overflow-auto p-2">
+      <strong class="block mb-2 text-xs">[SMS 발송 목록]</strong>
+      <table class="w-full border-collapse text-xs" style="border-top:2px solid #959595;">
+        <thead>
+          <tr class="bg-[#f3f3f3]">
+            <th class="border border-[#959595] px-1 py-1 text-center w-8">No</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-28">전송일시</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-24">수신번호</th>
+            <th class="border border-[#959595] px-1 py-1 text-center">전송메시지</th>
+            <th class="border border-[#959595] px-1 py-1 text-center w-14">결과</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="border border-[#959595] px-1 py-1 text-center" >5</td><td class="border border-[#959595] px-1 py-1">2026-04-15 10:23</td><td class="border border-[#959595] px-1 py-1">010-1234-5678</td><td class="border border-[#959595] px-1 py-1">방문 예정입니다...</td><td class="border border-[#959595] px-1 py-1 text-center text-blue-600">성공</td></tr>
+          <tr><td class="border border-[#959595] px-1 py-1 text-center">4</td><td class="border border-[#959595] px-1 py-1">2026-04-14 15:11</td><td class="border border-[#959595] px-1 py-1">010-9876-5432</td><td class="border border-[#959595] px-1 py-1">수리가 완료되었습...</td><td class="border border-[#959595] px-1 py-1 text-center text-blue-600">성공</td></tr>
+          <tr><td class="border border-[#959595] px-1 py-1 text-center">3</td><td class="border border-[#959595] px-1 py-1">2026-04-13 09:05</td><td class="border border-[#959595] px-1 py-1">010-5555-6666</td><td class="border border-[#959595] px-1 py-1">AS 접수가 완료...</td><td class="border border-[#959595] px-1 py-1 text-center text-red-600">실패</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["popup"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

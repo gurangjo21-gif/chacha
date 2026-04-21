@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>수리코드 리스트</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tooltip.js" ></script>
+<script type="text/javascript">
+	//ajax
+	function ajaxLoader(url){ 
+		if (document.getElementById) { 
+			var xmlHttp = (window.ActiveXObject) ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest(); 
+		}
+		if (xmlHttp){ 
+			xmlHttp.onreadystatechange = function(){ 
+				if (xmlHttp.readyState == 4){// 객체의 상태(0:비초기화, 1:로딩, 3:상호작용, 4: 완료)
+					if(xmlHttp.status == 200){ 
+						ajaxResponse(xmlHttp.responseText); 
+					}else{
+						alert('시스템 오류. CODE :'+ xmlHttp.status);
+					}
+				} 
+			} 
+			xmlHttp.open("GET", url, true); 
+			xmlHttp.send(null); 
+		}else{
+			alert("지원되지 않는 브라우저입니다.");
+		}
+	} 
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		//alert(respose);
+		var myform = document.searchForm ;
+		var mode_str = respose.split("^");
+		alert(mode_str[2]);
+		switch(mode_str[0]){
+			case "exists":
+				myform.errorMsg1.value = "";
+				myform.errorMsg1.focus();
+			break;
+			case "ok": 		
+			case "use_ok":
+			case "false_namechange":
+				parent.search_next(mode_str[1],'repair');	
+			break;
+			case "ok_namechange":
+				parent.location.href="admin_code_list.php";
+			break;
+			case "false": 	
+				myform.errorMsg1.focus();					
+			break;
+			case "use_false":	//사용유무 변경실패
+			default:
+			break;
+		}
+	}
+	
+	// 페이지 로드시 display 설정
+	function display_mode(bcode,mode,idx) {
+		if(mode == "") {	//입력
+			if(bcode == "" ) {
+				$("#detail_1").css("display","");
+				$("#detail_2").css("display","none");
+				$("#detail_3").css("display","none");
+			}else{
+				$("#detail_1").css("display","none");
+				$("#detail_2").css("display","");
+				$("#detail_3").css("display","none");
+			}
+		}else{	//수정
+			if(!confirm("코드명을 바꾸게 되면 기존 코드명으로 등록된 모든데이터의 내용이 변경됩니다.\n\n그래도 코드명 변경을 하시겠습니까?"))return false;
+			$("#detail_1").css("display","none");
+			$("#detail_2").css("display","none");
+			$("#detail_3").css("display","");
+			$("#idx").val($("#bcode_"+idx).text());
+			$("#errorMsg3").val($("#bname_"+idx).text());
+			$("#bCODE").val(bcode);
+		}
+	}
+	
+	function update_next(bcode,stat) {
+		var myform = document.searchForm ;
+		var codeName = "";
+		if(stat == "update") {
+			codeName = myform.errorMsg3.value;
+			bcode = $("#idx").val();
+			mcode = $("#bCODE").val();
+		} else {
+			if(bcode == "") codeName = myform.errorMsg1.value;
+			else codeName = myform.errorMsg2.value;
+		}
+		//alert(bcode+ " | "+stat+" | "+codeName);
+		ajaxLoader("ajax_proc.php?mode=admin_code_repair&idx="+bcode+"&stat="+stat+"&codeName="+codeName);
+		//ajaxLoader("ajax_proc.php?mode=admin_code_repair&idx="+bcode+"&stat="+stat+"&codeName="+codeName+"&bCODE="+bCODE);
+	}
+	
+	// 사용유무 변경처리
+	function use_upate(bcode,bstat,code,stat){
+		if (confirm('선택하신 코드'+code+'의 상태를 변경 하시겠습니까?')) {
+			ajaxLoader("ajax_proc.php?mode=admin_code_repair_useyn&idx="+code+"&stat="+stat+"&bcode="+bcode+"&bstat="+bstat);
+		}
+	}
+</script>
+
+<style type="text/css">
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+
+
+</style>
+</head>
+<body onLoad="display_mode('','','')">
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/admin_code_repair_list.php</b>
+  <span class="purpose">수리 코드 목록</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<SCRIPT ID="dynamic"></SCRIPT>
+<SCRIPT ID="dynamic2"></SCRIPT>
+<form name="searchForm" method='post' >
+	<INPUT TYPE="hidden" NAME="idx" id="idx" value="">
+	<INPUT TYPE="hidden" NAME="bCODE" id="bCODE" value="">
+<table cellpadding="0" cellspacing="0" width="390px">
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 15px 0 5px 0;">
+						<div style="padding:0 0 2px; 2px;" id='detail_1'>
+							대메뉴 추가 : <input type='text' name='errorMsg1' value=''>
+							<a href="javascript:update_next('','insert');" class="btn1 btn-color5" title="추가"><span class="bg">&nbsp;</span><span class="text">추가</span></a>
+						</div>
+						<div style="padding:0 0 2px; 2px;" id='detail_2'>
+							소메뉴 추가 : <input type='text' name='errorMsg2' value=''>
+							<a href="javascript:update_next('','insert');" class="btn1 btn-color5" title="추가"><span class="bg">&nbsp;</span><span class="text">추가</span></a>
+						</div>
+						<div style="padding:0 0 2px; 2px;" id='detail_3'>
+							메뉴명 수정 : <input type='text' name='errorMsg3' id='errorMsg3' value=''>
+							<a href="javascript:update_next('','update');" class="btn1 btn-color5" title="수정"><span class="bg">&nbsp;</span><span class="text">수정</span></a>
+						</div>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<colgroup>
+								<col width="100px" />
+								<col width="*" />
+								<col width="50px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th>코드번호</th>
+									<th>수리내용</th>
+									<th>사용</th>
+								</tr>
+							</thead>
+							<tbody>
+															</tbody>
+						</table>
+					</td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+</table> 
+</form>
+</body>
+</html>
+ 
+

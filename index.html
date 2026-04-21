@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOCOM CS 차세대 전산 · 개발북</title>
+<style>
+:root{
+  --bg:#f7f7f8;--bg-el:#fff;--bg-sub:#f2f2f4;--bg-soft:#fafafa;
+  --line:#e6e6ea;--line-s:#d4d4d8;
+  --ink:#18181b;--ink-2:#3f3f46;--ink-3:#71717a;--ink-4:#a1a1aa;
+  --blue:#2563eb;--blue-s:#eff4ff;
+  --red:#dc2626;--red-s:#fee8e8;
+  --green:#059669;--green-s:#e8faf3;
+  --amber:#c2410c;--amber-s:#fff3e9;
+  --violet:#7c3aed;--violet-s:#f3eefe;
+  --pink:#db2777;--pink-s:#fdf0f7;
+  --slate:#475569;--slate-s:#f1f5f9;
+  --teal:#0891b2;--teal-s:#ecfbff;
+  --indigo:#4f46e5;--indigo-s:#eef0ff;
+  --r:10px;--r-sm:6px;--r-lg:14px;
+  --sh-1:0 1px 2px rgba(17,17,17,.05);
+  --sh-2:0 4px 12px rgba(17,17,17,.08);
+  --font:"Pretendard","Malgun Gothic","맑은 고딕","Segoe UI",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--font);font-size:13px;color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-.003em;overflow:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:var(--blue);text-decoration:none}
+textarea,input{font-family:inherit;color:inherit}
+
+.app{display:grid;grid-template-rows:52px 1fr;height:100vh}
+
+/* ===== AppBar ===== */
+.appbar{display:flex;align-items:center;gap:14px;padding:0 20px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);z-index:20}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#2563eb,#7c3aed,#db2777);display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px;box-shadow:var(--sh-1)}
+.brand-t{font-weight:700;font-size:14px;letter-spacing:-.01em}
+.brand-s{font-size:11px;color:var(--ink-3);margin-left:2px}
+.spacer{flex:1}
+.fb-counter{display:flex;gap:6px;align-items:center;font-size:11.5px;color:var(--ink-3)}
+.fb-counter b{padding:2px 8px;border-radius:999px;background:var(--bg-sub);color:var(--ink-2);font-weight:700;font-size:11px;min-width:22px;text-align:center}
+.fb-counter .k-keep{background:var(--green-s);color:var(--green)}
+.fb-counter .k-imp{background:var(--amber-s);color:var(--amber)}
+.fb-counter .k-del{background:var(--red-s);color:var(--red)}
+.fb-counter .k-new{background:var(--violet-s);color:var(--violet)}
+.btn{padding:6px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;transition:all .15s;background:var(--bg-sub);color:var(--ink-2)}
+.btn:hover{background:var(--line)}
+.btn-primary{background:var(--ink);color:#fff}
+.btn-primary:hover{background:var(--ink-2)}
+
+/* ===== Main Grid ===== */
+.main{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 52px);overflow:hidden}
+
+/* ===== Sidebar ===== */
+.sidebar{background:var(--bg-el);border-right:1px solid var(--line);overflow-y:auto;padding:8px 0}
+.sidebar::-webkit-scrollbar{width:6px}.sidebar::-webkit-scrollbar-thumb{background:var(--line-s);border-radius:3px}
+.nav-home{display:block;width:calc(100% - 16px);margin:4px 8px 12px;padding:10px 12px;border-radius:var(--r-sm);font-weight:600;font-size:12px;text-align:left;background:linear-gradient(135deg,var(--blue-s),var(--violet-s));color:var(--ink);border:1px solid var(--line)}
+.nav-home.active{box-shadow:0 0 0 2px var(--blue) inset}
+.dom-group{margin-bottom:4px}
+.dom-head{display:flex;align-items:center;gap:8px;padding:8px 14px 4px;font-size:10.5px;font-weight:700;color:var(--ink-4);letter-spacing:.05em;text-transform:uppercase}
+.dom-head .count{margin-left:auto;font-weight:500;color:var(--ink-4);font-size:10px}
+.bu-btn{display:flex;align-items:center;gap:8px;width:calc(100% - 12px);margin:1px 6px;padding:6px 10px;border-radius:var(--r-sm);font-size:12.5px;text-align:left;color:var(--ink-2);transition:all .1s;position:relative}
+.bu-btn:hover{background:var(--bg-sub);color:var(--ink)}
+.bu-btn.active{background:var(--ink);color:#fff;font-weight:600}
+.bu-btn.active .bu-dot{background:#fff !important}
+.bu-dot{width:5px;height:5px;border-radius:50%;background:var(--ink-4);flex-shrink:0}
+.bu-btn.has-tobe .bu-dot{background:var(--green)}
+.bu-btn.has-fb::after{content:attr(data-fb);position:absolute;right:10px;font-size:10px;color:var(--violet);font-weight:700}
+.bu-btn.active.has-fb::after{color:#fbbf24}
+
+/* ===== Viewer ===== */
+.viewer{overflow-y:auto;background:var(--bg)}
+.viewer::-webkit-scrollbar{width:8px}.viewer::-webkit-scrollbar-thumb{background:var(--line-s);border-radius:4px}
+
+/* --- Home View --- */
+.home{padding:32px 40px 60px;max-width:1400px}
+.home-eyebrow{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--violet-s);color:var(--violet);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px}
+.home-eyebrow .pulse{width:6px;height:6px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 3px var(--violet-s)}
+.home-title{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:12px}
+.home-title em{font-style:normal;background:linear-gradient(135deg,#2563eb,#7c3aed,#db2777);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.home-sub{font-size:15px;color:var(--ink-3);max-width:780px;line-height:1.65;margin-bottom:28px}
+.home-sub b{color:var(--ink-2);font-weight:600}
+
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.chip{padding:5px 11px;border-radius:999px;background:var(--bg-el);border:1px solid var(--line);font-size:11.5px;color:var(--ink-2);font-weight:500}
+.chip b{color:var(--ink);font-weight:700}
+
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:36px}
+.stat{background:var(--bg-el);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.stat-n{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.stat-l{font-size:11px;color:var(--ink-3);margin-top:5px}
+.stat.a .stat-n{color:var(--blue)}
+.stat.b .stat-n{color:var(--amber)}
+.stat.c .stat-n{color:var(--violet)}
+.stat.d .stat-n{color:var(--green)}
+.stat.e .stat-n{color:var(--pink)}
+
+.vision-title{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;color:var(--ink)}
+.vision-sub{font-size:13px;color:var(--ink-3);margin-bottom:18px}
+.vision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px}
+.v-card{background:var(--bg-el);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px;transition:all .2s;position:relative;overflow:hidden}
+.v-card:hover{transform:translateY(-2px);box-shadow:var(--sh-2);border-color:var(--line-s)}
+.v-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--v-c,var(--blue))}
+.v-card .v-ico{font-size:22px;margin-bottom:10px;display:block}
+.v-card .v-t{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--ink);letter-spacing:-.01em}
+.v-card .v-d{font-size:12px;color:var(--ink-3);line-height:1.55}
+.v-card.c1{--v-c:var(--blue)}
+.v-card.c2{--v-c:var(--violet)}
+.v-card.c3{--v-c:var(--pink)}
+.v-card.c4{--v-c:var(--amber)}
+.v-card.c5{--v-c:var(--green)}
+.v-card.c6{--v-c:var(--slate)}
+
+.flow-box{background:var(--bg-el);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 24px;margin-bottom:28px}
+.flow-h{font-size:14px;font-weight:700;margin-bottom:4px}
+.flow-sh{font-size:12px;color:var(--ink-3);margin-bottom:16px}
+.flow-row{display:grid;grid-template-columns:repeat(5,1fr) ;gap:4px;align-items:stretch}
+.flow-step{padding:14px 12px;border:1.5px solid var(--sc,var(--blue));border-radius:var(--r);background:var(--ss,var(--blue-s));position:relative;min-height:90px}
+.flow-step .fs-n{position:absolute;top:-10px;left:12px;background:var(--sc);color:#fff;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800}
+.flow-step .fs-ic{font-size:18px;margin-top:4px;margin-bottom:6px}
+.flow-step .fs-t{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.flow-step .fs-d{font-size:10.5px;color:var(--ink-3);line-height:1.4}
+.flow-step.s1{--sc:var(--blue);--ss:var(--blue-s)}
+.flow-step.s2{--sc:var(--teal);--ss:var(--teal-s)}
+.flow-step.s3{--sc:var(--amber);--ss:var(--amber-s)}
+.flow-step.s4{--sc:var(--violet);--ss:var(--violet-s)}
+.flow-step.s5{--sc:var(--pink);--ss:var(--pink-s)}
+
+.cta-box{background:linear-gradient(135deg,#111827,#1f2937);border-radius:var(--r-lg);padding:28px 32px;color:#fff;display:flex;align-items:center;gap:24px}
+.cta-t{font-size:18px;font-weight:700;margin-bottom:4px}
+.cta-d{font-size:13px;color:#d4d4d8;line-height:1.6;max-width:560px}
+.cta-btn{margin-left:auto;padding:12px 22px;background:#fff;color:#111;border-radius:var(--r-sm);font-weight:700;font-size:13px;flex-shrink:0}
+.cta-btn:hover{background:#e5e5e5}
+
+/* --- BU View --- */
+.bu-view{display:none;flex-direction:column;height:100%}
+.bu-view.active{display:flex}
+.bu-head{padding:16px 24px 14px;background:var(--bg-el);border-bottom:1px solid var(--line);flex-shrink:0}
+.bu-head-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:10px}
+.bu-ic{width:38px;height:38px;border-radius:var(--r-sm);background:var(--bg-sub);display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.bu-id{font-family:"JetBrains Mono","Consolas",monospace;font-size:10.5px;color:var(--ink-4);margin-bottom:2px}
+.bu-name{font-size:18px;font-weight:700;letter-spacing:-.015em;color:var(--ink)}
+.bu-desc{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin-top:4px}
+.bu-badges{display:flex;gap:6px;align-items:center;margin-left:auto;flex-shrink:0}
+.bu-badge{padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;background:var(--bg-sub);color:var(--ink-3)}
+.bu-badge.has-tobe{background:var(--green-s);color:var(--green)}
+.bu-badge.no-tobe{background:var(--amber-s);color:var(--amber)}
+.bu-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.bu-meta b{color:var(--ink-2);font-weight:600}
+.bu-tables{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.tbl-chip{padding:3px 8px;border-radius:4px;background:var(--slate-s);color:var(--slate);font-size:10.5px;font-family:"JetBrains Mono",monospace;font-weight:500}
+
+.bu-tabs{display:flex;gap:4px;padding:10px 24px;background:var(--bg-el);border-bottom:1px solid var(--line);flex-shrink:0}
+.tab-btn{padding:6px 14px;border-radius:var(--r-sm);font-size:12px;font-weight:600;color:var(--ink-3);transition:all .15s}
+.tab-btn:hover{background:var(--bg-sub)}
+.tab-btn.active{background:var(--ink);color:#fff}
+.tab-sep{width:1px;background:var(--line);margin:0 8px}
+.file-pick{padding:4px 8px;border-radius:var(--r-sm);background:var(--bg-sub);font-size:11px;color:var(--ink-2);border:none;cursor:pointer}
+
+.screens{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);overflow:hidden;min-height:0}
+.screens.mode-asis{grid-template-columns:1fr 0}
+.screens.mode-tobe{grid-template-columns:0 1fr}
+.screens.mode-compare{grid-template-columns:1fr 1fr}
+.pane{display:flex;flex-direction:column;background:var(--bg-el);min-width:0;overflow:hidden;transition:all .2s}
+.pane-head{padding:8px 14px;background:var(--bg-sub);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;font-size:11.5px;flex-shrink:0}
+.pane-head .dot{width:8px;height:8px;border-radius:50%}
+.pane.asis .pane-head .dot{background:var(--red)}
+.pane.tobe .pane-head .dot{background:var(--green)}
+.pane-head b{font-weight:700;font-size:11.5px}
+.pane-head code{padding:1px 6px;background:var(--bg-el);border:1px solid var(--line);border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-2)}
+.pane-body{flex:1;position:relative;overflow:hidden}
+.pane-body iframe{width:100%;height:100%;border:none;background:#fff}
+.pane-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(0,0,0,.02) 10px,rgba(0,0,0,.02) 20px)}
+.pane-empty .pe-ic{font-size:36px;margin-bottom:12px;opacity:.5}
+.pane-empty .pe-t{font-size:14px;font-weight:700;color:var(--ink-2);margin-bottom:6px}
+.pane-empty .pe-d{font-size:12px;color:var(--ink-3);line-height:1.6;max-width:320px}
+.pane-empty .pe-note{margin-top:14px;padding:10px 14px;background:var(--amber-s);border-radius:var(--r-sm);font-size:11.5px;color:var(--amber);font-weight:600;line-height:1.5}
+
+/* Feedback */
+.feedback{padding:20px 24px 60px;background:var(--bg-soft);border-top:1px solid var(--line)}
+.fb-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.fb-sub{font-size:12px;color:var(--ink-3);margin-bottom:14px}
+.fb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.fb-col{background:var(--bg-el);border:1px solid var(--line);border-radius:var(--r);padding:12px;min-height:140px;display:flex;flex-direction:column}
+.fb-col-h{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-weight:700;font-size:12.5px}
+.fb-col-h .cc{width:10px;height:10px;border-radius:50%}
+.fb-col-h .n{margin-left:auto;font-size:10.5px;font-weight:500;color:var(--ink-3);padding:1px 7px;border-radius:999px;background:var(--bg-sub)}
+.fb-col.keep{border-top:2px solid var(--green)}.fb-col.keep .cc{background:var(--green)}
+.fb-col.imp{border-top:2px solid var(--amber)}.fb-col.imp .cc{background:var(--amber)}
+.fb-col.del{border-top:2px solid var(--red)}.fb-col.del .cc{background:var(--red)}
+.fb-col.new{border-top:2px solid var(--violet)}.fb-col.new .cc{background:var(--violet)}
+.fb-items{flex:1;display:flex;flex-direction:column;gap:5px;margin-bottom:8px;max-height:240px;overflow-y:auto}
+.fb-item{padding:7px 9px;background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--r-sm);font-size:11.5px;line-height:1.5;color:var(--ink-2);position:relative;word-break:break-all}
+.fb-item .fb-x{position:absolute;top:3px;right:4px;width:16px;height:16px;border-radius:3px;display:none;font-size:11px;color:var(--ink-4);line-height:1}
+.fb-item:hover .fb-x{display:grid;place-items:center}
+.fb-item .fb-x:hover{background:var(--red-s);color:var(--red)}
+.fb-item .tag{font-size:10px;color:var(--ink-4);margin-left:4px}
+.fb-add{display:flex;flex-direction:column;gap:6px}
+.fb-add textarea{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:11.5px;resize:vertical;min-height:52px;background:var(--bg-soft)}
+.fb-add textarea:focus{outline:none;border-color:var(--blue);background:#fff}
+.fb-add-row{display:flex;gap:5px;align-items:center}
+.fb-add input[type=text]{flex:1;padding:5px 8px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:10.5px;background:var(--bg-soft)}
+.fb-add input::placeholder{color:var(--ink-4)}
+.fb-btn{padding:6px 10px;border-radius:var(--r-sm);font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
+.fb-col.keep .fb-btn{background:var(--green)}
+.fb-col.imp .fb-btn{background:var(--amber)}
+.fb-col.del .fb-btn{background:var(--red)}
+.fb-col.new .fb-btn{background:var(--violet)}
+
+/* Legend below iframes */
+.legend{padding:10px 14px;background:var(--bg-soft);border-top:1px solid var(--line);max-height:120px;overflow-y:auto;flex-shrink:0}
+.legend-h{font-size:10.5px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.legend-h .c{padding:1px 6px;border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:10px;color:#fff}
+.pane.asis .legend-h .c{background:var(--red)}
+.pane.tobe .legend-h .c{background:var(--green)}
+.legend-items{display:flex;flex-wrap:wrap;gap:4px;font-size:11px}
+.lg-item{padding:2px 6px;border-radius:3px;background:var(--bg-el);border:1px solid var(--line);color:var(--ink-2);font-size:10.5px;cursor:default}
+.lg-item b{color:var(--red);font-weight:800;font-family:"JetBrains Mono",monospace;margin-right:3px}
+.pane.tobe .lg-item b{color:var(--green)}
+
+/* ===== Export Modal ===== */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:var(--r-lg);padding:22px 26px;max-width:620px;width:92%;max-height:80vh;display:flex;flex-direction:column}
+.modal h3{font-size:16px;margin-bottom:6px}
+.modal p{font-size:12px;color:var(--ink-3);margin-bottom:14px}
+.modal textarea{flex:1;width:100%;min-height:280px;padding:12px;border:1px solid var(--line);border-radius:var(--r-sm);font-family:"JetBrains Mono",monospace;font-size:11px;resize:vertical;background:var(--bg-soft)}
+.modal-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+
+/* ===== Scenario (Home journeys) ===== */
+.scen-title{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;color:var(--ink);margin-top:24px}
+.scen-sub{font-size:13px;color:var(--ink-3);margin-bottom:18px}
+.scen-card{background:var(--bg-el);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden}
+.scen-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--sc-c,var(--blue))}
+.scen-h{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.scen-h .sc-ic{font-size:18px;line-height:1}
+.scen-h .sc-name{font-size:14px;font-weight:700;color:var(--ink)}
+.scen-h .sc-cnt{margin-left:auto;font-size:11px;color:var(--ink-4);font-weight:500}
+.scen-d{font-size:12px;color:var(--ink-3);margin-bottom:12px;line-height:1.5}
+.scen-steps{display:flex;gap:4px;align-items:stretch;overflow-x:auto;padding-bottom:4px}
+.scen-step{flex:1 0 140px;min-width:140px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--bg-soft);cursor:pointer;transition:all .15s;position:relative}
+.scen-step:hover{background:var(--sc-s,var(--blue-s));border-color:var(--sc-c,var(--blue));transform:translateY(-1px)}
+.scen-step .ss-n{font-size:10px;font-weight:800;color:var(--sc-c,var(--blue));letter-spacing:.06em}
+.scen-step .ss-ic{font-size:14px;margin:2px 0 3px}
+.scen-step .ss-bu{font-size:11.5px;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:2px}
+.scen-step .ss-a{font-size:10.5px;color:var(--ink-3);line-height:1.4}
+.scen-arrow{flex:0 0 14px;display:grid;place-items:center;color:var(--ink-4);font-size:14px}
+.scen-card.c-blue{--sc-c:var(--blue);--sc-s:var(--blue-s)}
+.scen-card.c-pink{--sc-c:var(--pink);--sc-s:var(--pink-s)}
+.scen-card.c-violet{--sc-c:var(--violet);--sc-s:var(--violet-s)}
+.scen-card.c-amber{--sc-c:var(--amber);--sc-s:var(--amber-s)}
+
+/* ===== BU neighbors (upstream/downstream) ===== */
+.bu-nb{display:flex;gap:10px;align-items:stretch;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);flex-wrap:wrap}
+.bu-nb-col{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:22px}
+.bu-nb-lbl{font-size:10.5px;font-weight:700;color:var(--ink-4);letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--bg-sub);flex-shrink:0}
+.bu-nb-lbl.up{background:var(--blue-s);color:var(--blue)}
+.bu-nb-lbl.dn{background:var(--amber-s);color:var(--amber)}
+.nb-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;background:var(--bg-el);border:1px solid var(--line);font-size:11px;color:var(--ink-2);cursor:pointer;transition:all .1s;font-weight:500}
+.nb-chip:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.nb-chip .via{font-size:9.5px;color:var(--ink-4);margin-left:2px}
+.nb-chip:hover .via{color:#cbd5e1}
+.nb-empty{font-size:11px;color:var(--ink-4);font-style:italic}
+
+/* ===== Role tabs (5단 사다리) ===== */
+.role-tabs{display:flex;gap:2px;background:var(--bg-sub);padding:3px;border-radius:var(--r-sm)}
+.role-tab{padding:5px 10px;border-radius:4px;font-size:11px;font-weight:600;color:var(--ink-3);cursor:pointer;transition:all .1s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.role-tab:hover{background:var(--bg-el);color:var(--ink-2)}
+.role-tab.active{background:var(--ink);color:#fff}
+.role-tab.empty{opacity:.4;cursor:not-allowed}
+.role-tab .rt-cnt{font-size:9.5px;font-weight:800;opacity:.8}
+.role-tab.active .rt-cnt{opacity:1}
+
+.ladder-mini{display:flex;align-items:center;gap:3px;padding:6px 10px;background:var(--bg-sub);border-radius:var(--r-sm);font-size:10.5px;color:var(--ink-3);flex-wrap:wrap}
+.ladder-mini .lm-step{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:3px;background:var(--bg-el);border:1px solid var(--line)}
+.ladder-mini .lm-step.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+.ladder-mini .lm-arrow{color:var(--ink-4);font-size:9px}
+
+/* Responsive */
+@media (max-width:900px){
+  .main{grid-template-columns:220px 1fr}
+  .home-title{font-size:28px}
+  .vision-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .fb-grid{grid-template-columns:1fr 1fr}
+  .screens.mode-compare{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== AppBar ===== -->
+  <header class="appbar">
+    <div class="brand" onclick="goHome()" style="cursor:pointer">
+      <div class="brand-mark">K</div>
+      <div>
+        <div class="brand-t">KOCOM CS <span style="color:var(--ink-3)">·</span> 차세대 전산 개발북</div>
+      </div>
+      <span class="brand-s">AS-IS / TO-BE · 의견수렴 v0.1</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="fb-counter">
+      <span>의견</span>
+      <b class="k-keep" id="cnt-keep">0</b>
+      <b class="k-imp" id="cnt-imp">0</b>
+      <b class="k-del" id="cnt-del">0</b>
+      <b class="k-new" id="cnt-new">0</b>
+    </div>
+    <button class="btn" onclick="openExport()">📥 내보내기</button>
+    <button class="btn" onclick="openImport()" title="이전 내보낸 JSON 불러오기">📤 불러오기</button>
+  </header>
+
+  <!-- ===== Main ===== -->
+  <div class="main">
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar" id="sidebar">
+      <button class="nav-home active" id="nav-home" onclick="goHome()">🏠 홈 · 차세대 전산 비전</button>
+      <div id="nav-bus"></div>
+    </aside>
+
+    <!-- ===== Viewer ===== -->
+    <main class="viewer" id="viewer">
+
+      <!-- HOME VIEW -->
+      <section class="home" id="view-home">
+        <div class="home-eyebrow"><span class="pulse"></span>내일의 의견수렴을 위한 완성 체인</div>
+        <h1 class="home-title">모든 화면이 짝을 이루고,<br><em>모든 의견이 번호로 남는</em> 개발북.</h1>
+        <p class="home-sub">
+          현재 KOCOM CS 전산은 <b>206개 화면</b>을 <b>45개 업무단위(BU)</b>로 묶어 <b>17개 핵심 DB 프로시저</b>로 흐르는 시스템입니다.
+          이 북은 <b>현재 화면을 있는 그대로 보여주고</b>, <b>앞으로의 모습을 그 옆에 나란히</b> 두어
+          비개발자도 번호를 찍어 의견을 낼 수 있게 합니다.
+          <br><br>
+          왼쪽 사이드바에서 업무를 골라 ① 현재 화면 ② 새 모습(있다면) ③ 의견 4블록(🟢유지/🟡개선/🔴삭제/💡신규) 을 보세요.
+          모든 의견은 브라우저에 저장되며, 우상단 <b>내보내기</b>로 JSON 파일을 받아 노션에 붙일 수 있습니다.
+        </p>
+
+        <div class="chip-row">
+          <div class="chip">📋 목록 <b id="n-list">–</b></div>
+          <div class="chip">✏️ 입력 <b id="n-mode">–</b></div>
+          <div class="chip">⚡ 처리 <b id="n-proc">–</b></div>
+          <div class="chip">🔎 팝업 <b id="n-popup">–</b></div>
+          <div class="chip">🧩 DB 프로시저 <b>17</b></div>
+          <div class="chip">🗄️ 테이블 <b>40+</b></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat a"><div class="stat-n">206</div><div class="stat-l">총 화면 수</div></div>
+          <div class="stat b"><div class="stat-n" id="s-bu">45</div><div class="stat-l">업무 단위 (BU)</div></div>
+          <div class="stat c"><div class="stat-n" id="s-tobe">12</div><div class="stat-l">새 버전 제안됨</div></div>
+          <div class="stat d"><div class="stat-n" id="s-notobe">33</div><div class="stat-l">의견 받는 BU</div></div>
+          <div class="stat e"><div class="stat-n" id="s-fb">0</div><div class="stat-l">받은 의견</div></div>
+        </div>
+
+        <div class="flow-box">
+          <div class="flow-h">🧭 KOCOM CS 업무 1건이 테이블까지 가는 5단계</div>
+          <div class="flow-sh">모든 업무단위는 아래 5단계 사다리 구조를 따릅니다. (예: 자재 신청 승인)</div>
+          <div class="flow-row">
+            <div class="flow-step s1"><div class="fs-n">1</div><div class="fs-ic">📋</div><div class="fs-t">목록</div><div class="fs-d">승인 대기 자재 신청을 조회/검색</div></div>
+            <div class="flow-step s2"><div class="fs-n">2</div><div class="fs-ic">✏️</div><div class="fs-t">입력</div><div class="fs-d">승인자가 수량·조건 확정</div></div>
+            <div class="flow-step s3"><div class="fs-n">3</div><div class="fs-ic">⚡</div><div class="fs-t">처리</div><div class="fs-d">_proc.php가 DB에 UPDATE</div></div>
+            <div class="flow-step s4"><div class="fs-n">4</div><div class="fs-ic">🧩</div><div class="fs-t">프로시저</div><div class="fs-d">트리거가 재고 차감 연쇄</div></div>
+            <div class="flow-step s5"><div class="fs-n">5</div><div class="fs-ic">🗄️</div><div class="fs-t">테이블</div><div class="fs-d">CS자재신청품목·CS창고재고 갱신</div></div>
+          </div>
+        </div>
+
+        <div class="vision-title">🚀 차세대 전산이 보여줄 6가지 모습</div>
+        <div class="vision-sub">레거시는 버리지 않습니다. 업무 흐름은 그대로 두고, 껍데기(UI)와 기반(테이블)을 바꿉니다.</div>
+        <div class="vision-grid">
+          <div class="v-card c1">
+            <span class="v-ico">🎧</span>
+            <div class="v-t">콜센터 코어 · 하나의 덩어리</div>
+            <div class="v-d">인바운드 콜이 뜨는 순간 고객·아파트·이력이 자동 조회됩니다. 소프트폰·녹취·CTI가 분리되지 않고 한 화면에서 흐릅니다.</div>
+          </div>
+          <div class="v-card c2">
+            <span class="v-ico">🤖</span>
+            <div class="v-t">AI 상담사 보조</div>
+            <div class="v-d">통화 중 실시간 요약, 증상→장애코드 추천, 유사 이력 기반 해결책 제시, 자동 메모 작성. 상담사는 고객과의 대화에 집중합니다.</div>
+          </div>
+          <div class="v-card c3">
+            <span class="v-ico">💬</span>
+            <div class="v-t">AI 챗봇 셀프서비스</div>
+            <div class="v-d">간단한 고장 진단·예약·조회는 챗봇이 1차 응대. 상담사는 복잡한 케이스에만 집중하여 품질을 높입니다.</div>
+          </div>
+          <div class="v-card c4">
+            <span class="v-ico">🚚</span>
+            <div class="v-t">현장 ↔ 상담실 실시간 동기화</div>
+            <div class="v-d">기사 위치·도착 예정·처리 상태·현장 사진이 상담원 화면에 실시간으로. 답답한 "한 번 다시 전화 주세요"가 사라집니다.</div>
+          </div>
+          <div class="v-card c5">
+            <span class="v-ico">📦</span>
+            <div class="v-t">재고 가시화 · 끊기지 않는 흐름</div>
+            <div class="v-d">자재 신청 → 승인 → 출고 → 시리얼 → 반품 전체 체인이 한 보드에서 추적 가능. 어디서 막혔는지 즉시 보입니다.</div>
+          </div>
+          <div class="v-card c6">
+            <span class="v-ico">🏛</span>
+            <div class="v-t">레거시 토대 유지</div>
+            <div class="v-d">45 업무단위·17 DB 프로시저의 "흐름"은 그대로. 프론트와 테이블 구조만 새로 짭니다. 기존 업무가 단절되지 않습니다.</div>
+          </div>
+        </div>
+
+        <div class="scen-title">🔗 업무는 흐름이다 · 4가지 대표 여정</div>
+        <div class="scen-sub">KOCOM CS의 모든 업무는 아래 4개 여정 중 하나로 귀결됩니다. 각 단계를 클릭하면 해당 업무단위로 이동합니다.</div>
+        <div id="scen-host"></div>
+
+        <div class="cta-box" style="margin-top:24px">
+          <div>
+            <div class="cta-t">🗳 여러분의 의견으로 완성되는 전산</div>
+            <div class="cta-d">왼쪽 사이드바에서 업무를 골라보세요. 현재 화면을 먼저 보고, 번호를 짚으며 "이건 유지" "이건 개선" 의견을 달아주시면 다음 버전에 반영됩니다.</div>
+          </div>
+          <button class="cta-btn" onclick="document.querySelector('.bu-btn[data-bu-id=receipt-main]')?.click()">수신접수 먼저 보기 →</button>
+        </div>
+      </section>
+
+      <!-- BU VIEW -->
+      <section class="bu-view" id="view-bu">
+        <header class="bu-head">
+          <div class="bu-head-row">
+            <div class="bu-ic" id="bu-ic">📞</div>
+            <div style="flex:1;min-width:0">
+              <div class="bu-id" id="bu-id">receipt-main</div>
+              <div class="bu-name" id="bu-name">수신접수 메인</div>
+              <div class="bu-desc" id="bu-desc">설명</div>
+            </div>
+            <div class="bu-badges" id="bu-badges"></div>
+          </div>
+          <div class="bu-meta" id="bu-meta"></div>
+          <div class="bu-tables" id="bu-tables"></div>
+          <div class="bu-nb" id="bu-nb"></div>
+        </header>
+
+        <div class="bu-tabs">
+          <button class="tab-btn" data-mode="asis" onclick="setMode('asis')">🟥 현재만</button>
+          <button class="tab-btn active" data-mode="compare" onclick="setMode('compare')">⚖️ 나란히</button>
+          <button class="tab-btn" data-mode="tobe" onclick="setMode('tobe')">🟩 새 버전만</button>
+          <div class="tab-sep"></div>
+          <div class="role-tabs" id="role-tabs"></div>
+          <div class="tab-sep"></div>
+          <select class="file-pick" id="pick-asis" onchange="loadAsis()" title="AS-IS 파일 선택"></select>
+          <select class="file-pick" id="pick-tobe" onchange="loadTobe()" title="TO-BE 파일 선택"></select>
+          <div class="spacer" style="flex:1"></div>
+          <button class="btn" onclick="renumber()" style="font-size:11px">🔢 번호 다시</button>
+        </div>
+
+        <div class="screens mode-compare" id="screens">
+          <div class="pane asis">
+            <div class="pane-head">
+              <span class="dot"></span>
+              <b>지금 (레거시)</b>
+              <code id="f-asis">–</code>
+              <span style="margin-left:auto;font-size:10.5px;color:var(--ink-3)">번호 <b id="cnt-asis-n">0</b></span>
+            </div>
+            <div class="pane-body">
+              <iframe id="if-asis" data-side="asis" sandbox="allow-same-origin allow-scripts"></iframe>
+            </div>
+            <div class="legend">
+              <div class="legend-h"><span class="c">AS</span>번호 매긴 요소</div>
+              <div class="legend-items" id="lg-asis"><em style="color:var(--ink-4);font-size:11px">로드 중...</em></div>
+            </div>
+          </div>
+          <div class="pane tobe">
+            <div class="pane-head">
+              <span class="dot"></span>
+              <b>앞으로 (새 버전)</b>
+              <code id="f-tobe">–</code>
+              <span style="margin-left:auto;font-size:10.5px;color:var(--ink-3)">번호 <b id="cnt-tobe-n">0</b></span>
+            </div>
+            <div class="pane-body" id="pb-tobe">
+              <iframe id="if-tobe" data-side="tobe" sandbox="allow-same-origin allow-scripts"></iframe>
+            </div>
+            <div class="legend">
+              <div class="legend-h"><span class="c">TO</span>번호 매긴 요소</div>
+              <div class="legend-items" id="lg-tobe"><em style="color:var(--ink-4);font-size:11px">로드 중...</em></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feedback">
+          <div class="fb-title">💬 이 업무에 대한 의견</div>
+          <div class="fb-sub">번호(①②③...)로 찍어서 의견 남겨주세요. 짧게 한 줄이면 됩니다. "③번 드롭다운 길어서 불편" 이런 식으로.</div>
+          <div class="fb-grid">
+
+            <div class="fb-col keep">
+              <div class="fb-col-h"><span class="cc"></span><span>🟢 유지 · 이건 꼭 남겨주세요</span><span class="n" id="cn-keep">0</span></div>
+              <div class="fb-items" id="it-keep"></div>
+              <div class="fb-add">
+                <textarea placeholder="예: ③번 고객 자동조회는 정말 편해요. 꼭 유지." id="in-keep"></textarea>
+                <div class="fb-add-row">
+                  <input type="text" placeholder="작성자 (선택)" id="au-keep">
+                  <button class="fb-btn" onclick="addFb('keep')">추가</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="fb-col imp">
+              <div class="fb-col-h"><span class="cc"></span><span>🟡 개선 · 이렇게 바뀌면 더 좋겠어요</span><span class="n" id="cn-imp">0</span></div>
+              <div class="fb-items" id="it-imp"></div>
+              <div class="fb-add">
+                <textarea placeholder="예: ⑦번 드롭다운이 너무 길어서 찾기 힘들어요. 검색창으로." id="in-imp"></textarea>
+                <div class="fb-add-row">
+                  <input type="text" placeholder="작성자 (선택)" id="au-imp">
+                  <button class="fb-btn" onclick="addFb('imp')">추가</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="fb-col del">
+              <div class="fb-col-h"><span class="cc"></span><span>🔴 삭제 · 이건 안 써요</span><span class="n" id="cn-del">0</span></div>
+              <div class="fb-items" id="it-del"></div>
+              <div class="fb-add">
+                <textarea placeholder="예: ⑫번 버튼은 한 번도 안 씀. 자리만 차지." id="in-del"></textarea>
+                <div class="fb-add-row">
+                  <input type="text" placeholder="작성자 (선택)" id="au-del">
+                  <button class="fb-btn" onclick="addFb('del')">추가</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="fb-col new">
+              <div class="fb-col-h"><span class="cc"></span><span>💡 신규 · 이게 있으면 좋겠어요</span><span class="n" id="cn-new">0</span></div>
+              <div class="fb-items" id="it-new"></div>
+              <div class="fb-add">
+                <textarea placeholder="예: 이전 접수 이력이 이 화면에 자동으로 뜨면 좋겠어요." id="in-new"></textarea>
+                <div class="fb-add-row">
+                  <input type="text" placeholder="작성자 (선택)" id="au-new">
+                  <button class="fb-btn" onclick="addFb('new')">추가</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>
+
+<!-- Export Modal -->
+<div class="modal-bg" id="modal-ex">
+  <div class="modal">
+    <h3>📥 의견 내보내기</h3>
+    <p>아래 JSON을 복사해서 파일로 저장하거나 노션·이메일에 붙여넣으세요. 나중에 "불러오기"로 다시 열 수 있습니다.</p>
+    <textarea id="ex-text" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn" onclick="copyEx()">📋 클립보드로 복사</button>
+      <button class="btn" onclick="downloadEx()">💾 JSON 파일 다운로드</button>
+      <button class="btn btn-primary" onclick="closeEx()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal-bg" id="modal-im">
+  <div class="modal">
+    <h3>📤 이전 의견 불러오기</h3>
+    <p>이전에 내보낸 JSON을 붙여넣으세요. 현재 저장된 내용에 <b>덮어쓰기</b> 됩니다.</p>
+    <textarea id="im-text" placeholder='{"receipt-main":{"keep":["..."],...},...}'></textarea>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeIm()">취소</button>
+      <button class="btn btn-primary" onclick="applyIm()">불러오기 실행</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     DATA · BUS (45 업무단위 × AS-IS / TO-BE 매핑)
+     =================================================================== -->
+<script>
+const BUS = [
+  /* ===== Admin ===== */
+  {id:'admin-user',dom:'admin',ic:'👤',name:'사원 관리',desc:'CS 사원 등록·수정·퇴사. Oracle + MySQL(CTI) 이중 동기화.',
+   asis:['admin_user_list.html','admin_user_mode.html','admin_user_proc.html'],
+   tobe:['2.화면단위/pages/P2-major/admin-user-list.html'],
+   tables:['CS사원','CS로그인','xline_agent_list']},
+  {id:'admin-member',dom:'admin',ic:'📇',name:'고객 관리',desc:'CS 고객정보 마스터(1.8M건). 시퀀스 기반 고객번호 채번.',
+   asis:['admin_member_list.html','admin_member_mode.html','admin_member_proc.html','member_find.html'],
+   tobe:[],tables:['CS고객정보']},
+  {id:'admin-offmanager',dom:'admin',ic:'🧑‍💼',name:'담당자 관리',desc:'CS 담당자(외부 업체 담당자) 마스터.',
+   asis:['admin_offmanager_list.html','admin_offmanager_mode.html','admin_offmanager_proc.html'],
+   tobe:[],tables:['CS담당자']},
+  {id:'admin-centermanager',dom:'admin',ic:'🏢',name:'센터(대리점) 관리',desc:'대리점·AS 지점 마스터.',
+   asis:['admin_centermanager_list.html','admin_centermanager_mode.html','admin_centermanager_proc.html'],
+   tobe:[],tables:['대리점','AS지점']},
+  {id:'admin-scene',dom:'admin',ic:'🏘',name:'현장(아파트) 관리',desc:'CS 현장(아파트코드) + 현장품목(세대기기) 헤더·라인 저장.',
+   asis:['admin_scene_list.html','admin_scene_mode.html','admin_scene_mode1.html','admin_scene_proc.html','admin_scene_detail.html','pop_admin_scene_list.html','popup_apt_search_1.html','popup_scene_list.html','popup_scene_mode.html','popup_scene_mode_proc.html','popup_scene_detail.html','popup_secen_search.html','popup_secen_search_release.html'],
+   tobe:[],tables:['CS현장','CS현장품목']},
+  {id:'admin-code',dom:'admin',ic:'🏷',name:'코드 마스터',desc:'코드·오류·원인·수리 코드 목록(읽기 전용).',
+   asis:['admin_code_list.html','admin_code_error_list.html','admin_code_reason_list.html','admin_code_repair_list.html'],
+   tobe:[],tables:['코드마스터','CS장애구분']},
+  {id:'admin-audit',dom:'admin',ic:'📝',name:'감사(결재) 관리',desc:'서비스 처리 결재 승인/취소.',
+   asis:['admin_audit_list.html','admin_audit_list_apply.html'],
+   tobe:[],tables:['CS처리']},
+  {id:'admin-access',dom:'admin',ic:'🔐',name:'접근 권한',desc:'사원별 메뉴 권한(SMENU) 설정.',
+   asis:['admin_access_mode.html'],tobe:[],tables:['ACCESS_GRADE','TOP_MENU']},
+
+  /* ===== Receipt ===== */
+  {id:'receipt-main',dom:'receipt',ic:'📞',name:'수신접수 메인',desc:'콜센터 상담원의 업무 진입점. 접수 저장 시 PK 채번·상태 검증 트리거 자동 실행.',
+   asis:['receipt.html','receipt_main.html','receipt_all.html','receipt_consult_list.html','receipt_callback_list.html','receipt_happycall_list.html','receipt_m_list.html','receipt_service_list.html','receipt_proc.html','receipt_info.html','receipt_top.html','popup_receipt_read.html','popup_happycall.html','popup_satisfaction.html','popup_visit_cancel.html','popup_receipt_excel_111.html','popup_receipt_excel_upload.html'],
+   tobe:['2.화면단위/pages/P1-core/receipt-form.html','2.화면단위/pages/P2-major/happycall-list.html'],
+   tables:['CS접수','CS고객정보','CS처리','CTI_CALLBACK']},
+  {id:'receipt-memo',dom:'receipt',ic:'📋',name:'특이사항 메모',desc:'장애구분·증상·처리 노하우 메모(공유 지식베이스).',
+   asis:['receipt_memo_list.html','receipt_memo_mode.html','receipt_memo_proc.html','receipt_g_memo.html'],
+   tobe:[],tables:['CS특이사항','CS장애구분']},
+  {id:'receipt-menual',dom:'receipt',ic:'📚',name:'매뉴얼',desc:'제품·공정별 매뉴얼 PDF 첨부 공유.',
+   asis:['receipt_menual_list.html','receipt_menual_list_link.html','receipt_menual_mode.html','receipt_menual_proc.html'],
+   tobe:[],tables:['CS매뉴얼']},
+  {id:'receipt-tk',dom:'receipt',ic:'🔧',name:'TK 하자점검',desc:'건설사 아파트 입주 전 하자 점검. 세대/공용 두 종류.',
+   asis:['receipt_tk_main_list.html','receipt_tk_list.html','receipt_tk_detail_list.html','receipt_tk_setting.html','receipt_tk_setting1.html','receipt_tk_setting2.html','receipt_tk_setting3.html','popup_tk_G.html','popup_tk_G_proc.html','popup_tk_S.html','popup_tk_S_detail.html','popup_tk_S_proc.html','popup_receipt_tk_excel_upload.html'],
+   tobe:[],tables:['CSTK공용','CSTK세대','CSTK설정']},
+  {id:'receipt-year',dom:'receipt',ic:'📅',name:'연차 접수',desc:'보증기간 연차 만기 도래 접수.',
+   asis:['receipt_year.html','receipt_year_list.html','receipt_year_mode.html','receipt_year_proc.html','popup_receipt_year_read.html','popup_receipt_year_proc.html'],
+   tobe:[],tables:['CS접수']},
+
+  /* ===== SVC ===== */
+  {id:'svc-main',dom:'svc',ic:'🛠',name:'서비스 처리 (기사 출동)',desc:'접수된 건에 기사 배정·수리 결과 기록. 업무 종결 지점.',
+   asis:['svc_list.html','popup_svc.html','popup_svc_proc.html','popup_svc_read.html','popup_svc_read_del.html','popup_svc_cancel.html','popup_svc_master.html','popup_svc_print.html','popup_model_search_svc.html'],
+   tobe:['2.화면단위/pages/P1-core/svc-list.html','2.화면단위/pages/P1-core/svc-popup.html'],
+   tables:['CS처리','CS처리부품','CS접수']},
+
+  /* ===== Store ===== */
+  {id:'store-request',dom:'store',ic:'📦',name:'자재 신청',desc:'서비스 건에 필요한 자재 신청. 헤더+라인+접수플래그 3단 쓰기.',
+   asis:['store_request_list.html','store_request_list_center.html','store_request_list_nomal.html','store_request.html','store_request_nomal.html','store_request_proc.html','store_request_proc_nomal.html','store_request_mater.html','store_request_mater_list.html','popup_jaje.html','popup_store_grade.html'],
+   tobe:[],tables:['CS자재신청','CS자재신청품목']},
+  {id:'store-release',dom:'store',ic:'✅',name:'자재 신청 승인',desc:'신청 건 승인 · 진행상황 플래그 갱신.',
+   asis:['store_request_release.html','store_request_release_proc.html'],
+   tobe:[],tables:['CS자재신청품목']},
+  {id:'store-doing',dom:'store',ic:'🚚',name:'자재 출고 처리',desc:'승인된 자재 실제 출고. 본사만 청구금액 수정 가능.',
+   asis:['store_doing_list.html','store_doing_list_center.html','store_doing_mode.html','store_doing_proc.html','store_doing_mode_print.html'],
+   tobe:['2.화면단위/pages/P2-major/store-doing-list.html'],
+   tables:['KM수리의뢰']},
+  {id:'store-return',dom:'store',ic:'↩',name:'반품 처리',desc:'뇌전 자재 반품 처리.',
+   asis:['store_return_list.html','store_return_list_center.html','store_return_release.html','store_return_release_proc.html'],
+   tobe:[],tables:['CS뇌전자재신청품목']},
+  {id:'store-price',dom:'store',ic:'💰',name:'자재 가격 관리',desc:'자재 가격 조회·승인 UI.',
+   asis:['store_price_list.html','store_price_release.html'],
+   tobe:[],tables:['AS품목','CS가격']},
+  {id:'store-suri',dom:'store',ic:'🔨',name:'수리 의뢰',desc:'외부 수리 의뢰 (서비스에서 처리 못 하는 건).',
+   asis:['store_suri_list.html','store_suri_proc.html'],
+   tobe:[],tables:['KM수리의뢰']},
+  {id:'store-receipt',dom:'store',ic:'🧾',name:'영수증 조회',desc:'발행된 영수증 목록 (읽기 전용).',
+   asis:['store_receipt_list.html'],tobe:[],tables:['CS영수증']},
+
+  /* ===== TDB ===== */
+  {id:'tdb-in',dom:'tdb',ic:'⚡',name:'뇌전(TDB) 접수',desc:'낙뢰 피해 제품 전용 접수 + 보험사 연계.',
+   asis:['tdb_in_list.html','tdb_in_mode.html','tdb_in_proc.html','tdb_in_release.html','tdb_in_proc_release.html'],
+   tobe:['2.화면단위/pages/P2-major/tdb-in-list.html'],
+   tables:['CS뇌전접수','CS뇌전서류파일']},
+  {id:'tdb-store',dom:'tdb',ic:'📥',name:'뇌전 자재 신청',desc:'뇌전 전용 자재 신청. 가격 필드 9종.',
+   asis:['tdb_store_list.html','tdb_store_mode.html','tdb_store_release.html','tdb_store_proc.html','popup_tdb_store_list.html'],
+   tobe:[],tables:['CS뇌전자재신청','CS뇌전자재신청품목']},
+  {id:'tdb-doing',dom:'tdb',ic:'📤',name:'뇌전 출고',desc:'뇌전 자재 출고 현황 목록 (읽기).',
+   asis:['tdb_store_doing_list.html','tdb_store_doing_list_center.html'],
+   tobe:[],tables:['CS뇌전자재출고']},
+  {id:'tdb-return',dom:'tdb',ic:'🔄',name:'뇌전 반품 처리',desc:'뇌전 자재 반품 + 보험 반품 관리.',
+   asis:['tdb_return_list.html','tdb_return_ins_list.html','tdb_return_release.html','tdb_return_ins_release.html'],
+   tobe:[],tables:['CS뇌전반품']},
+  {id:'tdb-price',dom:'tdb',ic:'💵',name:'뇌전 가격 관리',desc:'뇌전 자재 단가 조회/수정.',
+   asis:['tdb_price_list.html','tdb_price_release.html','popup_tdb_price_modify.html'],
+   tobe:[],tables:['CS뇌전가격']},
+  {id:'tdb-serial',dom:'tdb',ic:'🔢',name:'TDB 시리얼 팝업',desc:'뇌전 자재 시리얼 출고·반납·보험반납 (3단계).',
+   asis:['popup_serial_tdb.html','popup_serial_tdb_proc.html','popup_serial_tdb_return.html','popup_serial_tdb_return_proc.html','popup_serial_tdb_return_ins.html','popup_serial_tdb_return_ins_proc.html'],
+   tobe:[],tables:['CS시리얼','CS뇌전자재신청품목']},
+
+  /* ===== Serial ===== */
+  {id:'serial-main',dom:'serial',ic:'🔖',name:'시리얼 출고',desc:'자재 출고 시 실물 시리얼 번호 기록.',
+   asis:['popup_serial.html','popup_serial_proc.html'],
+   tobe:[],tables:['CS시리얼','CS자재신청품목']},
+  {id:'serial-return',dom:'serial',ic:'🔁',name:'시리얼 반품',desc:'반납 시리얼 확정·등급 재분류(양품/재생/불량).',
+   asis:['popup_serial_return.html','popup_return.html','popup_serial_return_release.html','popup_serial_return_release_proc.html','popup_serial_return_release2.html','popup_serial_return_release2_proc.html','popup_return_proc.html'],
+   tobe:[],tables:['CS시리얼','CS반품']},
+  {id:'serial-store',dom:'serial',ic:'🏪',name:'시리얼 창고',desc:'창고 내 시리얼 재고 관리.',
+   asis:['popup_serial_store.html','popup_serial_store_proc.html'],
+   tobe:[],tables:['CS시리얼','CS창고재고']},
+
+  /* ===== Forum ===== */
+  {id:'forum-free',dom:'forum',ic:'💬',name:'자유게시판',desc:'계층 답글 (단계 = "A"/"A.A" 문자열 트리).',
+   asis:['forum_free_list.html','forum_free_mode.html','forum_free_proc.html','forum_free_upfile.html'],
+   tobe:['2.화면단위/pages/P2-major/forum-list.html','2.화면단위/pages/P3-extra/forum-mode.html'],
+   tables:['자유게시판']},
+  {id:'forum-notice',dom:'forum',ic:'📢',name:'공지게시판',desc:'관리자 공지사항.',
+   asis:['forum_notice_list.html','forum_notice_mode.html','forum_notice_proc.html'],
+   tobe:[],tables:['공지게시판']},
+  {id:'forum-memo',dom:'forum',ic:'✉',name:'쪽지(메모)',desc:'사원 간 1:1 쪽지. soft delete.',
+   asis:['forum_memo_list.html','forum_memo_mode.html','forum_memo_proc.html'],
+   tobe:[],tables:['쪽지게시판']},
+  {id:'forum-qna',dom:'forum',ic:'❓',name:'Q&A',desc:'비공개/공개 Q&A + 답글.',
+   asis:['forum_qna_list.html','forum_qna_mode.html','forum_qna_proc.html'],
+   tobe:[],tables:['QA게시판']},
+  {id:'forum-pds',dom:'forum',ic:'📁',name:'자료실',desc:'첨부파일 최대 9개 슬롯.',
+   asis:['forum_pds_list.html','forum_pds_mode.html','forum_pds_proc.html'],
+   tobe:[],tables:['자료게시판']},
+
+  /* ===== Resolve ===== */
+  {id:'resolve-year',dom:'resolve',ic:'🗓',name:'연차 처리 (수리)',desc:'연차 대상 접수에 대한 수리 완료 처리.',
+   asis:['resolve_year_list.html','resolve_year_mode.html','resolve_year_mode1.html','resolve_year_proc.html'],
+   tobe:[],tables:['CS처리','CS처리부품']},
+
+  /* ===== CTI ===== */
+  {id:'cti-softphone',dom:'cti',ic:'☎',name:'CTI 소프트폰',desc:'Xline5 PBX 연동. 1초 폴링으로 상담원 상태 갱신.',
+   asis:['softphone.html','call_popup.html'],
+   tobe:[],tables:['xline_agent_list','xline_callback','CTI_CALLBACK']},
+
+  /* ===== SMS ===== */
+  {id:'sms-send',dom:'sms',ic:'📨',name:'SMS 발송',desc:'STD_SMS 큐잉 패턴. 외부 배치가 pick-up 발송.',
+   asis:['sms_send.html','sms_send_proc.html','popup_sms.html','popup_sms_list.html','popup_sms_main.html'],
+   tobe:['2.화면단위/pages/P3-extra/popup-sms.html'],
+   tables:['STD_SMS','STD_MMS']},
+
+  /* ===== Common ===== */
+  {id:'common-search',dom:'common',ic:'🔎',name:'공통 검색 팝업',desc:'아파트·모델·센터·담당자·마스터 검색 (모든 업무 공용).',
+   asis:['popup_apt_search.html','popup_model_search.html','popup_model_search_scene.html','popup_model_search_sub.html','popup_center_search.html','popup_center_aff.html','popup_master_search.html','popup_charge_select.html'],
+   tobe:['2.화면단위/pages/P3-extra/popup-apt-search.html','2.화면단위/pages/P3-extra/popup-model-search.html'],
+   tables:['CS현장','AS품목']},
+
+  /* ===== Layout ===== */
+  {id:'layout-shell',dom:'layout',ic:'🪟',name:'레이아웃 셸',desc:'상·하단 레이아웃. TOP_MENU 기반 동적 메뉴.',
+   asis:['main.html','top.html','top_menu.html','top_toolbar.html','tail.html','main_list.html','sub.html'],
+   tobe:['2.화면단위/pages/main-layout.html'],
+   tables:['TOP_MENU','MIDDLE_MENU']},
+
+  /* ===== AJAX ===== */
+  {id:'ajax-oracle',dom:'ajax',ic:'🔌',name:'AJAX 라우터 (Oracle)',desc:'switch($_REQUEST[mode]) 분기 40+ 케이스.',
+   asis:['ajax_proc.html'],tobe:[],tables:['(Oracle 전 테이블)']},
+  {id:'ajax-mysql',dom:'ajax',ic:'🔗',name:'AJAX 라우터 (MySQL)',desc:'Xline5 CTI 전용 라우터.',
+   asis:['ajax_proc_mysql.html'],tobe:[],tables:['xline_agent_list']},
+
+  /* ===== Util ===== */
+  {id:'util-files',dom:'util',ic:'📎',name:'파일 업/다운/엑셀',desc:'파일 업로드·다운로드·PHPExcel 워크북.',
+   asis:['file_upfile.html','download.html','excel.html','popup_receipt_excel_upload.html'],
+   tobe:[],tables:[]},
+  {id:'util-myinfo',dom:'util',ic:'👤',name:'내 정보',desc:'사원 본인 정보 수정.',
+   asis:['my_info.html'],tobe:[],tables:['CS사원']},
+  {id:'util-misc',dom:'util',ic:'🧰',name:'기타 유틸',desc:'페이징·날짜·PDF·로그인 검증.',
+   asis:['login_check.html','db_date.html','page_search.html','pdf_sample.html','address_popup.html'],
+   tobe:[],tables:[]},
+];
+
+/* =====================================================================
+   BU_EDGES — 업무단위 간 전후 관계
+   kind: flow(업무흐름) · trigger(자동트리거) · master(마스터제공) · ref(참조)
+   ===================================================================== */
+const BU_EDGES = [
+  // ── 콜 → 접수
+  {from:'cti-softphone', to:'receipt-main', via:'콜 인입',     kind:'trigger'},
+  // ── 접수 → 하류
+  {from:'receipt-main',  to:'svc-main',      via:'CS접수',      kind:'flow'},
+  {from:'receipt-main',  to:'store-request', via:'자재 필요',    kind:'flow'},
+  {from:'receipt-main',  to:'tdb-in',        via:'낙뢰 분기',    kind:'flow'},
+  {from:'receipt-main',  to:'receipt-year',  via:'연차 만기',    kind:'flow'},
+  {from:'receipt-main',  to:'receipt-tk',    via:'TK 점검',     kind:'flow'},
+  {from:'receipt-main',  to:'sms-send',      via:'고객 알림',    kind:'ref'},
+  {from:'receipt-main',  to:'receipt-memo',  via:'상담 노하우',  kind:'ref'},
+  {from:'receipt-main',  to:'receipt-menual',via:'매뉴얼 참조',  kind:'ref'},
+  // ── 서비스 처리 → 하류
+  {from:'svc-main',      to:'admin-audit',   via:'결재 승인',    kind:'flow'},
+  {from:'svc-main',      to:'serial-main',   via:'시리얼 출고',  kind:'flow'},
+  {from:'svc-main',      to:'store-return',  via:'반품 필요',    kind:'flow'},
+  // ── 자재 체인
+  {from:'store-request', to:'store-release', via:'CS자재신청',  kind:'flow'},
+  {from:'store-release', to:'store-doing',   via:'승인→출고',   kind:'flow'},
+  {from:'store-doing',   to:'serial-main',   via:'CS시리얼',    kind:'flow'},
+  {from:'store-doing',   to:'store-receipt', via:'영수증 발행',  kind:'flow'},
+  {from:'store-request', to:'store-suri',    via:'외부 의뢰',    kind:'flow'},
+  {from:'store-request', to:'store-price',   via:'단가 참조',    kind:'ref'},
+  // ── 시리얼 체인
+  {from:'serial-main',   to:'serial-return', via:'시리얼 반품',  kind:'flow'},
+  {from:'serial-main',   to:'serial-store',  via:'창고 이동',    kind:'flow'},
+  // ── 뇌전(TDB) 체인
+  {from:'tdb-in',        to:'tdb-store',     via:'자재 신청',    kind:'flow'},
+  {from:'tdb-store',     to:'tdb-doing',     via:'CS뇌전자재',  kind:'flow'},
+  {from:'tdb-doing',     to:'tdb-serial',    via:'시리얼 출고',  kind:'flow'},
+  {from:'tdb-serial',    to:'tdb-return',    via:'반품(보험)',   kind:'flow'},
+  {from:'tdb-return',    to:'store-return',  via:'반품 귀속',    kind:'flow'},
+  {from:'tdb-store',     to:'tdb-price',     via:'뇌전 단가',    kind:'ref'},
+  // ── 연차 체인
+  {from:'receipt-year',  to:'resolve-year',  via:'CS접수(연차)', kind:'flow'},
+  {from:'resolve-year',  to:'admin-audit',   via:'결재 승인',    kind:'flow'},
+  // ── 마스터 데이터
+  {from:'admin-user',    to:'receipt-main',  via:'사원 ID',     kind:'master'},
+  {from:'admin-user',    to:'svc-main',      via:'기사 ID',     kind:'master'},
+  {from:'admin-user',    to:'cti-softphone', via:'상담원 동기화',kind:'master'},
+  {from:'admin-member',  to:'receipt-main',  via:'고객 마스터',  kind:'master'},
+  {from:'admin-scene',   to:'receipt-main',  via:'아파트 현장',  kind:'master'},
+  {from:'admin-scene',   to:'receipt-tk',    via:'TK 대상',     kind:'master'},
+  {from:'admin-scene',   to:'tdb-in',        via:'현장 매핑',    kind:'master'},
+  {from:'admin-centermanager', to:'receipt-main', via:'담당지점', kind:'master'},
+  {from:'admin-offmanager',    to:'svc-main',     via:'외주 담당자',kind:'master'},
+  {from:'admin-code',    to:'receipt-main',  via:'장애코드',    kind:'master'},
+  {from:'admin-code',    to:'svc-main',      via:'수리코드',    kind:'master'},
+  // ── 공용 도구
+  {from:'common-search', to:'receipt-main',  via:'검색 팝업',    kind:'ref'},
+  {from:'common-search', to:'svc-main',      via:'모델 검색',    kind:'ref'},
+  {from:'common-search', to:'store-request', via:'자재 검색',    kind:'ref'},
+];
+
+const EDGE_KIND = {
+  flow:   {lbl:'업무 흐름',  c:'var(--amber)'},
+  trigger:{lbl:'자동 트리거', c:'var(--pink)'},
+  master: {lbl:'마스터 제공', c:'var(--slate)'},
+  ref:    {lbl:'참조',       c:'var(--blue)'},
+};
+
+/* =====================================================================
+   SCENARIOS — 대표 여정 (업무 흐름 시각화)
+   ===================================================================== */
+const SCENARIOS = [
+  {id:'normal', name:'일반 CS 접수 여정', ic:'🎯', color:'c-blue',
+   desc:'콜 한 통이 고객 불만 해결까지 가는 전형적인 경로. 가장 흔한 케이스.',
+   steps:[
+     {bu:'cti-softphone', act:'인바운드 콜 수신'},
+     {bu:'receipt-main',  act:'상담원이 접수 등록'},
+     {bu:'svc-main',      act:'기사 배정·출동·수리'},
+     {bu:'store-request', act:'필요 자재 신청'},
+     {bu:'store-release', act:'자재 신청 승인'},
+     {bu:'store-doing',   act:'자재 실제 출고'},
+     {bu:'serial-main',   act:'시리얼 번호 기록'},
+     {bu:'admin-audit',   act:'처리 결재 승인'},
+     {bu:'sms-send',      act:'고객 SMS 알림'},
+   ]},
+  {id:'tdb', name:'뇌전(낙뢰) 접수 여정', ic:'⚡', color:'c-pink',
+   desc:'낙뢰 피해 제품 전용. 보험사 연계가 특징. 일반 접수와 테이블·화면 분리.',
+   steps:[
+     {bu:'receipt-main', act:'콜 인입·낙뢰 확인'},
+     {bu:'tdb-in',       act:'뇌전 접수 (보험 서류)'},
+     {bu:'tdb-store',    act:'뇌전 자재 신청'},
+     {bu:'tdb-doing',    act:'뇌전 자재 출고'},
+     {bu:'tdb-serial',   act:'시리얼 출고·반납'},
+     {bu:'tdb-return',   act:'반품 처리 (보험)'},
+   ]},
+  {id:'year', name:'연차 만기 여정', ic:'📅', color:'c-violet',
+   desc:'보증기간 만기 도래 건에 대한 연차 접수·처리. 배치성 일괄 업무.',
+   steps:[
+     {bu:'receipt-year', act:'연차 만기 접수'},
+     {bu:'resolve-year', act:'수리 완료 처리'},
+     {bu:'admin-audit',  act:'결재 승인'},
+   ]},
+  {id:'tk', name:'TK 하자점검 여정', ic:'🏗', color:'c-amber',
+   desc:'건설사 아파트 입주 전 하자 점검. 세대·공용 두 유형 병렬.',
+   steps:[
+     {bu:'admin-scene',  act:'대상 아파트 현장 등록'},
+     {bu:'receipt-tk',   act:'세대/공용 하자 접수'},
+     {bu:'svc-main',     act:'수리 출동·처리'},
+   ]},
+];
+
+const DOMAINS = {
+  admin:{label:'🛠 관리자·마스터',order:1},
+  receipt:{label:'📞 수신접수',order:2},
+  svc:{label:'🧑‍🔧 서비스 처리',order:3},
+  store:{label:'📦 자재(일반)',order:4},
+  tdb:{label:'⚡ 뇌전(TDB)',order:5},
+  serial:{label:'🔖 시리얼',order:6},
+  forum:{label:'💬 게시판·소통',order:7},
+  resolve:{label:'🗓 연차 처리',order:8},
+  cti:{label:'☎ CTI 콜센터',order:9},
+  sms:{label:'📨 SMS',order:10},
+  common:{label:'🔎 공용 팝업',order:11},
+  layout:{label:'🪟 레이아웃',order:12},
+  ajax:{label:'🔌 AJAX 라우터',order:13},
+  util:{label:'🧰 유틸·기타',order:14},
+};
+
+/* ===================================================================
+   STATE & STORAGE
+   =================================================================== */
+const LS_KEY = 'kocom-cs-dev-book-v1';
+let state = {
+  currentBu: null,
+  mode: 'compare', // 'asis' | 'tobe' | 'compare'
+  role: 'all',     // 'all' | 'list' | 'mode' | 'proc' | 'popup' | 'other'
+  feedback: {},    // { buId: { keep:[{text,author,ts}], imp:[], del:[], new:[] } }
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw){ const p = JSON.parse(raw); state.feedback = p.feedback||{}; }
+  }catch(e){ console.warn('load state failed',e); }
+}
+function saveState(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify({feedback:state.feedback})); }
+  catch(e){ console.warn('save state failed',e); }
+}
+loadState();
+
+/* ===================================================================
+   HELPERS: classify, neighbors
+   =================================================================== */
+function classifyScreen(f){
+  const name = f.split('/').pop().toLowerCase();
+  if(name.includes('_proc')) return 'proc';
+  if(name.startsWith('popup_') || name.includes('_popup')) return 'popup';
+  if(name.includes('_list')) return 'list';
+  if(name.includes('_mode')) return 'mode';
+  if(name.includes('_release')) return 'proc';
+  if(name.includes('_setting')) return 'mode';
+  if(name.includes('_detail')) return 'list';
+  return 'other';
+}
+const ROLE_META = {
+  list:  {ic:'📋', lbl:'목록',  desc:'조회·검색 화면'},
+  mode:  {ic:'✏️', lbl:'입력',  desc:'_mode.php 폼 화면'},
+  proc:  {ic:'⚡', lbl:'처리',  desc:'_proc.php 저장 지점'},
+  popup: {ic:'🔎', lbl:'팝업',  desc:'검색·선택 팝업'},
+  other: {ic:'🧩', lbl:'기타',  desc:'레이아웃·유틸 등'},
+};
+function groupByRole(files){
+  const g = {list:[],mode:[],proc:[],popup:[],other:[]};
+  files.forEach(f=>g[classifyScreen(f)].push(f));
+  return g;
+}
+function getNeighbors(buId){
+  const up = BU_EDGES.filter(e=>e.to===buId).map(e=>({id:e.from, via:e.via, kind:e.kind}));
+  const dn = BU_EDGES.filter(e=>e.from===buId).map(e=>({id:e.to, via:e.via, kind:e.kind}));
+  return {up, dn};
+}
+function buMeta(id){ return BUS.find(b=>b.id===id); }
+
+/* ===================================================================
+   SCENARIO RENDER (Home)
+   =================================================================== */
+function renderScenarios(){
+  const host = document.getElementById('scen-host');
+  host.innerHTML = SCENARIOS.map(s=>{
+    const stepsHtml = s.steps.map((st,i)=>{
+      const b = buMeta(st.bu); if(!b) return '';
+      const arrow = i<s.steps.length-1 ? '<div class="scen-arrow">→</div>' : '';
+      return `<div class="scen-step" onclick="openBu('${st.bu}')" title="${b.name}">
+        <div class="ss-n">STEP ${i+1}</div>
+        <div class="ss-ic">${b.ic}</div>
+        <div class="ss-bu">${b.name}</div>
+        <div class="ss-a">${st.act}</div>
+      </div>${arrow}`;
+    }).join('');
+    return `<div class="scen-card ${s.color}">
+      <div class="scen-h">
+        <span class="sc-ic">${s.ic}</span>
+        <span class="sc-name">${s.name}</span>
+        <span class="sc-cnt">${s.steps.length}단계</span>
+      </div>
+      <div class="scen-d">${s.desc}</div>
+      <div class="scen-steps">${stepsHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ===================================================================
+   SIDEBAR RENDER
+   =================================================================== */
+function renderSidebar(){
+  const host = document.getElementById('nav-bus');
+  const byDom = {};
+  BUS.forEach(b=>{ (byDom[b.dom]=byDom[b.dom]||[]).push(b); });
+  const doms = Object.keys(byDom).sort((a,b)=>DOMAINS[a].order-DOMAINS[b].order);
+
+  let html = '';
+  doms.forEach(dom=>{
+    const meta = DOMAINS[dom];
+    const bus = byDom[dom];
+    html += `<div class="dom-group">
+      <div class="dom-head"><span>${meta.label}</span><span class="count">${bus.length}</span></div>`;
+    bus.forEach(b=>{
+      const fbCount = fbTotal(b.id);
+      html += `<button class="bu-btn${b.tobe.length?' has-tobe':''}${fbCount?' has-fb':''}" data-bu-id="${b.id}" data-fb="${fbCount||''}" onclick="openBu('${b.id}')">
+        <span class="bu-dot"></span>
+        <span>${b.name}</span>
+      </button>`;
+    });
+    html += `</div>`;
+  });
+  host.innerHTML = html;
+}
+function fbTotal(buId){
+  const f = state.feedback[buId]; if(!f) return 0;
+  return (f.keep?.length||0)+(f.imp?.length||0)+(f.del?.length||0)+(f.new?.length||0);
+}
+
+/* ===================================================================
+   NAVIGATION
+   =================================================================== */
+function goHome(){
+  state.currentBu = null;
+  document.getElementById('view-home').style.display='';
+  document.getElementById('view-bu').classList.remove('active');
+  document.getElementById('nav-home').classList.add('active');
+  document.querySelectorAll('.bu-btn').forEach(b=>b.classList.remove('active'));
+  updateCounters();
+}
+
+function openBu(id){
+  const bu = BUS.find(b=>b.id===id); if(!bu) return;
+  state.currentBu = id;
+  state.role = 'all';
+  document.getElementById('view-home').style.display='none';
+  document.getElementById('view-bu').classList.add('active');
+  document.getElementById('nav-home').classList.remove('active');
+  document.querySelectorAll('.bu-btn').forEach(b=>b.classList.toggle('active', b.dataset.buId===id));
+  document.getElementById('viewer').scrollTop = 0;
+
+  document.getElementById('bu-ic').textContent = bu.ic;
+  document.getElementById('bu-id').textContent = bu.id;
+  document.getElementById('bu-name').textContent = bu.name;
+  document.getElementById('bu-desc').textContent = bu.desc;
+
+  const badges = document.getElementById('bu-badges');
+  badges.innerHTML = `
+    <span class="bu-badge">AS-IS ${bu.asis.length}개</span>
+    ${bu.tobe.length
+      ? `<span class="bu-badge has-tobe">✅ 새 버전 ${bu.tobe.length}개</span>`
+      : `<span class="bu-badge no-tobe">⚠ 새 버전 미정</span>`}
+  `;
+
+  document.getElementById('bu-meta').innerHTML = `<span>도메인: <b>${DOMAINS[bu.dom].label}</b></span>`;
+  document.getElementById('bu-tables').innerHTML = bu.tables.map(t=>`<span class="tbl-chip">🗄 ${t}</span>`).join('');
+
+  renderNeighbors(id);
+  renderRoleTabs(bu);
+  renderFilePickers(bu);
+
+  loadAsis(); loadTobe();
+  renderFeedback();
+  setMode(state.mode);
+}
+
+function renderNeighbors(id){
+  const host = document.getElementById('bu-nb');
+  const {up, dn} = getNeighbors(id);
+  const pill = n=>{
+    const b = buMeta(n.id); if(!b) return '';
+    const col = EDGE_KIND[n.kind]?.c || 'var(--ink-3)';
+    return `<span class="nb-chip" onclick="openBu('${n.id}')" title="${EDGE_KIND[n.kind]?.lbl||''} · ${n.via}">
+      <span style="color:${col};font-size:9px">●</span>${b.ic} ${b.name}<span class="via">· ${n.via}</span>
+    </span>`;
+  };
+  const upHtml = up.length ? up.map(pill).join('') : '<span class="nb-empty">시작 업무 (상류 없음)</span>';
+  const dnHtml = dn.length ? dn.map(pill).join('') : '<span class="nb-empty">종결 업무 (하류 없음)</span>';
+  host.innerHTML = `
+    <div class="bu-nb-col"><span class="bu-nb-lbl up">← 상류</span>${upHtml}</div>
+    <div class="bu-nb-col"><span class="bu-nb-lbl dn">하류 →</span>${dnHtml}</div>
+  `;
+}
+
+function renderRoleTabs(bu){
+  const g = groupByRole(bu.asis);
+  const roles = ['list','mode','proc','popup','other'];
+  const host = document.getElementById('role-tabs');
+  let html = `<div class="role-tab ${state.role==='all'?'active':''}" onclick="setRole('all')">
+    <span>🧩 전체</span><span class="rt-cnt">${bu.asis.length}</span>
+  </div>`;
+  roles.forEach(r=>{
+    const cnt = g[r].length;
+    const m = ROLE_META[r];
+    const cls = cnt===0 ? 'empty' : (state.role===r ? 'active' : '');
+    const onclick = cnt===0 ? '' : `onclick="setRole('${r}')"`;
+    html += `<div class="role-tab ${cls}" ${onclick} title="${m.desc}">
+      <span>${m.ic} ${m.lbl}</span><span class="rt-cnt">${cnt}</span>
+    </div>`;
+  });
+  host.innerHTML = html;
+}
+
+function setRole(r){
+  state.role = r;
+  const bu = BUS.find(b=>b.id===state.currentBu); if(!bu) return;
+  renderRoleTabs(bu);
+  renderFilePickers(bu);
+  loadAsis();
+}
+
+function renderFilePickers(bu){
+  const filtered = state.role==='all' ? bu.asis : bu.asis.filter(f=>classifyScreen(f)===state.role);
+  const pa = document.getElementById('pick-asis');
+  pa.innerHTML = filtered.map(f=>{
+    const role = classifyScreen(f);
+    return `<option value="${f}">${ROLE_META[role].ic} ${f}</option>`;
+  }).join('') || `<option value="">(없음)</option>`;
+
+  const pt = document.getElementById('pick-tobe');
+  if(bu.tobe.length){
+    pt.innerHTML = bu.tobe.map(f=>`<option value="${f}">🟩 ${f.split('/').pop()}</option>`).join('');
+    pt.disabled = false;
+  } else {
+    pt.innerHTML = `<option>– 미정 –</option>`;
+    pt.disabled = true;
+  }
+}
+
+function setMode(m){
+  state.mode = m;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.mode===m));
+  const sc = document.getElementById('screens');
+  sc.classList.remove('mode-asis','mode-tobe','mode-compare');
+  sc.classList.add('mode-'+m);
+}
+
+/* ===================================================================
+   IFRAME LOAD & NUMBER INJECT
+   =================================================================== */
+function loadAsis(){
+  const bu = BUS.find(b=>b.id===state.currentBu); if(!bu) return;
+  const fn = document.getElementById('pick-asis').value || bu.asis[0];
+  if(!fn){ document.getElementById('f-asis').textContent='–'; return; }
+  const role = classifyScreen(fn);
+  const m = ROLE_META[role];
+  document.getElementById('f-asis').innerHTML = `<span style="color:var(--ink-3);margin-right:4px">${m.ic}${m.lbl}</span>${fn}`;
+  const url = '1.업무단위/previews/'+fn;
+  document.getElementById('if-asis').src = url;
+}
+function loadTobe(){
+  const bu = BUS.find(b=>b.id===state.currentBu); if(!bu) return;
+  const host = document.getElementById('pb-tobe');
+  if(!bu.tobe.length){
+    host.innerHTML = `
+      <div class="pane-empty">
+        <div class="pe-ic">🎨</div>
+        <div class="pe-t">아직 새 버전 초안이 없습니다</div>
+        <div class="pe-d">이 업무의 새 모습은 <b>여러분의 의견으로</b> 그려집니다. 오른쪽 아래 의견 4블록에 유지/개선/삭제/신규를 남겨주세요.</div>
+        <div class="pe-note">💡 레거시 그대로는 남기고 싶다 → 🟢 유지<br>완전히 새로 갈아엎어야 한다 → 💡 신규</div>
+      </div>`;
+    document.getElementById('f-tobe').textContent = '—';
+    document.getElementById('lg-tobe').innerHTML = `<em style="color:var(--ink-4);font-size:11px">TO-BE 미정</em>`;
+    document.getElementById('cnt-tobe-n').textContent = '0';
+    return;
+  }
+  // ensure iframe exists
+  if(!host.querySelector('iframe')){
+    host.innerHTML = `<iframe id="if-tobe" data-side="tobe" sandbox="allow-same-origin allow-scripts"></iframe>`;
+    document.getElementById('if-tobe').addEventListener('load', ()=>injectBadges('if-tobe'));
+  }
+  const fn = document.getElementById('pick-tobe').value || bu.tobe[0];
+  document.getElementById('f-tobe').textContent = fn.split('/').pop();
+  const ifr = document.getElementById('if-tobe');
+  ifr.src = fn;
+}
+
+function injectBadges(iframeId){
+  const ifr = document.getElementById(iframeId); if(!ifr) return;
+  const side = ifr.dataset.side;
+  const legendId = side==='asis' ? 'lg-asis' : 'lg-tobe';
+  const cntId = side==='asis' ? 'cnt-asis-n' : 'cnt-tobe-n';
+  const color = side==='asis' ? '#dc2626' : '#059669';
+
+  let doc;
+  try{ doc = ifr.contentDocument; }catch(e){ return; }
+  if(!doc || !doc.body) return;
+
+  // remove old badges
+  doc.querySelectorAll('.__kocom_badge').forEach(x=>x.remove());
+
+  // Inject style (once)
+  if(!doc.getElementById('__kocom_badge_style')){
+    const st = doc.createElement('style');
+    st.id='__kocom_badge_style';
+    st.textContent = `
+      .__kocom_badge{position:absolute;z-index:99999;background:${color};color:#fff !important;
+        font:800 10px/1 -apple-system,"Segoe UI",sans-serif !important;
+        min-width:18px;height:18px;padding:0 4px;border-radius:10px;
+        display:inline-flex;align-items:center;justify-content:center;
+        box-shadow:0 2px 5px rgba(0,0,0,.3);pointer-events:none;
+        letter-spacing:0;border:1.5px solid #fff;
+      }
+      body{position:relative !important}
+    `;
+    doc.head.appendChild(st);
+  }
+
+  const sel = 'input:not([type=hidden]), select, textarea, button, a[onclick], a[href]:not([href="#"]):not([href=""]), input[type=button], input[type=submit], input[type=reset], img[onclick]';
+  let els = Array.from(doc.querySelectorAll(sel));
+  els = els.filter(el=>{
+    if(el.offsetParent === null && el.tagName!=='OPTION') return false;
+    if(el.closest('.__preview_banner')) return false;
+    const r = el.getBoundingClientRect();
+    if(r.width<2 || r.height<2) return false;
+    return true;
+  });
+
+  const labels = [];
+  els.forEach((el,i)=>{
+    const n = i+1;
+    const r = el.getBoundingClientRect();
+    const absTop = r.top + (doc.defaultView.pageYOffset||0);
+    const absLeft = r.left + (doc.defaultView.pageXOffset||0);
+
+    const b = doc.createElement('div');
+    b.className='__kocom_badge';
+    b.textContent = n;
+    b.style.left = (absLeft-4)+'px';
+    b.style.top = (absTop-8)+'px';
+    doc.body.appendChild(b);
+
+    // Label extraction
+    let lbl = '';
+    const tr = el.closest('tr');
+    if(tr){
+      const th = tr.querySelector('th');
+      if(th) lbl = th.textContent.trim().replace(/\s+/g,' ').slice(0,20);
+    }
+    if(!lbl){
+      const cell = el.closest('td,div');
+      if(cell){
+        const prevT = cell.previousElementSibling?.textContent?.trim();
+        if(prevT && prevT.length<20) lbl = prevT;
+      }
+    }
+    if(!lbl) lbl = el.getAttribute('placeholder') || el.value || el.name || el.type || el.tagName.toLowerCase();
+    lbl = (lbl||'').replace(/\s+/g,' ').slice(0,18);
+    labels.push(lbl);
+  });
+
+  // Legend
+  const lg = document.getElementById(legendId);
+  if(labels.length){
+    lg.innerHTML = labels.map((l,i)=>`<span class="lg-item"><b>${i+1}</b>${l||'—'}</span>`).join('');
+  } else {
+    lg.innerHTML = `<em style="color:var(--ink-4);font-size:11px">인터랙티브 요소 없음</em>`;
+  }
+  document.getElementById(cntId).textContent = labels.length;
+}
+
+function renumber(){
+  injectBadges('if-asis');
+  injectBadges('if-tobe');
+}
+
+// Attach listeners once
+document.getElementById('if-asis').addEventListener('load', ()=>injectBadges('if-asis'));
+document.getElementById('if-tobe').addEventListener('load', ()=>injectBadges('if-tobe'));
+
+/* ===================================================================
+   FEEDBACK
+   =================================================================== */
+function ensureFb(buId){
+  if(!state.feedback[buId]) state.feedback[buId] = {keep:[],imp:[],del:[],new:[]};
+  return state.feedback[buId];
+}
+function addFb(cat){
+  const bu = state.currentBu; if(!bu) return;
+  const text = document.getElementById('in-'+cat).value.trim();
+  if(!text) return;
+  const author = document.getElementById('au-'+cat).value.trim();
+  const item = { text, author: author||'익명', ts: new Date().toISOString().slice(0,16).replace('T',' ') };
+  ensureFb(bu)[cat].push(item);
+  saveState();
+  document.getElementById('in-'+cat).value='';
+  renderFeedback();
+  updateCounters();
+  renderSidebar();
+  // Re-highlight current
+  document.querySelectorAll('.bu-btn').forEach(b=>b.classList.toggle('active', b.dataset.buId===bu));
+}
+function delFb(cat, idx){
+  const bu = state.currentBu; if(!bu) return;
+  if(!confirm('이 의견을 삭제할까요?')) return;
+  state.feedback[bu][cat].splice(idx,1);
+  saveState(); renderFeedback(); updateCounters(); renderSidebar();
+  document.querySelectorAll('.bu-btn').forEach(b=>b.classList.toggle('active', b.dataset.buId===bu));
+}
+function renderFeedback(){
+  const bu = state.currentBu; if(!bu) return;
+  const f = ensureFb(bu);
+  ['keep','imp','del','new'].forEach(cat=>{
+    const items = f[cat]||[];
+    document.getElementById('cn-'+cat).textContent = items.length;
+    const host = document.getElementById('it-'+cat);
+    if(!items.length){
+      host.innerHTML = `<div style="font-size:11px;color:var(--ink-4);text-align:center;padding:14px 0">아직 의견 없음</div>`;
+    } else {
+      host.innerHTML = items.map((it,i)=>`
+        <div class="fb-item">
+          ${escapeHtml(it.text)}
+          <span class="tag">· ${escapeHtml(it.author||'익명')} · ${it.ts}</span>
+          <button class="fb-x" onclick="delFb('${cat}',${i})" title="삭제">✕</button>
+        </div>
+      `).join('');
+    }
+  });
+}
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+function updateCounters(){
+  let k=0,i=0,d=0,n=0;
+  Object.values(state.feedback).forEach(f=>{
+    k+=f.keep?.length||0; i+=f.imp?.length||0; d+=f.del?.length||0; n+=f.new?.length||0;
+  });
+  document.getElementById('cnt-keep').textContent = k;
+  document.getElementById('cnt-imp').textContent = i;
+  document.getElementById('cnt-del').textContent = d;
+  document.getElementById('cnt-new').textContent = n;
+  document.getElementById('s-fb').textContent = k+i+d+n;
+}
+
+/* ===================================================================
+   EXPORT / IMPORT
+   =================================================================== */
+function openExport(){
+  const payload = {
+    __meta: {
+      app:'KOCOM CS 차세대 전산 개발북',
+      version:'0.1',
+      exportedAt: new Date().toISOString(),
+      totalIdeas: Object.values(state.feedback).reduce((a,f)=>a+(f.keep?.length||0)+(f.imp?.length||0)+(f.del?.length||0)+(f.new?.length||0),0),
+    },
+    feedback: state.feedback,
+  };
+  document.getElementById('ex-text').value = JSON.stringify(payload,null,2);
+  document.getElementById('modal-ex').classList.add('on');
+}
+function closeEx(){ document.getElementById('modal-ex').classList.remove('on'); }
+function copyEx(){
+  const ta = document.getElementById('ex-text');
+  ta.select(); document.execCommand('copy');
+  alert('클립보드에 복사되었습니다!');
+}
+function downloadEx(){
+  const txt = document.getElementById('ex-text').value;
+  const blob = new Blob([txt],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url;
+  a.download = `kocom-cs-opinions-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function openImport(){ document.getElementById('im-text').value=''; document.getElementById('modal-im').classList.add('on'); }
+function closeIm(){ document.getElementById('modal-im').classList.remove('on'); }
+function applyIm(){
+  try{
+    const txt = document.getElementById('im-text').value.trim();
+    if(!txt) return;
+    const obj = JSON.parse(txt);
+    const fb = obj.feedback || obj;
+    if(typeof fb !== 'object') throw new Error('형식 오류');
+    if(!confirm('현재 저장된 모든 의견을 덮어쓸까요?')) return;
+    state.feedback = fb;
+    saveState(); closeIm();
+    updateCounters(); renderSidebar();
+    if(state.currentBu) renderFeedback();
+    alert('불러오기 완료!');
+  }catch(e){ alert('불러오기 실패: '+e.message); }
+}
+
+/* ===================================================================
+   HOME STATS
+   =================================================================== */
+function updateHomeStats(){
+  const nTobe = BUS.filter(b=>b.tobe.length).length;
+  document.getElementById('s-bu').textContent = BUS.length;
+  document.getElementById('s-tobe').textContent = nTobe;
+  document.getElementById('s-notobe').textContent = BUS.length - nTobe;
+  // rough file-type counts across all BUs
+  let list=0,mode=0,proc=0,popup=0;
+  BUS.forEach(b=>{
+    b.asis.forEach(f=>{
+      if(f.includes('_list')) list++;
+      else if(f.includes('_mode')) mode++;
+      else if(f.includes('_proc')) proc++;
+      else if(f.includes('popup')) popup++;
+    });
+  });
+  document.getElementById('n-list').textContent = list;
+  document.getElementById('n-mode').textContent = mode;
+  document.getElementById('n-proc').textContent = proc;
+  document.getElementById('n-popup').textContent = popup;
+}
+
+/* ===================================================================
+   INIT
+   =================================================================== */
+renderSidebar();
+renderScenarios();
+updateHomeStats();
+updateCounters();
+
+// Click outside modal to close
+document.querySelectorAll('.modal-bg').forEach(m=>{
+  m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('on'); });
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-bg.on').forEach(m=>m.classList.remove('on'));
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOCOM CS</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100vh; overflow: hidden; }
+    .layout {
+      display: grid;
+      grid-template-rows: 48px 1fr 36px;
+      height: 100vh;
+      width: 100%;
+    }
+    iframe {
+      width: 100%;
+      border: none;
+      display: block;
+    }
+    iframe#top-toolbar {
+      height: 48px;
+    }
+    iframe#content {
+      height: 100%;
+    }
+    iframe#softphone {
+      height: 36px;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 상단 툴바 (48px) -->
+    <iframe
+      id="top-toolbar"
+      src="../_shared/top-toolbar.html"
+      name="top-toolbar"
+      scrolling="no"
+    ></iframe>
+
+    <!-- 콘텐츠 영역 (나머지 전체) -->
+    <iframe
+      id="content"
+      src="P1-core/svc-list.html"
+      name="content"
+    ></iframe>
+
+    <!-- 하단 소프트폰 (36px) -->
+    <iframe
+      id="softphone"
+      src="../_shared/softphone.html"
+      name="softphone"
+      scrolling="no"
+    ></iframe>
+  </div>
+</body>
+</html>

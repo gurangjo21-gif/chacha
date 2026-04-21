@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>기사메모</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script type="text/javascript">
+	function ajaxLoader(url){ 
+		if (document.getElementById) { 
+			var xmlHttp = (window.ActiveXObject) ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest(); 
+		}
+		if (xmlHttp){ 
+			xmlHttp.onreadystatechange = function(){ 
+				if (xmlHttp.readyState == 4){// 객체의 상태(0:비초기화, 1:로딩, 3:상호작용, 4: 완료)
+					if(xmlHttp.status == 200){ 
+						ajaxResponse(xmlHttp.responseText); 
+					}else{
+						alert('시스템 오류. CODE :'+ xmlHttp.status);
+					}
+				} 
+			} 
+			xmlHttp.open("GET", url, true); 
+			xmlHttp.send(null); 
+		}else{
+			alert("지원되지 않는 브라우저입니다.");
+		}
+	} 
+
+	//ajax응답처리 함수
+	function ajaxResponse(respose){
+		var str = respose.split("^");
+		switch(str[0]){
+			case "m_ok" :
+				alert("등록 되었습니다");
+				location.reload();
+			break;
+			case "m_false": 
+				alert("오류!!! 다시 시도해주세요");
+				location.reload();
+			break;
+			case "m_up_ok" :
+				alert("수정 되었습니다");
+				location.reload();
+			break;
+			case "m_up_false": 
+				alert("오류!!! 다시 시도해주세요");
+				location.reload();
+			break;
+			case "m_del_ok" :
+				alert("삭제 되었습니다");
+				location.reload();
+			break;
+			case "m_del_false": 
+				alert("오류!!! 다시 시도해주세요");
+				location.reload();
+			break;
+			default:
+				alert(respose);
+			break;
+		}
+	}
+
+	// 글자수 제한
+	function checkByte(obj) {
+		var maxByte = 500; //최대 입력 바이트 수
+		var str = obj.value;
+		var str_len = str.length;
+	 
+		var rbyte = 0;
+		var rlen = 0;
+		var one_char = "";
+		var str2 = "";
+	 
+		for (var i = 0; i < str_len; i++) {
+			one_char = str.charAt(i);
+	 
+			if (escape(one_char).length > 4) {
+				rbyte += 2; //한글2Byte
+			} else {
+				rbyte++; //영문 등 나머지 1Byte
+			}
+	 
+			if (rbyte <= maxByte) {
+				rlen = i + 1; //return할 문자열 갯수
+			}
+		}
+	 
+		if (rbyte > maxByte) {
+			alert("한글 " + (maxByte / 2) + "자 / 영문 " + maxByte + "자를 초과 입력할 수 없습니다.");
+			str2 = str.substr(0, rlen); //문자열 자르기
+			obj.value = str2;
+			checkByte(obj, maxByte);
+		} else {
+			//document.getElementById('byteInfo').innerText = rbyte;
+		}
+	}
+
+	// 기사메모 등록
+	function memo_next() {
+		var m_no = document.hform.rct_no.value;
+		var m_time = document.hform.m_time.value;
+		var memo = document.hform.kmemo.value;
+		var end = document.hform.end.value;
+
+		if(memo == "" || memo == null)
+		{
+			alert("기사메모 내용을 입력해 주시기 바랍니다.");
+			return;
+		}
+
+		if(end == "Y") {
+			alert("처리가 완료되어 더이상 작업을 진행하실수 없습니다.");
+			return;
+		} else {
+			var param = "mode=memo_next&form=hform&m_no="+m_no+"&m_time="+m_time+"&memo="+memo;
+			ajaxLoader("ajax_proc.php?"+param);
+		}
+	}
+
+	// 기사메모 수정
+	function update_memo() {
+		var up_no = document.hform.up_no.value;
+		var memo_up = document.hform.memo_update.value;
+		var end = document.hform.end.value;
+
+		if(memo_up == "" || memo_up == null)
+		{
+			alert("기사메모 내용을 입력해 주시기 바랍니다.");
+			return;
+		}
+
+		if(end == "Y") {
+			alert("처리가 완료되어 더이상 작업을 진행하실수 없습니다.");
+			return;
+		} else {
+			var param = "mode=memo_update&form=hform&m_no="+up_no+"&memo="+memo_up;
+			ajaxLoader("ajax_proc.php?"+param);
+		}
+	}
+
+	// 기사메모 수정준비 / 삭제
+	function update_next(idx, mode, memo) {
+		var myform = document.hform;
+
+		var msg = "";
+		if(mode == "delete") {
+			msg = "삭제하시겠습니까?";
+			if(confirm(msg)){
+				var param = "mode=memo_del&form=hform&idx="+idx;
+				ajaxLoader("ajax_proc.php?"+param);
+			}
+		} else {
+			$("#memo_in").css("display","none");
+			$("#memo_up").css("display","block");
+			$("#memo_update").val(memo);
+			$("#up_no").val(idx);
+		}
+	}
+</script>
+
+
+<style type="text/css">
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+	font-size: 15px;
+	font-weight: bold;
+	text-align: center;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+
+.form-table.type2 td > input {
+font-size:14px;
+}
+.form-table.type2 td > select {
+font-size:14px;
+}
+.form-table.type2 td > textarea {
+font-size:14px;
+}
+
+</style>
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/receipt_g_memo.php</b>
+  <span class="purpose">공유 메모</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+
+<form name="hform" method='post'>
+	<INPUT TYPE="hidden" NAME="mode" value="">
+	<INPUT TYPE="hidden" NAME="rct_no" value="">
+	<INPUT TYPE="hidden" NAME="end" value="">
+	<INPUT TYPE="hidden" NAME="m_time" value="2026-04-20 20:56">
+	<INPUT TYPE="hidden" NAME="up_no" ID="up_no" value="">
+<table cellpadding="0" cellspacing="0" width="500">
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 15px 0 5px 0;">
+						<table width="100%" style='height:17px;'>
+							<tr>
+								<td style="padding: 15px 0 10px 0;"><strong>[기사 메모]</strong></td>
+								<td align="right"></td>
+							</tr>
+						</table>
+						<!--<div style="overflow-x:scroll;width:100%;height:100%;">-->
+						<table style="border-collapse: collapse;" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="610px" class="form-table type2">
+							<colgroup>
+								<col width="60px" />
+								<col width="230px" />
+								<col width="80px" />
+								<col width="120px" />
+								<col width="120px" />
+							</colgroup>
+							<tr>
+								<th align='center'>순번</th>
+								<th align='center'>내용</th>
+								<th align='center'>작성자</th>
+								<th align='center'>작성일</th>
+								<th align='center'>비고</th>
+							</tr>
+							
+																				</table>
+						<!--</div>-->
+					</td>
+				</tr>
+			</table>
+			<div align='center' style='padding:5px 0 5px 0;'>
+				<!--<a href="javascript:save();" class="btn1 btn-color3" title="저장"><span class="bg">&nbsp;</span><span class="text">저장</span></a> &nbsp;&nbsp;-->
+				<a href="javascript:self.close();" class="btn1 btn-color3" title="닫기"><span class="bg">&nbsp;</span><span class="text">닫기</span></a>
+			</div>
+        </td>
+    </tr>
+</table>
+ 
+</form>
+</body>
+</html>

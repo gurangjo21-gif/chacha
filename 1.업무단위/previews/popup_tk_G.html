@@ -1,0 +1,271 @@
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>TK 공용부 설정</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<style type="text/css">
+.form-table.type2 {
+  border-top: 2px solid #959595;
+}
+.form-table.type2 th,
+.form-table.type2 td {
+  border-bottom: 1px solid #959595;
+}
+.form-table.type2 th {
+  background: #f3f3f3;
+  color: #000;
+	padding: 5px;
+	text-align: left;
+}
+.form-table.type2 td {
+  color: #505050;
+	padding: 5px;
+}
+
+.form-table.type2 td > table th,
+.form-table.type2 td > table td {
+  border: 1px solid #cacaca;
+}
+
+.form-table.type2 > thead > tr th {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  font-weight: bold !important;
+  padding: 9px 0;
+  text-align: center;
+}
+.form-table.type2 > thead > tr th:first-child {
+  border-left: 0;
+}
+.form-table.type2 > thead+tbody > tr td {
+  border-left: 1px solid #959595;
+  border-bottom: 1px solid #959595;
+  padding: 14px 0;
+  text-align: center;
+}
+</style>
+</head>
+<script type="text/javascript">
+var oTbl;
+var add_cnt = 0;
+//Row 추가
+function add_tkG1() {
+  add_cnt++;
+  oTbl = document.getElementById("addTable");
+  var oRow = oTbl.insertRow();
+  oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
+  var oCell = oRow.insertCell();
+
+  var frmTag = "<center>공용부분 명 : &nbsp;&nbsp;&nbsp;<input type='text' name='tkG"+add_cnt+"' id='tkG"+add_cnt+"' style='width:200px; height:20px;'>&nbsp;&nbsp;&nbsp;&nbsp;";
+	 // 저장
+	frmTag += "<a href='javascript:insert_GB1("+add_cnt+");' name='insert_G"+add_cnt+"' id='insert_G"+add_cnt+"' class='btn1 btn-sms btn-color6' title='저장'><span class='bg'>&nbsp;</span><span class='text'>저장</span></a></center><br>";
+	// 삭제
+	//frmTag += "<div id='del"+add_cnt+"' style='display:none'><a href='javascript:del_GB("+add_cnt+");' name='del_G"+add_cnt+"' id='del_G"+add_cnt+"' class='btn1 btn-sms btn-color6' title='삭제'><span class='bg'>&nbsp;</span><span class='text'>삭제</span></a></div></center><br>";
+  oCell.innerHTML = frmTag;
+}
+
+function add_tkG2() {
+  add_cnt++;
+  oTbl = document.getElementById("addTable");
+  var oRow = oTbl.insertRow();
+  oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
+  var oCell = oRow.insertCell();
+
+  var frmTag = "<center>지하 층 : &nbsp;&nbsp;&nbsp;<input type='text' name='tkG"+add_cnt+"' id='tkG"+add_cnt+"' style='width:50px; height:20px;'>&nbsp;&nbsp;~&nbsp;&nbsp;<input type='text' name='tkG_e"+add_cnt+"' id='tkG_e"+add_cnt+"' style='width:50px; height:20px;'>&nbsp;&nbsp;";
+	 // 저장
+	frmTag += "<a href='javascript:insert_GB2("+add_cnt+");' name='insert_G"+add_cnt+"' id='insert_G"+add_cnt+"' class='btn1 btn-sms btn-color6' title='저장'><span class='bg'>&nbsp;</span><span class='text'>저장</span></a></center><br>";
+	// 삭제
+	//frmTag += "<div id='del"+add_cnt+"' style='display:none'><a href='javascript:del_GB("+add_cnt+");' name='del_G"+add_cnt+"' id='del_G"+add_cnt+"' class='btn1 btn-sms btn-color6' title='삭제'><span class='bg'>&nbsp;</span><span class='text'>삭제</span></a></div></center><br>";
+  oCell.innerHTML = frmTag;
+}
+
+function insert_GB1(num)
+{
+	var myform = document.hform;
+	var apt_no = myform.apt_no.value;
+	var dong = myform.dong.value;
+	var tkman = myform.tkman.value;
+	var tkuser = myform.tkuser.value;
+	var add_gy = $("#tkG"+num).val();
+
+	if(!add_gy)
+	{
+		alert("공용부분을 입력해주시기 바랍니다.");
+		add_gy.focus();
+		return;
+	}
+
+	myform.action = "popup_tk_G_proc.php?add_gy="+add_gy;
+	myform.submit();
+
+	//ajaxLoader("ajax_proc.php?mode=insert_tk&apt_no="+apt_no+"&dong="+dong+"&tkman="+tkman+"&gy_a="+add_gy);
+
+	//$("#insert_G"+num).hide;
+	//$("#del"+num).show;
+}
+
+/*function insert_GB2(num) {
+}*/
+
+// 공용부분 삭제
+function del_G_U(idx,yn,gidx)
+{
+	if() {
+		alert(idx);
+		alert(yn);
+		alert(gidx);
+	}
+	var myform = document.hform;
+	var apt_no = myform.apt_no.value;
+	var dong = myform.dong.value;
+	var tkman = myform.tkman.value;
+	var tkuser = myform.tkuser.value;
+
+	var msg = "선택하신 공용부분을 삭제하시겠습니까?";
+
+	if(yn == "Y") {
+		alert("선택하신 공용부분은 이미 완료처리가 되어서 삭제하실수 없습니다.");
+	} else {
+		if(confirm(msg)) {
+			ajaxLoader("ajax_proc.php?mode=tk_delete_G&apt_no="+apt_no+"&dong="+dong+"&idx="+idx+"&tkuser="+tkuser+"&gidx="+gidx);
+		}
+	}
+}
+
+// 공용부분 삭제 respone
+function ajaxResponse(respose)
+{
+	//alert(respose);
+	var mode_str = respose.split("^");
+
+	switch(mode_str[0]) {
+		case "tk_del_G_ok" :
+			alert("선택하신 공용부분이 삭제되었습니다.");
+			location.reload();
+		break;
+		case "tk_del_G_false" :
+			alert("삭제가 실패하였습니다. 다시 시도해 주시기 바랍니다.");
+		break;
+	}
+}
+</script>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/popup_tk_G.php</b>
+  <span class="purpose">팝업 TK 공용</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<form name="hform" method='post'>
+	<input type='hidden' name='apt_no' value=''>
+	<input type='hidden' name='dong' value=''>
+	<input type='hidden' name='tkman' value=''>
+	<input type='hidden' name='tkuser' value=''>
+	<input type='hidden' name='mode' value=''>
+<table cellpadding="0" cellspacing="0" width="600" >
+	<tr>
+		<td style="border: 8px #eeeeee solid;">
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="border: 1px #dddddd solid; padding: 15px 0 5px 0;">
+						<table width="100%" >
+							<tr>
+								<td style="padding: 0 0 10px 0;"><strong>&nbsp;TK 공용부 설정</strong></td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<th width='20%' style="text-align:center;">아파트명</th>
+								<td></td>
+							</tr>
+							<tr>
+								<th width='20%' style="text-align:center;">동</th>
+								<td></td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse" bordercolor="#dedede" cellspacing="0" cellpadding="4" bgcolor="#ffffff" border="1" width="100%" class="form-table type2">
+							<tr>
+								<td style='height:25px;' align='center'>
+									<div class="btns">
+										<a href="javascript:add_tkG1();" name="addButton" class="btn1 btn-sms btn-color6" title="공용부분 추가하기>">
+											<span class="bg">&nbsp;</span>
+											<span class="text">추가하기</span>
+										</a>&nbsp;&nbsp;
+										<!--<a href="javascript:add_tkG2();" name="addButton" class="btn1 btn-sms btn-color6" title="공용부분 추가하기>">
+											<span class="bg">&nbsp;</span>
+											<span class="text">추가2</span>
+										</a>&nbsp;&nbsp;-->
+										<font color="#FF0000">*</font>&nbsp;추가 버튼을 클릭해 주세요.
+									</div>
+								</td>
+							</tr>
+						</table>
+						<br>
+						<table id="addTable" width="100%">
+							<tr>
+							</tr>
+													</table>
+					</td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+    <tr>
+		<td  style='text-align:center;padding-top:10px;'>
+			<!--<a href="javascript:go_submit('0');" class='btn1 btn-color1-1' title='저장'><span class='bg'>&nbsp;</span><span class='text'>저장</span></a>
+			&nbsp;-->
+			<a href="javascript:self.close();" class='btn1 btn-color5' title='닫기'><span class='bg'>&nbsp;</span><span class='text'>닫기</span></a>
+		</td>
+	</tr>
+</table>
+ 
+</form>
+</body>
+</html>

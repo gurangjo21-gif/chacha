@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>KOCOM CS 화면 전체 목록</title>
+  <script src="../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../specs/all-specs.js"></script>
+  <script defer src="../_shared/libs/alpine.js"></script>
+  <style>[x-cloak]{display:none!important;}</style>
+</head>
+<body class="bg-[#f2f2f2] text-[#333] text-xs" x-cloak x-data="{
+  search: '',
+  activeTab: 'all',
+
+  catLabel(c) {
+    return { receipt:'접수/상담', store:'자재/매장', tdb:'TDB', admin:'관리자', forum:'게시판', popup:'팝업' }[c] || c;
+  },
+
+  get screens() {
+    const list = [];
+    if (window.ALL_SPECS) {
+      for (const cat in window.ALL_SPECS) {
+        for (const key in window.ALL_SPECS[cat]) {
+          const s = window.ALL_SPECS[cat][key];
+          list.push({
+            cat,
+            label: this.catLabel(cat),
+            name: s.title || key,
+            file: cat + '/' + key + '.html',
+            type: s.type || 'list',
+            phpFile: s.phpFile || ''
+          });
+        }
+      }
+    }
+    return list;
+  },
+
+  get filtered() {
+    return this.screens.filter(s => {
+      const matchTab = this.activeTab === 'all' || s.cat === this.activeTab;
+      const matchSearch = !this.search || s.name.includes(this.search) || s.file.includes(this.search) || s.phpFile.includes(this.search);
+      return matchTab && matchSearch;
+    });
+  },
+
+  get counts() {
+    const c = {};
+    this.screens.forEach(s => { c[s.cat] = (c[s.cat] || 0) + 1; });
+    return c;
+  },
+
+  typeColor(t) {
+    return {
+      list:'bg-blue-100 text-blue-700',
+      form:'bg-green-100 text-green-700',
+      mode:'bg-green-100 text-green-700',
+      popup:'bg-purple-100 text-purple-700',
+      print:'bg-gray-100 text-gray-600',
+      layout:'bg-yellow-100 text-yellow-700',
+      detail:'bg-orange-100 text-orange-700',
+      sublist:'bg-cyan-100 text-cyan-700',
+      search:'bg-indigo-100 text-indigo-700'
+    }[t] || 'bg-gray-100 text-gray-600';
+  }
+}">
+
+<!-- 헤더 -->
+<div class="bg-[#6699FF] text-white px-6 py-4 flex items-center justify-between">
+  <div>
+    <h1 class="text-lg font-bold">KOCOM CS 시스템 — 전체 화면 목록</h1>
+    <p class="text-blue-100 text-xs mt-0.5">프론트엔드 개발 참고용 데모 | 총 <span x-text="screens.length"></span>개 화면</p>
+  </div>
+  <div class="flex gap-2">
+    <a href="../START.html" class="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded">🏠 메인</a>
+    <a href="../dashboard.html" class="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded">🎯 대시보드</a>
+    <a href="../index.html" class="bg-white text-[#6699FF] text-xs px-3 py-1.5 rounded font-bold">🎬 시연 →</a>
+  </div>
+</div>
+
+<!-- 검색 + 탭 -->
+<div class="bg-white border-b border-[#d7d7d7] px-6 py-3 flex items-center gap-4 sticky top-0 z-10 flex-wrap">
+  <input x-model="search" type="text" placeholder="화면명 / PHP파일명 검색..."
+    class="border border-[#b6babf] h-7 px-3 w-64 text-xs rounded">
+  <div class="flex gap-1">
+    <template x-for="[tab, label] in [['all','전체'],['receipt','접수/상담'],['store','자재/매장'],['tdb','TDB'],['admin','관리자'],['forum','게시판'],['popup','팝업']]">
+      <button @click="activeTab = tab"
+        :class="activeTab === tab ? 'bg-[#6699FF] text-white' : 'bg-[#f2f2f2] text-[#545454] hover:bg-blue-50'"
+        class="px-3 h-7 text-xs border border-[#d7d7d7] rounded transition-colors">
+        <span x-text="label"></span>
+        <span x-show="tab !== 'all'" x-text="'(' + (counts[tab]||0) + ')'" class="ml-1 opacity-70"></span>
+      </button>
+    </template>
+  </div>
+  <span class="text-[#545454] ml-auto">검색 결과: <strong x-text="filtered.length"></strong>/<span x-text="screens.length"></span>개</span>
+</div>
+
+<!-- 화면 그리드 -->
+<div class="p-6">
+  <div class="grid grid-cols-4 gap-3" x-show="filtered.length > 0">
+    <template x-for="s in filtered" :key="s.file">
+      <a :href="s.file" target="_blank"
+        class="bg-white border border-[#d7d7d7] rounded hover:border-[#6699FF] hover:shadow-md transition-all p-3 flex flex-col gap-2 cursor-pointer">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold text-[#6699FF] bg-blue-50 px-2 py-0.5 rounded" x-text="s.label"></span>
+          <span :class="typeColor(s.type)" class="text-[10px] px-2 py-0.5 rounded" x-text="s.type"></span>
+        </div>
+        <div class="font-bold text-[#333] leading-tight" x-text="s.name"></div>
+        <div class="text-[10px] text-[#999] truncate font-mono" x-text="s.file.split('/').pop()"></div>
+        <div x-show="s.phpFile" class="text-[9px] text-[#bbb] truncate font-mono" x-text="'← ' + s.phpFile"></div>
+        <div class="mt-auto pt-2 border-t border-[#f0f0f0]">
+          <span class="text-[10px] text-[#6699FF]">클릭하여 열기 →</span>
+        </div>
+      </a>
+    </template>
+  </div>
+  <div x-show="filtered.length === 0" class="text-center py-16 text-[#999]">
+    검색 결과가 없습니다.
+  </div>
+</div>
+
+<!-- 하단 범례 -->
+<div class="bg-white border-t border-[#d7d7d7] px-6 py-3 flex items-center gap-3 flex-wrap text-[10px]">
+  <span class="font-bold text-[#545454]">화면 유형:</span>
+  <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">list — 목록</span>
+  <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded">form/mode — 등록/수정폼</span>
+  <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded">popup — 팝업창</span>
+  <span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">layout — 레이아웃</span>
+  <span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded">detail — 상세</span>
+  <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded">print — 인쇄</span>
+  <span class="ml-auto text-[#999]">all-specs.js 자동 동기화 | 2026.04.15</span>
+</div>
+
+</body>
+</html>

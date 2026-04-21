@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python (for make_excel.py)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Excel lock files (생성된 엑셀을 직원이 열면 생기는 임시파일)
+~$*.xlsx
+
+# Local server logs
+*.log

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>KOCOM CS - 해피콜 리스트</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        'k-primary': '#6699FF', 'k-active': '#5acd3e',
+        'k-border': '#d7d7d7', 'k-text': '#333333',
+        'k-sub': '#545454', 'k-bg': '#f2f2f2', 'k-header': '#f3f3f3',
+      }}}
+    }
+  </script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+  <style>
+    body { font-size: 12px; font-family: 'Malgun Gothic', sans-serif; color: #333; }
+    .tbl-wrap { overflow-x: auto; width: 100%; }
+    table.svc-tbl { border-collapse: collapse; min-width: 1100px; width: 100%; }
+    table.svc-tbl thead th {
+      background: #f3f3f3;
+      border-top: 1px solid #cfcfcf;
+      border-bottom: 1px solid #d7d7d7;
+      border-left: 1px solid #e7e7e7;
+      color: #545454;
+      font-weight: bold;
+      padding: 5px 4px;
+      white-space: nowrap;
+      text-align: center;
+    }
+    table.svc-tbl thead th:first-child { border-left: 0; }
+    table.svc-tbl tbody td {
+      border-bottom: 1px solid #d7d7d7;
+      border-left: 1px solid #e7e7e7;
+      color: #545454;
+      font-weight: bold;
+      padding: 3px 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    table.svc-tbl tbody td:first-child { border-left: 0; }
+    table.svc-tbl tbody tr:nth-child(even) { background-color: #FBF9C4; }
+    table.svc-tbl tbody tr:hover { background-color: #FFF59D !important; }
+    table.svc-tbl tbody td.left { text-align: left; padding-left: 6px; }
+    .receipt-no-link { color: #6699FF; cursor: pointer; text-decoration: underline; font-weight: bold; }
+    .search-label { font-size: 12px; font-weight: bold; color: #333; white-space: nowrap; }
+    select, input[type=text] {
+      border: 1px solid #ccc;
+      padding: 2px 4px;
+      font-size: 12px;
+      height: 24px;
+      border-radius: 2px;
+    }
+    .btn-primary {
+      background: #6699FF; color: #fff; border: none;
+      padding: 4px 12px; border-radius: 2px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-primary:hover { background: #4477dd; }
+    .btn-excel {
+      background: #5acd3e; color: #fff; border: none;
+      padding: 4px 12px; border-radius: 2px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-excel:hover { background: #3fa82e; }
+    .btn-reset {
+      background: #ff6666; color: #fff; border: none;
+      padding: 4px 12px; border-radius: 2px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-reset:hover { background: #cc3333; }
+    .page-header {
+      background: #f3f3f3;
+      border-bottom: 1px solid #d7d7d7;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .page-header h2 { font-size: 16px; font-weight: bold; color: #333; }
+    .page-header-btns { display: flex; gap: 6px; }
+    .search-bar {
+      background: #fafafa;
+      border-bottom: 1px solid #d7d7d7;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .result-bar {
+      padding: 6px 16px;
+      font-size: 12px;
+      color: #333;
+      font-weight: bold;
+      border-bottom: 1px solid #e7e7e7;
+      background: #fff;
+    }
+    .pagination { display: flex; gap: 2px; align-items: center; justify-content: center; padding: 10px 0; }
+    .page-btn {
+      border: 1px solid #d7d7d7;
+      background: #fff;
+      color: #333;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 12px;
+      border-radius: 2px;
+    }
+    .page-btn.active { background: #6699FF; color: #fff; border-color: #6699FF; font-weight: bold; }
+    .page-btn:hover:not(.active) { background: #f2f2f2; }
+    /* 해피콜여부 배지 */
+    .happy-y   { color: #009900; font-weight: bold; }
+    .happy-n   { color: #cc0000; font-weight: bold; }
+    /* 만족도 */
+    .score-5   { color: #0044cc; font-weight: bold; }
+    .score-4   { color: #009900; font-weight: bold; }
+    .score-3   { color: #cc6600; font-weight: bold; }
+    .score-low { color: #cc0000; font-weight: bold; }
+  </style>
+  <script>
+    // happycallList 보강: PHP 컬럼에 맞게 추가 필드 채우기
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!window.MOCK || !window.MOCK.happycallList) return;
+      // PHP 컬럼: 순서, 센터명, 접수번호, 처리번호, 고객명, 연락처, 유상여부, 해피콜여부, 처리사원, 확인일(처리일), 만족도, 상담내용
+      const centers = ['강남지점','대전지점','광주지점','창원지점','마포지점','수원지점','청주지점','강남지점','분당지점','서초지점'];
+      const engineers = ['이기사','한기사','오기사','신기사','남기사','하기사','황기사','이기사','박기사','정기사'];
+      const pays = ['N','Y','N','N','Y','N','Y','N','Y','N'];
+      const scores = ['5','5','','4','5','','4','5','','4'];
+      const memos = ['만족','매우만족','','보통','만족','','만족','매우만족','','보통'];
+      window.MOCK.happycallList = window.MOCK.happycallList.map(function(r, i) {
+        // 처리번호: 접수번호에 P 추가
+        const parts = r.receiptNo.split('-');
+        const procNo = parts.length === 2 ? parts[0] + '-P' + parts[1] : r.receiptNo;
+        return Object.assign({}, r, {
+          seq:          i + 1,
+          centerName:   centers[i] || '본사',
+          processNo:    procNo,
+          contact:      r.mobile,
+          payType:      pays[i] || 'N',
+          happycallYn:  r.callStatus || 'N',
+          engineer:     engineers[i] || '-',
+          confirmDate:  r.callDate || '',
+          score:        scores[i] || '',
+          memo:         memos[i] || r.callMemo || '',
+        });
+      });
+    });
+  </script>
+</head>
+<body class="bg-white">
+
+<div x-data="{
+  allRows: [],
+  rows: [],
+  orderBy: 'all',
+  keyfield: '',
+  sday: '2026-04-01',
+  eday: '2026-04-15',
+  centerFilter: '',
+  payFilter: '',
+  keyword: '',
+  currentPage: 1,
+  pageSize: 15,
+  init() {
+    this.$nextTick(() => {
+      this.allRows = (window.MOCK && window.MOCK.happycallList) ? MOCK.happycallList : [];
+      this.doSearch();
+    });
+  },
+  doSearch() {
+    this.rows = this.allRows.filter(r => {
+      if (this.centerFilter && r.centerName !== this.centerFilter) return false;
+      if (this.payFilter && r.payType !== this.payFilter) return false;
+      if (this.keyword) {
+        const kw = this.keyword.toLowerCase();
+        const haystack = (r.customerName + r.engineer + r.receiptNo).toLowerCase();
+        if (!haystack.includes(kw)) return false;
+      }
+      return true;
+    });
+    this.currentPage = 1;
+  },
+  get totalCount() { return this.rows.length; },
+  get pagedRows() {
+    const s = (this.currentPage - 1) * this.pageSize;
+    return this.rows.slice(s, s + this.pageSize);
+  },
+  get totalPages() { return Math.max(1, Math.ceil(this.rows.length / this.pageSize)); },
+  goPage(p) { if (p >= 1 && p <= this.totalPages) this.currentPage = p; },
+  happyLabel(s) { return s === 'Y' ? '완료' : '미완료'; },
+  happyClass(s) { return s === 'Y' ? 'happy-y' : 'happy-n'; },
+  payLabel(t) { return t === 'Y' ? '유상' : '무상'; },
+  scoreClass(s) {
+    if (s === '5') return 'score-5';
+    if (s === '4') return 'score-4';
+    if (s === '3') return 'score-3';
+    if (s === '2' || s === '1') return 'score-low';
+    return '';
+  },
+  scoreLabel(s) {
+    const m = { '5': '매우만족', '4': '만족', '3': '보통', '2': '불만', '1': '매우불만' };
+    return m[s] || '-';
+  }
+}" x-init="init()">
+
+  <!-- 페이지 헤더 -->
+  <div class="page-header">
+    <h2>해피콜 리스트</h2>
+    <div class="page-header-btns">
+      <button class="btn-excel" onclick="alert('엑셀 다운로드 (프로토타입)')">엑셀다운</button>
+      <button class="btn-reset" onclick="alert('해피콜 초기화 (프로토타입)')">해피콜초기화</button>
+    </div>
+  </div>
+
+  <!-- 검색바 -->
+  <div class="search-bar">
+    <!-- 정렬 라디오 -->
+    <span class="search-label">정렬</span>
+    <label style="font-size:12px;cursor:pointer;">
+      <input type="radio" x-model="orderBy" value="all" @change="doSearch()"> 전체
+    </label>
+    <label style="font-size:12px;cursor:pointer;">
+      <input type="radio" x-model="orderBy" value="comdate" @change="doSearch()"> 처리일
+    </label>
+
+    <!-- 기간 keyfield -->
+    <select x-model="keyfield" style="width:120px;" @change="doSearch()">
+      <option value="">전체-처리일</option>
+      <option value="T">대상-처리일</option>
+      <option value="N">대상-확인일</option>
+    </select>
+    <input type="text" x-model="sday" style="width:90px;" placeholder="2026-04-01">
+    <span style="color:#666;">~</span>
+    <input type="text" x-model="eday" style="width:90px;" placeholder="2026-04-15">
+
+    <!-- 센터 -->
+    <select x-model="centerFilter" style="width:90px;">
+      <option value="">:: 전체센터 ::</option>
+      <option value="강남지점">강남지점</option>
+      <option value="분당지점">분당지점</option>
+      <option value="서초지점">서초지점</option>
+      <option value="부산지점">부산지점</option>
+      <option value="대전지점">대전지점</option>
+      <option value="광주지점">광주지점</option>
+      <option value="창원지점">창원지점</option>
+      <option value="마포지점">마포지점</option>
+      <option value="수원지점">수원지점</option>
+      <option value="청주지점">청주지점</option>
+    </select>
+
+    <!-- 유상여부 -->
+    <select x-model="payFilter" style="width:70px;">
+      <option value="">전체</option>
+      <option value="Y">유상</option>
+      <option value="N">무상</option>
+    </select>
+
+    <!-- 처리자 키워드 -->
+    <input type="text" x-model="keyword" style="width:160px;" placeholder="처리자 / 고객명 / 접수번호" @keydown.enter="doSearch()">
+
+    <button class="btn-primary" @click="doSearch()">검색</button>
+  </div>
+
+  <!-- 결과 건수 -->
+  <div class="result-bar">
+    총 <span x-text="totalCount" style="color:#6699FF;"></span>건
+    &nbsp;<span style="color:#888;font-weight:normal;">* 접수번호 클릭시 접수내용 확인, 나머지 더블클릭시 해피콜 처리</span>
+  </div>
+
+  <!-- 테이블 -->
+  <div class="tbl-wrap">
+    <table class="svc-tbl">
+      <thead>
+        <tr>
+          <th style="width:45px;">순서</th>
+          <th style="width:90px;">센터명</th>
+          <th style="width:105px;">접수번호</th>
+          <th style="width:105px;">처리번호</th>
+          <th style="width:75px;">고객명</th>
+          <th style="width:110px;">연락처</th>
+          <th style="width:60px;">유상여부</th>
+          <th style="width:70px;">해피콜여부</th>
+          <th style="width:70px;">처리사원</th>
+          <th style="width:90px;">확인일</th>
+          <th style="width:75px;">만족도</th>
+          <th>상담내용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="pagedRows.length === 0">
+          <tr>
+            <td colspan="12" style="text-align:center;padding:20px;color:#999;">검색 결과가 없습니다.</td>
+          </tr>
+        </template>
+        <template x-for="(row, idx) in pagedRows" :key="idx">
+          <tr @dblclick="alert('해피콜 처리: ' + row.receiptNo + ' (프로토타입)')" style="cursor:pointer;" title="더블클릭시 해피콜 처리가 가능합니다.">
+            <!-- 순서 -->
+            <td x-text="(currentPage - 1) * pageSize + idx + 1"></td>
+            <!-- 센터명 -->
+            <td x-text="row.centerName || '-'"></td>
+            <!-- 접수번호 -->
+            <td>
+              <span class="receipt-no-link"
+                    @click.stop="alert('접수내용 확인: ' + row.receiptNo + ' (프로토타입)')"
+                    x-text="row.receiptNo">
+              </span>
+            </td>
+            <!-- 처리번호 -->
+            <td x-text="row.processNo || '-'"></td>
+            <!-- 고객명 -->
+            <td x-text="row.customerName || '-'"></td>
+            <!-- 연락처 -->
+            <td x-text="row.contact || row.mobile || '-'"></td>
+            <!-- 유상여부 -->
+            <td>
+              <span :style="row.payType === 'Y' ? 'color:#5500ff;font-weight:bold;' : 'color:#333;'"
+                    x-text="payLabel(row.payType)">
+              </span>
+            </td>
+            <!-- 해피콜여부 -->
+            <td>
+              <span :class="happyClass(row.happycallYn)" x-text="happyLabel(row.happycallYn)"></span>
+            </td>
+            <!-- 처리사원 -->
+            <td x-text="row.engineer || '-'"></td>
+            <!-- 확인일 -->
+            <td x-text="row.confirmDate || '-'"></td>
+            <!-- 만족도 -->
+            <td>
+              <span x-show="row.score" :class="scoreClass(row.score)" x-text="scoreLabel(row.score)"></span>
+              <span x-show="!row.score" style="color:#bbb;">-</span>
+            </td>
+            <!-- 상담내용 -->
+            <td class="left" x-text="row.memo || ''"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 페이지네이션 -->
+  <div class="pagination">
+    <button class="page-btn" @click="goPage(1)">&laquo;</button>
+    <button class="page-btn" @click="goPage(currentPage - 1)">&lsaquo;</button>
+    <template x-for="p in totalPages" :key="p">
+      <button class="page-btn" :class="{ active: currentPage === p }" @click="goPage(p)" x-text="p"></button>
+    </template>
+    <button class="page-btn" @click="goPage(currentPage + 1)">&rsaquo;</button>
+    <button class="page-btn" @click="goPage(totalPages)">&raquo;</button>
+    <span style="margin-left:8px;font-size:12px;color:#666;">
+      <span x-text="currentPage"></span> / <span x-text="totalPages"></span> 페이지
+    </span>
+  </div>
+
+</div>
+</body>
+</html>

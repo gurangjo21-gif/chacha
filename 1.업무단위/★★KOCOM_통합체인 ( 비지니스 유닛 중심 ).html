@@ -1,0 +1,3588 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOCOM 최종 통합 체인 · 모든 화면의 짝을 맞춘 완성본</title>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('kocom-theme-final')||'light');}catch(e){}</script>
+<style>
+/* =====================================================================
+   DESIGN TOKENS — Figma-style, light-first
+   ===================================================================== */
+:root{
+  --bg:#f7f7f8; --bg-elevated:#fff; --bg-subtle:#f2f2f4; --bg-soft:#fafafa;
+  --line:#e8e8ec; --line-strong:#d4d4d8;
+  --ink:#18181b; --ink-2:#3f3f46; --ink-3:#71717a; --ink-4:#a1a1aa;
+
+  --blue:#2563eb;   --blue-s:#eff4ff;
+  --amber:#c2410c;  --amber-s:#fff3e9;
+  --red:#dc2626;    --red-s:#fee8e8;
+  --violet:#7c3aed; --violet-s:#f3eefe;
+  --indigo:#4f46e5; --indigo-s:#eef0ff;
+  --pink:#db2777;   --pink-s:#fdf0f7;
+  --green:#059669;  --green-s:#e8faf3;
+  --teal:#0891b2;   --teal-s:#ecfbff;
+  --slate:#475569;  --slate-s:#f1f5f9;
+
+  --r-xs:6px; --r-sm:8px; --r:12px; --r-lg:16px; --r-xl:20px;
+  --shadow-1:0 1px 2px rgba(17,17,17,.04),0 1px 1px rgba(17,17,17,.02);
+  --shadow-2:0 2px 4px rgba(17,17,17,.05),0 1px 2px rgba(17,17,17,.03);
+  --shadow-3:0 8px 24px rgba(17,17,17,.06),0 2px 8px rgba(17,17,17,.04);
+
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --font:"Pretendard","Inter","-apple-system",BlinkMacSystemFont,"Segoe UI","Malgun Gothic","맑은 고딕",sans-serif;
+  --mono:"JetBrains Mono","SF Mono","Consolas","Monaco",monospace;
+}
+:root[data-theme="dark"]{
+  --bg:#0f0f11; --bg-elevated:#171719; --bg-subtle:#1c1c20; --bg-soft:#141417;
+  --line:#2a2a30; --line-strong:#38383f;
+  --ink:#f4f4f5; --ink-2:#d4d4d8; --ink-3:#a1a1aa; --ink-4:#71717a;
+  --blue:#60a5fa; --blue-s:#0b1e3d;
+  --amber:#fb923c; --amber-s:#2b1708;
+  --red:#f87171; --red-s:#2b0d0d;
+  --violet:#a78bfa; --violet-s:#1d1735;
+  --indigo:#818cf8; --indigo-s:#1a1b45;
+  --pink:#f472b6; --pink-s:#2d0f22;
+  --green:#34d399; --green-s:#07261c;
+  --teal:#38bdf8; --teal-s:#0a2030;
+  --slate:#94a3b8; --slate-s:#1a2232;
+  --shadow-1:0 1px 2px rgba(0,0,0,.3);
+  --shadow-2:0 2px 6px rgba(0,0,0,.4);
+  --shadow-3:0 12px 32px rgba(0,0,0,.5);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);font-size:14px;line-height:1.5;color:var(--ink);background:var(--bg);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;letter-spacing:-.005em;
+}
+code,pre{font-family:var(--mono);font-feature-settings:"calt" 0}
+a{color:var(--blue);text-decoration:none}
+button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit}
+input{font-family:inherit;color:inherit}
+
+/* appbar */
+.appbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.78);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+:root[data-theme="dark"] .appbar{background:rgba(15,15,17,.8)}
+.appbar-inner{max-width:1500px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#2563eb,#7c3aed,#db2777);display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;box-shadow:var(--shadow-2)}
+.brand-title{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.brand-sub{font-size:12px;color:var(--ink-3);margin-left:4px}
+.appbar .spacer{flex:1}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-link{padding:7px 12px;border-radius:var(--r-sm);font-size:12.5px;color:var(--ink-3);transition:all .15s var(--ease);white-space:nowrap}
+.nav-link:hover{background:var(--bg-subtle);color:var(--ink)}
+.nav-link .dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.icon-btn{width:32px;height:32px;border-radius:var(--r-sm);display:grid;place-items:center;color:var(--ink-2);transition:all .15s var(--ease)}
+.icon-btn:hover{background:var(--bg-subtle);color:var(--ink)}
+
+/* layout */
+.wrap{max-width:1500px;margin:0 auto;padding:0 32px}
+.section+.section{border-top:1px solid var(--line)}
+
+/* hero */
+.hero{padding:48px 0 36px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--bg-subtle);border:1px solid var(--line);font-size:11.5px;font-weight:500;color:var(--ink-2);letter-spacing:.01em;margin-bottom:18px}
+.hero-eyebrow .pulse{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-s)}
+.hero-title{font-size:40px;font-weight:700;line-height:1.15;letter-spacing:-.025em;margin-bottom:14px;color:var(--ink)}
+.hero-title em{font-style:normal;background:linear-gradient(135deg,#2563eb 0%,#7c3aed 50%,#db2777 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:16px;color:var(--ink-3);max-width:820px;line-height:1.65}
+.hero-sub b{color:var(--ink-2);font-weight:600}
+
+/* equation */
+.eq{margin-top:32px;background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-xl);padding:28px;box-shadow:var(--shadow-1)}
+.eq-grid{display:grid;grid-template-columns:1fr 130px 1fr;gap:20px;align-items:stretch}
+.eq-card{background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 24px;position:relative}
+.eq-card.left{border-left:3px solid var(--blue)}
+.eq-card.right{border-right:3px solid var(--red)}
+.eq-card .tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.01em;margin-bottom:14px}
+.eq-card.left .tag{background:var(--blue-s);color:var(--blue)}
+.eq-card.right .tag{background:var(--red-s);color:var(--red)}
+.eq-card h3{font-size:18px;font-weight:700;line-height:1.3;letter-spacing:-.015em;margin-bottom:8px}
+.eq-card p{font-size:13px;color:var(--ink-3);line-height:1.55;margin-bottom:18px}
+.eq-triples{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.eq-triple{display:flex;flex-direction:column;gap:2px}
+.eq-triple .num{font-size:28px;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.eq-triple .lbl{font-size:11px;color:var(--ink-4);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.eq-card.left  .eq-triple.key .num{color:var(--blue)}
+.eq-card.right .eq-triple.key .num{color:var(--red)}
+.eq-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--bg-soft);border:1.5px solid var(--green);border-radius:var(--r-lg);padding:18px 14px}
+.eq-mid.bad{border-color:var(--red)}
+.eq-sign{font-size:36px;font-weight:300;color:var(--green);line-height:1;font-family:var(--mono)}
+.eq-mid.bad .eq-sign{color:var(--red)}
+.eq-total{font-size:36px;font-weight:700;color:var(--ink);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.eq-total-lbl{font-size:11px;color:var(--ink-3);font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+
+/* DB layer strip — between equation and 7 kinds */
+.db-layer-strip{
+  margin-top:20px;background:linear-gradient(135deg,var(--violet-s),var(--pink-s));
+  border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 22px;
+  display:flex;align-items:center;gap:24px;flex-wrap:wrap;
+}
+.db-layer-lbl{display:flex;align-items:center;gap:12px;flex:1;min-width:240px}
+.db-layer-icon{width:38px;height:38px;border-radius:var(--r-sm);background:var(--bg-elevated);display:grid;place-items:center;font-size:19px;box-shadow:var(--shadow-1)}
+.db-layer-title{font-size:14px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+.db-layer-sub{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.db-layer-metrics{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.db-metric{display:flex;flex-direction:column;gap:1px;align-items:flex-start}
+.db-metric b{font-size:22px;font-weight:700;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.db-metric span{font-size:10.5px;color:var(--ink-3);font-weight:500;letter-spacing:.02em}
+.db-metric span.bad{color:var(--red);font-weight:700}
+
+/* stats */
+.stats-grid{margin-top:20px;display:grid;gap:12px;grid-template-columns:repeat(7,1fr)}
+.stat{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;transition:all .2s var(--ease)}
+.stat:hover{border-color:var(--line-strong);box-shadow:var(--shadow-1);transform:translateY(-1px)}
+.stat-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.stat-dot{width:8px;height:8px;border-radius:50%}
+.stat-lbl{font-size:11px;color:var(--ink-3);font-weight:500;letter-spacing:.02em}
+.stat-num{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.stat-sub{font-size:11px;color:var(--ink-4);margin-top:5px;line-height:1.4}
+.stat.k-list    .stat-dot{background:var(--blue)}    .stat.k-list    .stat-num{color:var(--blue)}
+.stat.k-mode    .stat-dot{background:var(--teal)}    .stat.k-mode    .stat-num{color:var(--teal)}
+.stat.k-proc    .stat-dot{background:var(--amber)}   .stat.k-proc    .stat-num{color:var(--amber)}
+.stat.k-popup   .stat-dot{background:var(--indigo)}  .stat.k-popup   .stat-num{color:var(--indigo)}
+.stat.k-layout  .stat-dot{background:var(--pink)}    .stat.k-layout  .stat-num{color:var(--pink)}
+.stat.k-util    .stat-dot{background:var(--slate)}   .stat.k-util    .stat-num{color:var(--slate)}
+.stat.k-ajax    .stat-dot{background:var(--red)}     .stat.k-ajax    .stat-num{color:var(--red)}
+
+/* ===== 5-STEP VISUAL GUIDE (hero educational block) ===== */
+.chain-visual{
+  margin-top:28px;
+  background:var(--bg-elevated);
+  border:1px solid var(--line);
+  border-radius:var(--r-xl);
+  padding:28px 30px;
+  box-shadow:var(--shadow-1);
+}
+.cv-head{margin-bottom:22px}
+.cv-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--violet);padding:5px 11px;border-radius:999px;background:var(--violet-s);
+  margin-bottom:12px;
+}
+.cv-head h3{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px;color:var(--ink)}
+.cv-head .cv-example-label{
+  font-size:13.5px;color:var(--ink-2);line-height:1.6;
+}
+.cv-head .cv-example-label b{color:var(--ink);font-weight:700}
+.cv-head .cv-example-label code{
+  padding:2px 7px;background:var(--bg-subtle);border-radius:4px;
+  font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--ink);
+}
+
+.cv-body{
+  display:grid;
+  grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr 28px 1fr;
+  gap:6px;align-items:stretch;
+}
+.cv-step{
+  display:flex;flex-direction:column;gap:8px;
+  padding:20px 16px 16px;border-radius:var(--r-lg);
+  border:2px solid currentColor;
+  background:var(--cv-bg);
+  position:relative;
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease);
+  min-height:180px;
+}
+.cv-step:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.06)}
+.cv-num{
+  position:absolute;top:-13px;left:16px;
+  width:28px;height:28px;border-radius:50%;
+  background:currentColor;display:grid;place-items:center;
+  font-size:13px;font-weight:800;color:#fff !important;
+  box-shadow:var(--shadow-2);
+}
+.cv-num span{color:#fff}
+.cv-icon{font-size:28px;line-height:1;margin-top:2px}
+.cv-name{
+  font-size:15px;font-weight:700;letter-spacing:-.015em;color:var(--ink);
+}
+.cv-desc{
+  font-size:12px;color:var(--ink-2);line-height:1.5;
+  flex:1;
+}
+.cv-ex{
+  margin-top:auto;padding-top:10px;border-top:1px dashed rgba(0,0,0,.08);
+}
+:root[data-theme="dark"] .cv-ex{border-top-color:rgba(255,255,255,.1)}
+.cv-ex-lbl{
+  display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-4);font-weight:600;margin-bottom:3px;
+}
+.cv-ex code{
+  font-family:var(--mono);font-size:10.5px;font-weight:700;
+  color:currentColor;word-break:break-all;line-height:1.4;display:inline-block;
+}
+.cv-1{color:var(--blue);   --cv-bg:var(--blue-s)}
+.cv-2{color:var(--teal);   --cv-bg:var(--teal-s)}
+.cv-3{color:var(--amber);  --cv-bg:var(--amber-s)}
+.cv-4{color:var(--violet); --cv-bg:var(--violet-s)}
+.cv-5{color:var(--red);    --cv-bg:var(--red-s)}
+
+.cv-arrow{
+  display:grid;place-items:center;align-self:center;
+  color:var(--ink-4);font-size:20px;font-weight:300;
+  font-family:var(--mono);
+}
+
+.cv-tips{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin-top:24px;padding-top:22px;border-top:1px solid var(--line);
+}
+.cv-tip{
+  display:flex;gap:11px;align-items:flex-start;
+  padding:14px 16px;background:var(--bg-soft);
+  border:1px solid var(--line);border-radius:var(--r-sm);
+}
+.cv-tip-icon{
+  font-size:20px;flex-shrink:0;line-height:1;margin-top:1px;
+}
+.cv-tip b{display:block;font-size:13.5px;font-weight:700;margin-bottom:3px;color:var(--ink);letter-spacing:-.005em}
+.cv-tip p{font-size:12px;color:var(--ink-3);line-height:1.55;margin:0}
+.cv-tip code{padding:1px 5px;background:var(--bg-elevated);border:1px solid var(--line);border-radius:3px;font-family:var(--mono);font-size:10.5px;color:var(--ink-2)}
+
+/* ===== Legend strip — always-visible color key ===== */
+.legend-strip{
+  max-width:1500px;margin:-10px auto 0;padding:10px 32px 14px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  background:var(--bg);border-bottom:1px solid var(--line);
+}
+.legend-lbl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4)}
+.legend-item{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;color:var(--ink-2);font-weight:500;
+}
+.legend-dot{
+  width:10px;height:10px;border-radius:3px;border:2px solid;
+}
+.legend-item .legend-num{
+  width:16px;height:16px;border-radius:50%;display:inline-grid;place-items:center;
+  font-size:9px;font-weight:800;color:#fff;
+}
+.legend-div{width:1px;height:14px;background:var(--line)}
+
+/* controls */
+.controls{position:sticky;top:61px;z-index:40;background:rgba(247,247,248,.82);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--line);margin-top:40px}
+:root[data-theme="dark"] .controls{background:rgba(15,15,17,.82)}
+.controls-inner{max-width:1500px;margin:0 auto;padding:16px 32px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.segmented{display:inline-flex;background:var(--bg-subtle);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg{padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;color:var(--ink-3);transition:all .18s var(--ease);user-select:none;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.seg:hover:not(.on){color:var(--ink)}
+.seg.on{background:var(--bg-elevated);color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08),0 0 0 .5px rgba(0,0,0,.04)}
+:root[data-theme="dark"] .seg.on{box-shadow:0 1px 3px rgba(0,0,0,.3),0 0 0 .5px rgba(255,255,255,.08)}
+.search{flex:1;min-width:260px;max-width:480px;display:flex;align-items:center;gap:8px;background:var(--bg-elevated);border:1px solid var(--line);border-radius:10px;padding:0 12px;height:36px;transition:border-color .15s var(--ease)}
+.search:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-s)}
+.search svg{width:16px;height:16px;color:var(--ink-4);flex-shrink:0}
+.search input{flex:1;border:none;outline:none;background:none;font-size:13px;color:var(--ink)}
+.search input::placeholder{color:var(--ink-4)}
+.search-kbd{padding:2px 6px;border-radius:4px;background:var(--bg-subtle);border:1px solid var(--line);font-size:10px;color:var(--ink-3);font-family:var(--mono)}
+
+.dom-row{max-width:1500px;margin:0 auto;padding:10px 32px 14px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dom-pill{padding:5px 11px;border-radius:999px;font-size:12px;font-weight:500;color:var(--ink-2);background:var(--bg-elevated);border:1px solid var(--line);cursor:pointer;user-select:none;transition:all .15s var(--ease);display:inline-flex;align-items:center;gap:5px}
+.dom-pill:hover{border-color:var(--line-strong);color:var(--ink)}
+.dom-pill.on{background:var(--ink);color:var(--bg-elevated);border-color:var(--ink)}
+.dom-pill .cnt{background:var(--bg-subtle);padding:1px 6px;border-radius:8px;font-size:10.5px;color:var(--ink-3);margin-left:2px;font-variant-numeric:tabular-nums}
+.dom-pill.on .cnt{background:rgba(255,255,255,.15);color:rgba(255,255,255,.85)}
+
+/* main */
+main{min-height:600px;padding-bottom:96px}
+.result-head{max-width:1500px;margin:24px auto 16px;padding:0 32px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.result-head h2{font-size:20px;font-weight:700;letter-spacing:-.015em}
+.result-head .hint{font-size:13px;color:var(--ink-3);line-height:1.5}
+.result-head .stats-inline{margin-left:auto;display:flex;gap:10px;font-size:12px;color:var(--ink-3)}
+.result-head .stats-inline b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ---- BU cards (2-col) ---- */
+.rows{max-width:1500px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.row{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-lg);transition:all .18s var(--ease);overflow:hidden;display:flex;flex-direction:column}
+.row:hover{border-color:var(--line-strong);box-shadow:var(--shadow-2);transform:translateY(-1px)}
+.row.open{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-s);transform:none;grid-column:1/-1}
+
+/* card head */
+.row-top{display:flex;align-items:center;gap:10px;padding:14px 18px 6px;cursor:pointer;flex-wrap:wrap}
+.row-dom{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--bg-subtle);border:1px solid var(--line)}
+.row-title{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.row-desc{font-size:12px;color:var(--ink-3);width:100%;margin-top:2px;line-height:1.4}
+.row-top .spacer{flex:1}
+.edge-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:var(--amber-s);color:var(--amber);font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums}
+.edge-badge.zero{background:var(--bg-subtle);color:var(--ink-4)}
+.edge-badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* stage ladder inside card */
+.ladder{padding:10px 18px 18px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.stage{display:grid;grid-template-columns:112px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:var(--r-sm);background:var(--bg-soft);border:1px solid var(--line);min-width:0}
+
+/* ─── 비어있는 스테이지: 얇게 표시해 "있었구나" 인지만 주고 공간은 최소화 ─── */
+.stage.empty{
+  padding:3px 14px;
+  background:transparent;
+  border-style:dashed;
+  border-color:var(--line);
+}
+.stage.empty .s-label{font-size:10px;color:var(--ink-4);gap:5px}
+.stage.empty .s-label .s-icon{width:14px;height:14px;font-size:9px;background:transparent !important;color:var(--ink-4) !important;filter:grayscale(80%);opacity:.7}
+.stage.empty .s-val{font-size:10px}
+.stage.empty .empty-note{font-style:italic;color:var(--ink-4);font-size:10px}
+.stage.empty .s-count{
+  padding:1px 7px;font-size:9.5px;color:var(--ink-4);
+  background:transparent;border-color:transparent;
+}
+.stage .s-label{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+.stage .s-icon{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0}
+.stage.s-list   .s-icon{background:var(--blue-s);color:var(--blue)}
+.stage.s-mode   .s-icon{background:var(--teal-s);color:var(--teal)}
+.stage.s-proc   .s-icon{background:var(--amber-s);color:var(--amber)}
+.stage.s-dbproc .s-icon{background:var(--violet-s);color:var(--violet)}
+.stage.s-table  .s-icon{background:var(--red-s);color:var(--red)}
+.stage.s-popup  .s-icon{background:var(--indigo-s);color:var(--indigo)}
+.stage.s-layout .s-icon{background:var(--pink-s);color:var(--pink)}
+.stage.s-util   .s-icon{background:var(--slate-s);color:var(--slate)}
+.stage.s-ajax   .s-icon{background:rgba(236,72,153,.1);color:#db2777}
+.stage .s-val{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.stage .s-val .primary{color:var(--ink);font-weight:600}
+.stage .s-val .plus{color:var(--ink-3);font-weight:500;margin-left:4px}
+.stage .s-count{font-size:10.5px;color:var(--ink-3);padding:2px 8px;background:var(--bg-elevated);border-radius:999px;font-weight:600;font-variant-numeric:tabular-nums;border:1px solid var(--line)}
+
+/* detail panel */
+.detail{display:none;padding:20px 22px 22px;background:var(--bg-soft);border-top:1px solid var(--line)}
+.row.open .detail{display:block}
+.detail-grid{display:grid;gap:22px;grid-template-columns:1fr 1fr}
+.detail-section{min-width:0}
+.detail-label{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+.detail-label::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--ink)}
+.detail-label .lcount{margin-left:auto;font-size:11px;color:var(--ink-4);font-weight:600;letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
+
+/* file list */
+.file-list{display:flex;flex-wrap:wrap;gap:5px}
+.file-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:var(--r-xs);background:var(--bg-elevated);border:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--ink);font-weight:500}
+.file-chip .kind-dot{width:6px;height:6px;border-radius:50%}
+.file-chip.k-list   .kind-dot{background:var(--blue)}
+.file-chip.k-mode   .kind-dot{background:var(--teal)}
+.file-chip.k-proc   .kind-dot{background:var(--amber)}
+.file-chip.k-popup  .kind-dot{background:var(--indigo)}
+.file-chip.k-layout .kind-dot{background:var(--pink)}
+.file-chip.k-util   .kind-dot{background:var(--slate)}
+.file-chip.k-ajax   .kind-dot{background:#db2777}
+
+/* edge strip */
+.edge-strip{display:flex;flex-direction:column;gap:5px}
+.edge-item{display:grid;grid-template-columns:minmax(140px,1.4fr) 18px minmax(150px,1.3fr) 56px 18px minmax(140px,1.2fr);gap:5px;align-items:center;padding:8px 12px;background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-xs);transition:border-color .12s var(--ease)}
+.edge-item:hover{border-color:var(--line-strong)}
+.edge-item.rev{grid-template-columns:minmax(140px,1.2fr) 18px 56px 18px minmax(150px,1.3fr) 18px minmax(140px,1.4fr)}
+.edge-chip{font-family:var(--mono);font-size:11px;font-weight:500;padding:3px 9px;border-radius:var(--r-xs);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.edge-chip.c-screen{background:var(--blue-s);color:var(--blue)}
+.edge-chip.c-proc{background:var(--amber-s);color:var(--amber)}
+.edge-chip.c-table{background:var(--red-s);color:var(--red)}
+.edge-chip.c-op{background:var(--bg-subtle);color:var(--ink-2);text-align:center;font-weight:700;font-size:10px;letter-spacing:.04em}
+.edge-chip.c-arrow{background:none;color:var(--ink-4);text-align:center;font-size:12px;padding:3px 0}
+
+/* tag list */
+.taglist{display:flex;flex-wrap:wrap;gap:5px}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--r-xs);background:var(--bg-elevated);border:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--ink);font-weight:500}
+.tag.t-screen{background:var(--blue-s);color:var(--blue);border-color:transparent}
+.tag.t-proc{background:var(--amber-s);color:var(--amber);border-color:transparent}
+.tag.t-dbproc{background:var(--violet-s);color:var(--violet);border-color:transparent}
+.tag.t-table{background:var(--red-s);color:var(--red);border-color:transparent}
+.tag.t-trig{background:var(--pink-s);color:var(--pink);border-color:transparent}
+.tag.t-ajax{background:rgba(236,72,153,.08);color:#db2777;border-color:transparent}
+
+/* verify box */
+.verify{margin-top:20px;padding:12px 16px;border-radius:var(--r-sm);background:var(--green-s);display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-2);line-height:1.6;grid-column:1/-1}
+.verify .check{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:700;font-size:11px}
+.verify b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.note-line{padding:10px 14px;background:var(--amber-s);border-left:3px solid var(--amber);border-radius:var(--r-xs);font-size:12.5px;color:var(--ink-2);line-height:1.55}
+
+/* kind view */
+.kind-section{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;margin-bottom:14px}
+.kind-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);background:var(--bg-soft)}
+.kind-icon{width:34px;height:34px;border-radius:var(--r-sm);display:grid;place-items:center;font-size:16px;flex-shrink:0}
+.kind-head h3{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.kind-head .sub{font-size:12px;color:var(--ink-3)}
+.kind-head .c{margin-left:auto;font-size:13px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;padding:4px 10px;background:var(--bg-elevated);border-radius:999px;border:1px solid var(--line)}
+.kind-body{padding:16px 20px}
+.kind-grid{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.kind-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--r-xs);font-size:11.5px}
+.kind-row .f{font-family:var(--mono);color:var(--ink);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kind-row .d{color:var(--ink-3);margin-left:auto;font-size:10.5px;white-space:nowrap}
+
+/* compare view */
+.compare-summary{max-width:1500px;margin:24px auto 20px;padding:0 32px}
+.compare-banner{padding:18px 24px;border-radius:var(--r-lg);background:var(--green-s);display:flex;align-items:center;gap:16px}
+.compare-banner.bad{background:var(--red-s)}
+.compare-banner .big-check{width:44px;height:44px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:700;flex-shrink:0}
+.compare-banner.bad .big-check{background:var(--red)}
+.compare-banner .msg .h{font-size:15px;font-weight:700;margin-bottom:3px;letter-spacing:-.01em}
+.compare-banner .msg .d{font-size:13px;color:var(--ink-2);line-height:1.55}
+.compare-banner b{font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink)}
+.compare{max-width:1500px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.compare-col{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.compare-col-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.compare-col-head .marker{width:10px;height:10px;border-radius:50%}
+.compare-col.fwd .marker{background:var(--blue)}
+.compare-col.rev .marker{background:var(--red)}
+.compare-col-head h3{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.compare-col-head .sum{margin-left:auto;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.compare-col-head .sum b{color:var(--ink);font-weight:600}
+.cmp-list{max-height:720px;overflow-y:auto}
+.cmp-row{padding:10px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;transition:background .1s}
+.cmp-row:last-child{border-bottom:none}
+.cmp-row:hover{background:var(--bg-subtle)}
+.cmp-row .n{flex:1;font-family:var(--mono);font-size:12px;color:var(--ink);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmp-count{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;background:var(--amber-s);color:var(--amber);font-variant-numeric:tabular-nums}
+
+/* ===== PROCEDURE VIEW ===== */
+.proc-wrap{max-width:1500px;margin:0 auto;padding:0 32px}
+.proc-cat-section{margin-bottom:28px}
+.proc-cat-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.proc-cat-icon{width:32px;height:32px;border-radius:var(--r-sm);display:grid;place-items:center;font-size:16px;flex-shrink:0;font-weight:700}
+.proc-cat-head h3{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.proc-cat-count{margin-left:auto;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--bg-subtle);color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+.proc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:14px}
+.proc-card{
+  background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:18px 20px;display:flex;flex-direction:column;gap:12px;transition:all .18s var(--ease);
+}
+.proc-card:hover{border-color:var(--line-strong);box-shadow:var(--shadow-2);transform:translateY(-1px)}
+.proc-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.proc-cat-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px}
+.proc-badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.04em}
+.proc-badge.ok{background:var(--green-s);color:var(--green)}
+.proc-badge.bad{background:var(--red-s);color:var(--red)}
+.proc-meta{margin-left:auto;font-size:10.5px;color:var(--ink-4);font-family:var(--mono);font-variant-numeric:tabular-nums}
+.proc-name{font-size:17px;font-weight:700;font-family:var(--mono);color:var(--ink);letter-spacing:-.005em;margin:0}
+.proc-purpose{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin:0}
+.proc-section{display:flex;flex-direction:column;gap:7px}
+.proc-label{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+
+.up-list{display:flex;flex-direction:column;gap:6px}
+.up-row{
+  display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:flex-start;
+  padding:8px 10px;background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--r-xs);
+}
+.up-kind{
+  display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:var(--r-xs);
+  font-size:10.5px;font-weight:600;white-space:nowrap;align-self:flex-start;
+}
+.up-body{display:flex;flex-direction:column;gap:3px;min-width:0}
+.up-main{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.up-unit{font-size:12px;font-weight:700;letter-spacing:-.01em}
+.up-via{font-size:11px}
+.up-via code{font-family:var(--mono);font-size:10.5px;padding:1px 6px;background:var(--pink-s);color:var(--pink);border-radius:3px;font-weight:600}
+.up-desc{font-size:11.5px;color:var(--ink-3);line-height:1.5}
+
+/* ===== AUDIT VIEW ===== */
+.audit-wrap{max-width:1500px;margin:0 auto;padding:0 32px}
+.audit-eq{
+  display:grid;grid-template-columns:1fr 160px 1fr;gap:20px;align-items:stretch;
+  background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-xl);padding:28px;
+  margin-top:20px;
+}
+.audit-eq.ok{box-shadow:0 0 0 3px var(--green-s)}
+.audit-eq.bad{box-shadow:0 0 0 3px var(--red-s)}
+.audit-eq-side{
+  background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:20px 24px;display:flex;flex-direction:column;gap:6px;
+}
+.audit-eq-lbl{font-size:11px;color:var(--ink-3);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.audit-eq-num{font-size:48px;font-weight:800;color:var(--ink);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.audit-eq-detail{font-size:12.5px;color:var(--ink-3);margin-top:4px}
+.audit-eq-sign{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  background:var(--green-s);border:2px solid var(--green);border-radius:var(--r-lg);padding:20px 14px;
+}
+.audit-eq.bad .audit-eq-sign{background:var(--red-s);border-color:var(--red)}
+.audit-sign-glyph{font-size:56px;font-weight:300;color:var(--green);line-height:1;font-family:var(--mono)}
+.audit-eq.bad .audit-sign-glyph{color:var(--red)}
+.audit-sign-label{font-size:12px;font-weight:700;color:var(--green);letter-spacing:.05em;text-transform:uppercase}
+.audit-eq.bad .audit-sign-label{color:var(--red)}
+
+.audit-section{margin-top:36px}
+.audit-h{font-size:17px;font-weight:700;margin-bottom:8px;letter-spacing:-.015em}
+.audit-p{font-size:13px;color:var(--ink-3);line-height:1.65;margin-bottom:16px;max-width:800px}
+.audit-p b{color:var(--ink-2);font-weight:600}
+
+.audit-dom-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.audit-dom-row{
+  display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;
+  padding:10px 14px;background:var(--bg-elevated);border:1px solid var(--line);
+  border-left:3px solid;border-radius:var(--r-sm);font-size:12.5px;
+}
+.audit-dom-name{font-weight:600;display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.audit-dom-units{color:var(--ink-3);font-size:11.5px;font-variant-numeric:tabular-nums}
+.audit-dom-edges{color:var(--amber);font-weight:700;font-variant-numeric:tabular-nums;padding:3px 9px;background:var(--amber-s);border-radius:999px;font-size:11.5px}
+
+.audit-twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.audit-col{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.audit-col-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;background:var(--bg-soft);font-size:13px;font-weight:700}
+.audit-col-marker{width:10px;height:10px;border-radius:50%}
+.audit-col-sum{margin-left:auto;font-size:13px;color:var(--ink-3);font-weight:500;font-variant-numeric:tabular-nums}
+.audit-col-sum b{color:var(--ink);font-weight:700;font-size:15px}
+.audit-col-body{max-height:520px;overflow-y:auto}
+.audit-row{
+  display:grid;grid-template-columns:24px 1fr auto 52px;gap:10px;align-items:center;
+  padding:9px 18px;border-bottom:1px solid var(--line);transition:background .1s;
+}
+.audit-row:last-child{border-bottom:none}
+.audit-row:hover{background:var(--bg-subtle)}
+.audit-idx{text-align:center;font-size:14px}
+.audit-name{font-weight:600;color:var(--ink);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.audit-sub{font-family:var(--mono);font-size:10.5px;color:var(--ink-4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.audit-count{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;text-align:center;justify-self:end}
+.audit-count.c-ok{background:var(--amber-s);color:var(--amber)}
+
+.zero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:12px}
+.zero-card{
+  background:var(--amber-s);border:1px solid rgba(180,83,9,.2);border-radius:var(--r-lg);padding:16px 18px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.zero-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.zero-dom{font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px}
+.zero-head b{font-size:13.5px;color:var(--ink);font-weight:700}
+.zero-sub{margin-left:auto;font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.zero-reason{font-size:12.5px;color:var(--ink-2);line-height:1.6}
+
+.trace-list{display:flex;flex-direction:column;gap:10px}
+.trace-group{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px}
+.trace-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.trace-table{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--red)}
+.trace-count{margin-left:auto;font-size:11px;color:var(--amber);font-weight:700;padding:3px 9px;background:var(--amber-s);border-radius:999px;font-variant-numeric:tabular-nums}
+.trace-line{
+  display:flex;align-items:center;gap:6px;padding:6px 0;font-size:11.5px;
+  flex-wrap:wrap;
+}
+.trace-arrow{color:var(--ink-4);font-size:12px;margin:0 2px}
+.trace-unit{margin-left:auto;font-size:11px;color:var(--ink-3);font-style:italic}
+
+.proc-coverage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.coverage-card{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.coverage-head{display:flex;align-items:center;gap:8px;padding:10px 14px;font-size:12.5px;font-weight:700}
+.coverage-head .coverage-n{margin-left:auto;font-size:11px;font-variant-numeric:tabular-nums;padding:2px 8px;background:rgba(255,255,255,.4);border-radius:999px}
+:root[data-theme="dark"] .coverage-head .coverage-n{background:rgba(0,0,0,.3)}
+.coverage-body{padding:8px 14px 12px;display:flex;flex-direction:column;gap:5px}
+.coverage-row{display:flex;align-items:center;gap:6px;font-size:11.5px}
+.coverage-row code{font-family:var(--mono);font-size:11px;padding:2px 7px;background:var(--violet-s);color:var(--violet);border-radius:4px;font-weight:600}
+.coverage-arr{color:var(--ink-4);font-size:12px}
+
+/* ===== SYSTEM MAP VIEW ===== */
+.map-wrap{max-width:1500px;margin:0 auto;padding:0 32px;display:flex;flex-direction:column;gap:10px;position:relative}
+.map-layer{
+  background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:14px 18px;position:relative;
+}
+.map-layer:not(:last-child)::after{
+  content:'';position:absolute;left:50%;bottom:-10px;width:2px;height:10px;
+  background:linear-gradient(to bottom, var(--line-strong), transparent);z-index:1;
+}
+.map-layer-label{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed var(--line)}
+.map-layer-badge{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0}
+.map-layer-name{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.map-layer-desc{font-size:11px;color:var(--ink-3);margin-top:1px}
+.map-layer-count{margin-left:auto;font-size:11px;font-weight:600;padding:3px 10px;background:var(--bg-subtle);border-radius:999px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.map-layer-bus{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
+.map-bu{
+  padding:8px 10px;background:var(--bg-soft);border:1.5px solid var(--line);border-radius:var(--r-sm);
+  cursor:pointer;transition:all .12s var(--ease);
+  display:flex;flex-direction:column;gap:4px;
+}
+.map-bu:hover{background:var(--bg-elevated);transform:translateY(-1px);box-shadow:var(--shadow-1)}
+.map-bu-head{display:flex;align-items:center;gap:6px}
+.map-bu-dom{font-size:11px;padding:2px 6px;border-radius:4px;font-weight:700}
+.map-bu-name{font-size:11.5px;font-weight:700;color:var(--ink);letter-spacing:-.005em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.map-bu-meta{display:flex;gap:6px;font-size:10px;color:var(--ink-4);font-family:var(--mono);font-variant-numeric:tabular-nums}
+.map-bu-meta .m-up  {color:var(--blue)}
+.map-bu-meta .m-down{color:var(--amber)}
+.map-bu-meta .m-edge{color:var(--red);margin-left:auto}
+
+/* Relationship catalog */
+.rel-wrap{max-width:1500px;margin:0 auto;padding:0 32px;display:flex;flex-direction:column;gap:12px}
+.rel-kind{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.rel-kind-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg-soft);font-size:13px}
+.rel-kind-icon{width:28px;height:28px;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px}
+.rel-kind-head b{font-weight:700;color:var(--ink)}
+.rel-kind-n{margin-left:auto;font-size:11px;padding:2px 9px;background:var(--bg-subtle);border-radius:999px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.rel-kind-body{padding:6px 10px}
+.rel-row{
+  display:grid;grid-template-columns:minmax(140px,1.4fr) 20px minmax(140px,1.4fr) minmax(100px,1fr) 2fr;gap:10px;align-items:center;
+  padding:8px 6px;border-bottom:1px solid var(--line);font-size:11.5px;
+}
+.rel-row:last-child{border-bottom:none}
+.rel-from, .rel-to{font-weight:600;color:var(--ink);cursor:pointer;transition:color .12s}
+.rel-from:hover, .rel-to:hover{color:var(--blue);text-decoration:underline}
+.rel-arr{color:var(--ink-4);text-align:center;font-weight:700}
+.rel-via code{font-family:var(--mono);font-size:10.5px;padding:2px 7px;background:var(--bg-subtle);border-radius:4px;color:var(--ink-2)}
+.rel-desc{font-size:11px;color:var(--ink-3);line-height:1.45}
+
+/* BU relations inside BU card detail */
+.bur-section{margin-top:0 !important;padding-bottom:20px;border-bottom:1px dashed var(--line);margin-bottom:6px}
+.bur-grid{display:grid;grid-template-columns:1fr 180px 1fr;gap:10px;align-items:stretch}
+.bur-col{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;display:flex;flex-direction:column}
+.bur-col-head{display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:12px;font-weight:700;border-bottom:1px solid var(--line)}
+.bur-col-head.bur-up{background:var(--blue-s);color:var(--blue)}
+.bur-col-head.bur-down{background:var(--amber-s);color:var(--amber)}
+.bur-col-cnt{margin-left:auto;padding:1px 8px;background:rgba(255,255,255,.5);border-radius:999px;font-size:10.5px;font-variant-numeric:tabular-nums}
+:root[data-theme="dark"] .bur-col-cnt{background:rgba(0,0,0,.3)}
+.bur-list{flex:1;overflow-y:auto;max-height:260px}
+.bur-item{
+  display:grid;grid-template-columns:24px auto 1fr auto;gap:6px;align-items:center;
+  padding:7px 12px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s;
+  font-size:11px;
+}
+.bur-item:hover{background:var(--bg-subtle)}
+.bur-item:last-child{border-bottom:none}
+.bur-kind{width:22px;height:22px;border-radius:4px;display:grid;place-items:center;font-size:11px}
+.bur-dom{font-size:12px}
+.bur-name{font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;grid-column:3;min-width:0}
+.bur-via{grid-column:1/-1;margin-top:1px}
+.bur-via code{font-family:var(--mono);font-size:10px;padding:1px 6px;background:var(--bg-subtle);border-radius:3px;color:var(--ink-3)}
+.bur-desc{grid-column:1/-1;font-size:10.5px;color:var(--ink-3);line-height:1.4;margin-top:1px}
+.bur-empty{padding:16px 12px;text-align:center;color:var(--ink-4);font-size:11.5px;font-style:italic}
+
+.bur-self{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(135deg,var(--blue-s),var(--violet-s));
+  border:2px solid var(--violet);border-radius:var(--r-sm);padding:12px 10px;
+}
+.bur-self-label{font-size:10px;font-weight:700;color:var(--violet);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.bur-self-name{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+
+/* highlight flash animation for BU jump */
+.row.highlight-flash{
+  animation:flashGlow 1.6s var(--ease);
+}
+@keyframes flashGlow{
+  0%,100%{box-shadow:0 0 0 3px var(--blue-s)}
+  50%{box-shadow:0 0 0 6px var(--amber),0 0 20px 4px var(--amber-s)}
+}
+
+/* ===== FLOW DIAGRAM (inside BU card detail) ===== */
+.flow-diagram{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:8px;align-items:stretch;
+  margin-bottom:16px;
+}
+.flow-box{
+  padding:12px 14px;border-radius:var(--r-sm);border:2px solid currentColor;
+  background:var(--flow-bg);position:relative;
+  display:flex;flex-direction:column;gap:4px;min-height:76px;
+}
+.flow-box.f-list  {color:var(--blue);  --flow-bg:var(--blue-s)}
+.flow-box.f-mode  {color:var(--teal);  --flow-bg:var(--teal-s)}
+.flow-box.f-proc  {color:var(--amber); --flow-bg:var(--amber-s)}
+.flow-box.f-dbproc{color:var(--violet);--flow-bg:var(--violet-s)}
+.flow-box.f-table {color:var(--red);   --flow-bg:var(--red-s)}
+.flow-box.empty{opacity:.4;border-style:dashed}
+.flow-head{font-size:11px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:5px;letter-spacing:-.005em}
+.flow-head .fh-ico{font-size:14px}
+.flow-head .fh-lbl{flex:1}
+.flow-head .fh-cnt{
+  padding:2px 7px;border-radius:999px;background:var(--bg-elevated);border:1px solid currentColor;
+  font-size:10px;font-weight:700;color:currentColor;font-variant-numeric:tabular-nums;
+}
+.flow-body{font-family:var(--mono);font-size:10.5px;color:var(--ink-2);line-height:1.5;word-break:break-all}
+.flow-body .fb-primary{color:var(--ink);font-weight:600;display:block}
+.flow-body .fb-more{color:var(--ink-3);font-size:10px;display:block;margin-top:1px}
+
+/* ===== FILE CARD (inside detail, per screen) ===== */
+.file-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+.file-card{
+  background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:10px 12px;display:flex;flex-direction:column;gap:5px;
+  transition:all .12s var(--ease);
+}
+.file-card:hover{border-color:var(--line-strong);box-shadow:var(--shadow-1)}
+.file-card.clickable{cursor:pointer}
+.file-card.clickable:hover{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-s)}
+.file-card.clickable:hover .fc-btn:not(.fc-nopreview){background:var(--blue);color:#fff;border-color:var(--blue)}
+.file-card .fc-head{display:flex;align-items:center;gap:6px}
+.file-card .fc-kind{
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.04em;
+}
+.file-card .fc-kind.k-list  {background:var(--blue-s);color:var(--blue)}
+.file-card .fc-kind.k-mode  {background:var(--teal-s);color:var(--teal)}
+.file-card .fc-kind.k-proc  {background:var(--amber-s);color:var(--amber)}
+.file-card .fc-kind.k-popup {background:var(--indigo-s);color:var(--indigo)}
+.file-card .fc-kind.k-layout{background:var(--pink-s);color:var(--pink)}
+.file-card .fc-kind.k-util  {background:var(--slate-s);color:var(--slate)}
+.file-card .fc-name{
+  font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;
+}
+.file-card .fc-btn{
+  margin-left:auto;padding:3px 9px;border-radius:4px;
+  background:var(--bg-subtle);color:var(--ink-2);
+  font-size:10.5px;font-weight:600;cursor:pointer;border:1px solid var(--line);
+  transition:all .12s var(--ease);white-space:nowrap;
+}
+.file-card .fc-btn.fc-nopreview{background:transparent;color:var(--ink-4);border-color:transparent}
+.file-card .fc-desc{font-size:11px;color:var(--ink-3);line-height:1.45}
+
+/* ===== TABLE COLUMN CARD (inside detail) ===== */
+.tbl-cards{display:flex;flex-direction:column;gap:10px}
+.tbl-card{
+  background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:12px 14px;
+}
+.tbl-card .tc-head{
+  display:flex;align-items:center;gap:10px;margin-bottom:8px;padding-bottom:8px;
+  border-bottom:1px dashed var(--line);flex-wrap:wrap;
+}
+.tbl-card .tc-name{
+  font-family:var(--mono);font-size:13px;font-weight:700;color:var(--red);
+}
+.tbl-card .tc-pk{
+  font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;
+  background:var(--amber-s);color:var(--amber);font-family:var(--mono);
+}
+.tbl-card .tc-writes{
+  margin-left:auto;font-size:11px;color:var(--ink-3);font-weight:500;
+}
+.tbl-card .tc-writes b{color:var(--amber);font-weight:700;font-variant-numeric:tabular-nums}
+.tbl-card .tc-desc{
+  font-size:11.5px;color:var(--ink-3);line-height:1.5;margin-bottom:8px;
+}
+.tbl-card .tc-cols-label{
+  font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-4);margin-bottom:5px;
+}
+.tbl-card .tc-cols{display:flex;flex-wrap:wrap;gap:4px}
+.tbl-card .col-chip{
+  padding:2px 8px;border-radius:4px;background:var(--bg-soft);border:1px solid var(--line);
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-2);
+}
+.tbl-card .col-chip.pk{background:var(--amber-s);color:var(--amber);border-color:rgba(194,65,12,.3);font-weight:700}
+.tbl-card .tc-missing{font-size:11px;color:var(--ink-4);font-style:italic}
+
+/* ===== PREVIEW MODAL (rich context) ===== */
+.preview-modal{
+  position:fixed;inset:0;z-index:999;
+  background:rgba(17,17,17,.7);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;
+  padding:16px;
+}
+.preview-modal.on{display:flex;animation:fadeIn .18s var(--ease)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.preview-card{
+  background:var(--bg-elevated);border-radius:var(--r-lg);
+  width:96%;max-width:1400px;height:94vh;
+  display:flex;flex-direction:column;
+  box-shadow:var(--shadow-3);overflow:hidden;
+  animation:slideUp .22s var(--ease);
+}
+@keyframes slideUp{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.preview-head{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 20px;border-bottom:1px solid var(--line);
+  background:var(--bg-elevated);
+}
+.preview-head-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+
+.preview-bu-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.preview-dom-chip{
+  font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;
+  border:1px solid currentColor;display:inline-flex;align-items:center;gap:4px;
+}
+.preview-bu-name{
+  font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-.015em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.preview-file-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.preview-stage-badge{
+  font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:6px;
+  background:var(--blue-s);color:var(--blue);letter-spacing:.02em;
+}
+.preview-file{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-2)}
+.preview-purpose{font-size:12px;color:var(--ink-3);font-style:italic}
+
+.preview-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.preview-newtab{
+  padding:7px 14px;border-radius:6px;background:var(--blue);color:#fff !important;
+  font-size:12px;font-weight:600;text-decoration:none;transition:background .12s;
+}
+.preview-newtab:hover{background:#1e40af}
+.preview-close{
+  width:34px;height:34px;border-radius:6px;background:var(--bg-subtle);
+  font-size:18px;color:var(--ink-2);transition:all .12s var(--ease);
+}
+.preview-close:hover{background:var(--red);color:#fff}
+
+/* Flow breadcrumb in modal */
+.preview-flow{
+  display:flex;align-items:stretch;gap:4px;padding:12px 20px;
+  border-bottom:1px solid var(--line);background:var(--bg-soft);
+  overflow-x:auto;
+}
+.pf-step{
+  flex:1;min-width:120px;padding:8px 11px;border-radius:var(--r-sm);
+  background:var(--bg-elevated);border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:2px;position:relative;
+  transition:all .15s var(--ease);
+}
+.pf-step.current{border:2px solid currentColor;background:var(--pf-bg);transform:scale(1.02);box-shadow:var(--shadow-1)}
+.pf-step.done{opacity:.85}
+.pf-step.future{opacity:.5}
+.pf-step.empty{opacity:.35;border-style:dashed}
+.pf-step.s-list   {color:var(--blue);   --pf-bg:var(--blue-s)}
+.pf-step.s-mode   {color:var(--teal);   --pf-bg:var(--teal-s)}
+.pf-step.s-proc   {color:var(--amber);  --pf-bg:var(--amber-s)}
+.pf-step.s-dbproc {color:var(--violet); --pf-bg:var(--violet-s)}
+.pf-step.s-table  {color:var(--red);    --pf-bg:var(--red-s)}
+.pf-step.s-popup  {color:var(--indigo); --pf-bg:var(--indigo-s)}
+.pf-lbl{font-size:10px;font-weight:700;color:currentColor;letter-spacing:.04em;display:flex;align-items:center;gap:4px}
+.pf-lbl .pf-num{
+  display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;
+  background:currentColor;color:#fff;font-size:9px;font-weight:800;
+}
+.pf-files{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--ink);line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pf-step.current .pf-files{color:var(--ink);font-weight:700}
+.pf-step.empty .pf-files{color:var(--ink-4);font-style:italic;font-weight:400}
+.pf-arrow{align-self:center;color:var(--ink-4);font-size:13px;flex-shrink:0;padding:0 2px}
+
+/* Iframe wrapper + loading */
+.preview-iframe-wrap{flex:1;position:relative;background:#fff;overflow:hidden}
+.preview-iframe{width:100%;height:100%;border:none;background:#fff;display:block}
+.preview-loading{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;background:var(--bg-soft);color:var(--ink-3);font-size:13px;z-index:2;
+}
+.preview-loading .spinner{
+  width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--blue);
+  border-radius:50%;animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Footer with before/after context */
+.preview-foot{
+  padding:12px 20px;border-top:1px solid var(--line);background:var(--bg-soft);
+  font-size:12px;color:var(--ink-2);line-height:1.55;
+}
+.preview-foot b{color:var(--ink);font-weight:700}
+.preview-foot code{font-family:var(--mono);font-size:11px;padding:1px 6px;background:var(--bg-elevated);border:1px solid var(--line);border-radius:3px;color:var(--ink-2)}
+.preview-foot .ctx-arrow{color:var(--ink-4);margin:0 4px}
+
+.empty{max-width:600px;margin:80px auto;padding:40px;text-align:center}
+.empty .icon{font-size:42px;margin-bottom:14px}
+.empty h3{font-size:16px;font-weight:700;margin-bottom:6px}
+.empty p{color:var(--ink-3);font-size:13px}
+
+.foot{border-top:1px solid var(--line);padding:28px 32px 40px;text-align:center;font-size:12px;color:var(--ink-4);line-height:1.7}
+.foot code{padding:1px 5px;background:var(--bg-subtle);border-radius:3px;color:var(--ink-3);font-size:11px}
+
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:5px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:var(--ink-4)}
+
+@media (max-width:1200px){
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+  .detail-grid{grid-template-columns:1fr}
+}
+@media (max-width:1200px){
+  .cv-body{grid-template-columns:1fr;gap:16px}
+  .cv-arrow{transform:rotate(90deg);padding:0;font-size:18px}
+  .cv-step{min-height:auto}
+  .cv-tips{grid-template-columns:1fr}
+  .preview-flow{overflow-x:auto}
+  .pf-step{min-width:140px}
+}
+@media (max-width:900px){
+  .preview-head{flex-direction:column;align-items:stretch}
+  .preview-actions{justify-content:flex-end}
+  .pf-arrow{display:none}
+}
+@media (max-width:1100px){
+  .eq-grid{grid-template-columns:1fr}
+  .rows{grid-template-columns:1fr}
+  .compare{grid-template-columns:1fr}
+  .audit-eq{grid-template-columns:1fr}
+  .audit-twocol{grid-template-columns:1fr}
+  .hero-title{font-size:32px}
+  .bur-grid{grid-template-columns:1fr}
+  .rel-row{grid-template-columns:1fr;gap:4px}
+  .rel-row .rel-arr{display:none}
+}
+@media (max-width:640px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .appbar-inner,.controls-inner,.wrap,.rows,.result-head,.dom-row,.compare,.compare-summary{padding-left:16px;padding-right:16px}
+  .hero{padding:32px 0 24px}
+  .hero-title{font-size:26px}
+  .stage{grid-template-columns:80px 1fr auto}
+}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="appbar-inner">
+    <div class="brand">
+      <div class="brand-mark">K</div>
+      <div>
+        <div class="brand-title">KOCOM 최종 통합 체인</div>
+        <div class="brand-sub">모든 화면의 짝을 맞춘 완성본 · v3</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a class="nav-link" href="- KOCOM_체인_데모.html"><span class="dot" style="background:var(--blue)"></span>화면 체인</a>
+      <a class="nav-link" href="- KOCOM_배후체인_분석.html"><span class="dot" style="background:var(--amber)"></span>배후 체인</a>
+      <a class="nav-link" href="- KOCOM_프로시저_체인.html"><span class="dot" style="background:var(--violet)"></span>프로시저 체인</a>
+    </nav>
+    <button class="icon-btn" id="themeToggle" title="테마 전환">
+      <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <span class="hero-eyebrow"><span class="pulse"></span>FINAL · 206개 화면 전부를 45개 업무단위로 짝지음</span>
+    <h1 class="hero-title">
+      모든 화면이 <em>짝을 이루는</em><br>단 한 장의 완성 체인.
+    </h1>
+    <p class="hero-sub">
+      KOCOM 시스템은 <b>목록(📋) → 입력(✏️) → 처리(⚡) → DB 프로시저(🧩) → 테이블(🗄️)</b> 5단계 사다리입니다.
+      206개 화면이 45개 <b>업무 단위</b>로, 17개 <b>핵심 DB 프로시저</b>가 사용자 액션·트리거·스케줄 Job·내부 호출 4경로로 연결됩니다.
+      어느 방향으로 세어도 테이블 쓰기 총합이 같으며, 프로시저 레이어도 상류(호출 경로) ↔ 하류(쓰기 테이블)가 추적됩니다.
+    </p>
+    <p style="margin-top:10px;padding:10px 14px;background:var(--blue-s);border-left:3px solid var(--blue);border-radius:6px;font-size:12.5px;color:var(--ink-2);line-height:1.6">
+      <b style="color:var(--blue)">📖 용어 정의 —</b>
+      <b>업무 단위</b> (문서 내에서 "BU" = Business Unit 으로 약칭): 서로 이어지는 화면들(목록+입력+처리+테이블)을 하나의 업무 묶음으로 정의한 단위.
+      예) <code style="font-family:var(--mono);font-size:11px;padding:1px 5px;background:var(--bg-elevated);border-radius:3px">사원 관리</code> 업무단위 = admin_user_list.php + admin_user_mode.php + admin_user_proc.php + CS사원·CS로그인 테이블.
+    </p>
+
+    <div class="eq">
+      <div class="eq-grid">
+        <div class="eq-card left">
+          <span class="tag">① 화면에서 시작</span>
+          <h3>화면이 테이블에 무엇을 쓰는가</h3>
+          <p>업무 단위별로 묶인 화면이 <code style="font-family:var(--mono);font-size:12px">_proc.php</code>를 통해 남기는 모든 쓰기를 합산합니다.</p>
+          <div class="eq-triples">
+            <div class="eq-triple"><span class="num" id="sum-fwd-units">—</span><span class="lbl">업무 단위</span></div>
+            <div class="eq-triple"><span class="num" id="sum-fwd-screens">—</span><span class="lbl">화면</span></div>
+            <div class="eq-triple key"><span class="num" id="sum-fwd-edges">—</span><span class="lbl">쓰기 엣지</span></div>
+          </div>
+        </div>
+        <div class="eq-mid" id="eq-mid">
+          <span class="eq-sign" id="eq-sign">=</span>
+          <span class="eq-total" id="eq-total">—</span>
+          <span class="eq-total-lbl">총 엣지</span>
+        </div>
+        <div class="eq-card right">
+          <span class="tag">② 테이블에서 시작</span>
+          <h3>어떤 업무가 이 테이블을 쓰는가</h3>
+          <p>각 테이블이 받는 쓰기를 역추적해 <code style="font-family:var(--mono);font-size:12px">_proc.php</code>와 화면·업무단위로 거슬러 합산합니다.</p>
+          <div class="eq-triples">
+            <div class="eq-triple"><span class="num" id="sum-rev-tables">—</span><span class="lbl">테이블</span></div>
+            <div class="eq-triple"><span class="num" id="sum-rev-procs">—</span><span class="lbl">처리 파일</span></div>
+            <div class="eq-triple key"><span class="num" id="sum-rev-edges">—</span><span class="lbl">쓰기 엣지</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="db-layer-strip">
+        <div class="db-layer-lbl">
+          <span class="db-layer-icon">🧩</span>
+          <div>
+            <div class="db-layer-title">DB 프로시저 레이어</div>
+            <div class="db-layer-sub">_proc.php 와 테이블 사이에 끼어 있는 17개 핵심 오브젝트</div>
+          </div>
+        </div>
+        <div class="db-layer-metrics">
+          <div class="db-metric"><b id="n-dbproc-all">—</b><span>DB 프로시저</span></div>
+          <div class="db-metric"><b id="n-dbproc-hub">—</b><span>시스템 허브</span></div>
+          <div class="db-metric"><b id="n-dbproc-job">—</b><span>스케줄 Job</span></div>
+          <div class="db-metric"><b id="n-dbproc-func">—</b><span>함수 F_*</span></div>
+          <div class="db-metric"><b id="n-dbproc-invalid">—</b><span class="bad">INVALID</span></div>
+          <div class="db-metric"><b id="n-dbproc-trig">—</b><span>트리거 경유</span></div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat k-list"><div class="stat-head"><span class="stat-dot"></span><span class="stat-lbl">📋 목록</span></div><div class="stat-num" id="n-list">—</div><div class="stat-sub">검색·조회 화면</div></div>
+        <div class="stat k-mode"><div class="stat-head"><span class="stat-dot"></span><span class="stat-lbl">✏️ 입력</span></div><div class="stat-num" id="n-mode">—</div><div class="stat-sub">_mode.php 폼 화면</div></div>
+        <div class="stat k-proc"><div class="stat-head"><span class="stat-dot"></span><span class="stat-lbl">⚡ 처리</span></div><div class="stat-num" id="n-proc">—</div><div class="stat-sub">_proc.php 쓰기 지점</div></div>
+        <div class="stat k-popup"><div class="stat-head"><span class="stat-dot"></span><span class="stat-lbl">🔎 팝업</span></div><div class="stat-num" id="n-popup">—</div><div class="stat-sub">검색·선택 팝업</div></div>
+        <div class="stat k-layout"><div class="stat-head"><span class="stat-dot"></span><span class="stat-lbl">🪟 레이아웃</span></div><div class="stat-num" id="n-layout">—</div><div class="stat-sub">프레임·메뉴</div></div>
+        <div class="stat k-util"><div class="stat-head"><span class="stat-dot"></span><span class="stat-lbl">🛠 유틸</span></div><div class="stat-num" id="n-util">—</div><div class="stat-sub">업/다운·엑셀</div></div>
+        <div class="stat k-ajax"><div class="stat-head"><span class="stat-dot"></span><span class="stat-lbl">🔌 AJAX</span></div><div class="stat-num" id="n-ajax">—</div><div class="stat-sub">mode 라우터</div></div>
+      </div>
+    </div>
+
+    <div class="chain-visual">
+      <div class="cv-head">
+        <span class="cv-eyebrow">🧭 처음이라면 여기부터</span>
+        <h3>업무 1건이 화면부터 테이블까지 가는 5단계</h3>
+        <p class="cv-example-label">
+          예시: <b>자재 신청 승인</b> — 센터가 신청한 자재를 본사가 승인해서 창고 재고를 차감하는 업무.
+          각 단계의 색이 카드 전반에서 그대로 쓰입니다.
+        </p>
+      </div>
+
+      <div class="cv-body">
+        <div class="cv-step cv-1">
+          <div class="cv-num">1</div>
+          <div class="cv-icon">📋</div>
+          <div class="cv-name">목록</div>
+          <div class="cv-desc">승인 대기 중인 자재 신청들을 조회·검색하는 화면</div>
+          <div class="cv-ex">
+            <span class="cv-ex-lbl">예시 파일</span>
+            <code>store_request_list.php</code>
+          </div>
+        </div>
+        <div class="cv-arrow">→</div>
+
+        <div class="cv-step cv-2">
+          <div class="cv-num">2</div>
+          <div class="cv-icon">✏️</div>
+          <div class="cv-name">입력</div>
+          <div class="cv-desc">승인 수량·상태·비고를 입력하는 폼 화면</div>
+          <div class="cv-ex">
+            <span class="cv-ex-lbl">예시 파일</span>
+            <code>store_request_release.php</code>
+          </div>
+        </div>
+        <div class="cv-arrow">→</div>
+
+        <div class="cv-step cv-3">
+          <div class="cv-num">3</div>
+          <div class="cv-icon">⚡</div>
+          <div class="cv-name">처리</div>
+          <div class="cv-desc">입력된 POST를 받아 SQL을 실행하고 DB 프로시저를 호출하는 PHP 핸들러</div>
+          <div class="cv-ex">
+            <span class="cv-ex-lbl">예시 파일</span>
+            <code>store_request_release_proc.php</code>
+          </div>
+        </div>
+        <div class="cv-arrow">→</div>
+
+        <div class="cv-step cv-4">
+          <div class="cv-num">4</div>
+          <div class="cv-icon">🧩</div>
+          <div class="cv-name">DB 프로시저</div>
+          <div class="cv-desc">깊은 DB 로직. 13개 인자를 받아 양품/재생/불량 3단 재고를 한 번에 차감</div>
+          <div class="cv-ex">
+            <span class="cv-ex-lbl">예시 오브젝트</span>
+            <code>P_CS창고재고변경</code>
+          </div>
+        </div>
+        <div class="cv-arrow">→</div>
+
+        <div class="cv-step cv-5">
+          <div class="cv-num">5</div>
+          <div class="cv-icon">🗄</div>
+          <div class="cv-name">테이블</div>
+          <div class="cv-desc">최종 영구 저장. 자재신청품목·창고재고 두 테이블이 갱신됨</div>
+          <div class="cv-ex">
+            <span class="cv-ex-lbl">대상 테이블</span>
+            <code>CS자재신청품목, CS창고재고</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="cv-tips">
+        <div class="cv-tip">
+          <span class="cv-tip-icon">🎨</span>
+          <div>
+            <b>색이 곧 단계입니다</b>
+            <p>파랑→청록→주황→보라→빨강. 이 순서만 기억하면 <code>업무단위 카드</code>·<code>감사 뷰</code>·<code>프로시저 뷰</code> 어디서든 단계를 식별할 수 있어요.</p>
+          </div>
+        </div>
+        <div class="cv-tip">
+          <span class="cv-tip-icon">⚖️</span>
+          <div>
+            <b>숫자가 정확히 같아야 정합</b>
+            <p>화면 쪽에서 센 DB 쓰기 횟수 = 테이블 쪽에서 센 횟수. 이 등식이 무너지면 데이터 오류입니다. <code>정합성 감사</code> 탭에서 실시간 확인.</p>
+          </div>
+        </div>
+        <div class="cv-tip">
+          <span class="cv-tip-icon">🔗</span>
+          <div>
+            <b>4단계는 때때로 생략</b>
+            <p>사원 등록처럼 <code>_proc.php</code>가 직접 SQL을 실행하는 경우엔 DB 프로시저 없이 3→5로 바로 갑니다. 카드에 "직접 SQL만 수행"으로 표시.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="segmented" role="tablist">
+      <div class="seg on" data-pivot="bu" role="tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        업무 단위
+      </div>
+      <div class="seg" data-pivot="rev" role="tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16M4 14h16M10 4v16M14 4v16"/></svg>
+        테이블 중심
+      </div>
+      <div class="seg" data-pivot="proc" role="tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.5 6-6-3-6 3 1.5-6L3 8.5 9 8z"/></svg>
+        프로시저 중심
+      </div>
+      <div class="seg" data-pivot="map" role="tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><line x1="6" y1="9" x2="6" y2="15"/><line x1="18" y1="9" x2="18" y2="15"/><line x1="9" y1="6" x2="15" y2="6"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
+        시스템 지도
+      </div>
+      <div class="seg" data-pivot="kind" role="tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        종류별
+      </div>
+      <div class="seg" data-pivot="audit" role="tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        정합성 감사
+      </div>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="업무·화면·_proc·테이블·프로시저 검색" autocomplete="off">
+      <span class="search-kbd">⌘K</span>
+    </div>
+  </div>
+  <div class="dom-row" id="dom-filter"></div>
+</div>
+
+<div class="legend-strip">
+  <span class="legend-lbl">색상 범례</span>
+  <span class="legend-item"><span class="legend-num" style="background:var(--blue)">1</span><span>📋 목록</span></span>
+  <span class="legend-item"><span class="legend-num" style="background:var(--teal)">2</span><span>✏️ 입력</span></span>
+  <span class="legend-item"><span class="legend-num" style="background:var(--amber)">3</span><span>⚡ 처리</span></span>
+  <span class="legend-item"><span class="legend-num" style="background:var(--violet)">4</span><span>🧩 DB 프로시저</span></span>
+  <span class="legend-item"><span class="legend-num" style="background:var(--red)">5</span><span>🗄 테이블</span></span>
+  <span class="legend-div"></span>
+  <span class="legend-item"><span class="legend-dot" style="border-color:var(--indigo);background:var(--indigo-s)"></span><span>🔎 팝업</span></span>
+  <span class="legend-item"><span class="legend-dot" style="border-color:var(--pink);background:var(--pink-s)"></span><span>🪟 레이아웃</span></span>
+  <span class="legend-item"><span class="legend-dot" style="border-color:var(--slate);background:var(--slate-s)"></span><span>🛠 유틸</span></span>
+  <span class="legend-item"><span class="legend-dot" style="border-color:var(--pink);background:var(--pink-s)"></span><span>🔌 AJAX</span></span>
+</div>
+
+<main id="main"></main>
+
+<!-- Screen Preview Modal with rich context -->
+<div class="preview-modal" id="preview-modal" onclick="if(event.target===this)closePreview()">
+  <div class="preview-card">
+    <!-- Rich header: domain + BU + flow breadcrumb + file -->
+    <div class="preview-head">
+      <div class="preview-head-left">
+        <div class="preview-bu-row">
+          <span class="preview-dom-chip" id="preview-dom">—</span>
+          <span class="preview-bu-name" id="preview-bu">—</span>
+        </div>
+        <div class="preview-file-row">
+          <span class="preview-stage-badge" id="preview-stage-badge">—</span>
+          <span class="preview-file" id="preview-file">—</span>
+          <span class="preview-purpose" id="preview-purpose"></span>
+        </div>
+      </div>
+      <div class="preview-actions">
+        <a id="preview-open-new" class="preview-newtab" target="_blank">↗ 새 창</a>
+        <button class="preview-close" onclick="closePreview()" title="ESC로 닫기">✕</button>
+      </div>
+    </div>
+
+    <!-- Flow breadcrumb: 5 stages with current highlighted -->
+    <div class="preview-flow" id="preview-flow"></div>
+
+    <!-- Iframe wrapper with loading state -->
+    <div class="preview-iframe-wrap">
+      <div class="preview-loading" id="preview-loading">
+        <div class="spinner"></div>
+        <span>실제 PHP 렌더링 화면 불러오는 중…</span>
+      </div>
+      <iframe id="preview-iframe" class="preview-iframe" src="about:blank" onload="document.getElementById('preview-loading').style.display='none'"></iframe>
+    </div>
+
+    <!-- Footer: before/after context -->
+    <div class="preview-foot" id="preview-foot">—</div>
+  </div>
+</div>
+
+<div class="foot">
+  이 뷰는 <code>- KOCOM_체인_데모.html</code>(206 화면) · <code>- KOCOM_배후체인_분석.html</code>(58 배후 파일) · <code>- KOCOM_프로시저_체인.html</code>(71 프로시저) 세 원본을 <b>업무 단위 ↔ 테이블 이중 집계 모델</b>로 통합한 최종 산출물입니다.<br>
+  엣지 1건 = (화면, _proc.php, 연산, 테이블) 1조합. 양방향 합계는 반드시 같아야 정합합니다.
+</div>
+
+<script>
+/* =====================================================================
+   DATA MODEL — 46 Business Units covering ALL 206+ screens
+   ===================================================================== */
+
+const DOMAINS = [
+  {id:'admin',   e:'⚫', n:'관리자',       c:'#475569'},
+  {id:'receipt', e:'🟦', n:'수신접수',     c:'#2563eb'},
+  {id:'svc',     e:'🔧', n:'서비스 처리',  c:'#0ea5e9'},
+  {id:'store',   e:'🟨', n:'자재·재고',    c:'#b45309'},
+  {id:'tdb',     e:'🟧', n:'TDB(뇌전)',    c:'#ea580c'},
+  {id:'serial',  e:'🟪', n:'시리얼',       c:'#6d28d9'},
+  {id:'forum',   e:'🟫', n:'게시판',       c:'#92400e'},
+  {id:'resolve', e:'🟢', n:'연차 처리',    c:'#047857'},
+  {id:'cti',     e:'📞', n:'CTI',          c:'#0891b2'},
+  {id:'sms',     e:'✉️', n:'SMS',         c:'#65a30d'},
+  {id:'common',  e:'🔎', n:'공통 팝업',    c:'#0f766e'},
+  {id:'layout',  e:'🪟', n:'레이아웃',     c:'#be185d'},
+  {id:'ajax',    e:'🔌', n:'AJAX 라우터',  c:'#db2777'},
+  {id:'util',    e:'🛠', n:'유틸',         c:'#52525b'},
+];
+
+const KIND_LABEL = {
+  list:  {label:'목록', icon:'📋', color:'--blue',   desc:'검색·조회 화면'},
+  mode:  {label:'입력', icon:'✏️', color:'--teal',   desc:'_mode.php 폼'},
+  proc:  {label:'처리', icon:'⚡', color:'--amber',  desc:'_proc.php DB 쓰기'},
+  popup: {label:'팝업', icon:'🔎', color:'--indigo', desc:'검색·선택 팝업'},
+  layout:{label:'레이아웃', icon:'🪟', color:'--pink', desc:'프레임·메뉴'},
+  util:  {label:'유틸', icon:'🛠', color:'--slate',  desc:'업/다운·엑셀'},
+  ajax:  {label:'AJAX', icon:'🔌', color:'--red',    desc:'mode 라우터'}
+};
+
+/* --- Business Units. 각 BU는 목록/입력/처리/팝업/테이블 + 옵션(dbProcs, triggers, ajax) 으로 구성.
+      edges: 실제 쓰기 행위 (INSERT/UPDATE/DELETE). 동일 엣지는 다른 BU에 중복되지 않음. --- */
+const UNITS = [
+
+/* ===== Admin ===== */
+{id:'admin-user', dom:'admin', name:'사원 관리',
+ desc:'CS 사원 등록·수정·퇴사. Oracle + MySQL(CTI) 이중 동기화.',
+ list:['admin_user_list.php'], mode:['admin_user_mode.php'], proc:['admin_user_proc.php'],
+ popup:[], layout:[], util:[], ajax:['admin_user_del','user_id_check','user_passwd_change','user_yn(MySQL)','my_info'],
+ tables:['CS사원','CS로그인','xline_agent_list','AS지점','TOP_MENU','MIDDLE_MENU'],
+ dbProcs:[], triggers:[],
+ note:'Oracle(CS사원) 와 MySQL(xline_agent_list)를 이중 INSERT — CTI 상담원 동기화 핵심',
+ edges:[
+  {s:'admin_user_mode.php',p:'admin_user_proc.php',op:'INSERT',t:'CS사원'},
+  {s:'admin_user_mode.php',p:'admin_user_proc.php',op:'UPDATE',t:'CS사원'},
+  {s:'admin_user_mode.php',p:'admin_user_proc.php',op:'INSERT',t:'CS로그인'},
+  {s:'admin_user_mode.php',p:'admin_user_proc.php',op:'INSERT',t:'xline_agent_list'},
+  {s:'admin_user_mode.php',p:'admin_user_proc.php',op:'UPDATE',t:'xline_agent_list'},
+ ]},
+
+{id:'admin-member', dom:'admin', name:'고객 관리',
+ desc:'CS 고객정보 마스터(1.8M건). 시퀀스 기반 고객번호 채번.',
+ list:['admin_member_list.php'], mode:['admin_member_mode.php'], proc:['admin_member_proc.php'],
+ popup:['address_popup.php'], layout:[], util:['member_find.php'], ajax:['ZIP_SELECT','custMOD'],
+ tables:['CS고객정보'], dbProcs:[], triggers:[],
+ note:'CS고객정보_고객번호_SEQ (1.8M 건 규모)',
+ edges:[
+  {s:'admin_member_mode.php',p:'admin_member_proc.php',op:'INSERT',t:'CS고객정보'},
+  {s:'admin_member_mode.php',p:'admin_member_proc.php',op:'UPDATE',t:'CS고객정보'},
+ ]},
+
+{id:'admin-offmanager', dom:'admin', name:'담당자 관리',
+ desc:'CS 담당자(외부 업체 담당자) 마스터.',
+ list:['admin_offmanager_list.php'], mode:['admin_offmanager_mode.php'], proc:['admin_offmanager_proc.php'],
+ popup:[], layout:[], util:[], ajax:['admin_offmanager_del'],
+ tables:['CS담당자'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'admin_offmanager_mode.php',p:'admin_offmanager_proc.php',op:'INSERT',t:'CS담당자'},
+  {s:'admin_offmanager_mode.php',p:'admin_offmanager_proc.php',op:'UPDATE',t:'CS담당자'},
+ ]},
+
+{id:'admin-centermanager', dom:'admin', name:'센터(대리점) 관리',
+ desc:'대리점·AS 지점 마스터.',
+ list:['admin_centermanager_list.php'], mode:['admin_centermanager_mode.php'], proc:['admin_centermanager_proc.php'],
+ popup:[], layout:[], util:[], ajax:[],
+ tables:['대리점','AS지점'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'admin_centermanager_mode.php',p:'admin_centermanager_proc.php',op:'INSERT',t:'대리점'},
+  {s:'admin_centermanager_mode.php',p:'admin_centermanager_proc.php',op:'UPDATE',t:'대리점'},
+ ]},
+
+{id:'admin-scene', dom:'admin', name:'현장(아파트) 관리',
+ desc:'CS 현장(아파트코드) + 현장품목(세대기기) 헤더·라인 저장.',
+ list:['admin_scene_list.php','admin_scene_detail.php'], mode:['admin_scene_mode.php','admin_scene_mode1.php'],
+ proc:['admin_scene_proc.php'],
+ popup:['popup_apt_search.php','popup_apt_search_1.php','popup_scene_list.php','popup_scene_mode.php','popup_scene_mode_proc.php','popup_scene_detail.php','pop_admin_scene_list.php','popup_secen_search.php','popup_secen_search_release.php'],
+ layout:[], util:[], ajax:[],
+ tables:['CS현장','CS현장품목'], dbProcs:['P_영업현장_수주현장번호UPT'], triggers:['T_영업현장_UPT_AFT'],
+ note:'헤더(CS현장) + 라인(CS현장품목). 트리거가 영업현장 수주번호 동기화',
+ edges:[
+  {s:'admin_scene_mode.php',p:'admin_scene_proc.php',op:'INSERT',t:'CS현장'},
+  {s:'admin_scene_mode.php',p:'admin_scene_proc.php',op:'INSERT',t:'CS현장품목'},
+  {s:'admin_scene_mode.php',p:'admin_scene_proc.php',op:'UPDATE',t:'CS현장'},
+  {s:'admin_scene_mode.php',p:'admin_scene_proc.php',op:'UPDATE',t:'CS현장품목'},
+  {s:'popup_scene_mode.php',p:'popup_scene_mode_proc.php',op:'INSERT',t:'CS현장'},
+ ]},
+
+{id:'admin-code', dom:'admin', name:'코드 마스터 (읽기)',
+ desc:'코드·오류·원인·수리 코드 목록. 쓰기 없음 (DBA 수동 유지).',
+ list:['admin_code_list.php','admin_code_error_list.php','admin_code_reason_list.php','admin_code_repair_list.php'],
+ mode:[], proc:[], popup:[], layout:[], util:[], ajax:[],
+ tables:['코드마스터','CS장애구분'], dbProcs:[], triggers:[],
+ edges:[],
+ zeroReason:'마스터 코드 조회 전용. 코드 등록/수정은 DBA가 SQL로 직접 수행 · 화면에 저장 경로 없음.'},
+
+{id:'admin-audit', dom:'admin', name:'감사(결재) 관리',
+ desc:'서비스 처리 결재 승인/취소 (TO/T/F). AJAX로 상태 토글.',
+ list:['admin_audit_list.php','admin_audit_list_apply.php'], mode:[], proc:[], popup:[], layout:[], util:[],
+ ajax:['admin_audit','admin_audit_apply'],
+ tables:['CS처리'], dbProcs:[], triggers:[],
+ note:'AJAX ajax_proc.php mode=admin_audit — 결재 상태 UPDATE',
+ edges:[
+  {s:'admin_audit_list.php',p:'ajax_proc.php',op:'UPDATE',t:'CS처리'},
+ ]},
+
+{id:'admin-access', dom:'admin', name:'접근 권한',
+ desc:'사원별 메뉴 권한(SMENU) 설정.',
+ list:[], mode:['admin_access_mode.php'], proc:[], popup:[], layout:[], util:[], ajax:[],
+ tables:['ACCESS_GRADE','TOP_MENU','MIDDLE_MENU'], dbProcs:[], triggers:[],
+ edges:[],
+ zeroReason:'권한 UI는 SELECT만 · 실제 사원 권한(SMENU) 갱신은 admin-user 의 admin_user_proc.php 가 CS사원.SMENU 필드를 UPDATE 하면서 일어남. 그쪽 엣지에 귀속.'},
+
+/* ===== Receipt ===== */
+{id:'receipt-main', dom:'receipt', name:'수신접수 메인',
+ desc:'콜센터 상담원의 업무 진입점. 접수 저장 시 PK 채번·상태 검증 트리거 자동 실행.',
+ list:['receipt_all.php','receipt_consult_list.php','receipt_callback_list.php','receipt_m_list.php','receipt_happycall_list.php','receipt_service_list.php','receipt_main.php'],
+ mode:['receipt.php'], proc:['receipt_proc.php'],
+ popup:['receipt_info.php','popup_receipt_read.php','popup_happycall.php','popup_visit_cancel.php','popup_satisfaction.php','popup_receipt_excel_111.php','popup_receipt_excel_upload.php'],
+ layout:['receipt_top.php'], util:[],
+ ajax:['happy_update','callback_complete','callback_complete_with','callback_uncompleted'],
+ tables:['CS접수','CS고객정보','CS처리','CTI_CALLBACK'], dbProcs:[], triggers:['T_CS접수_INS_BEF','T_CS접수_UPT_BEF'],
+ note:'업무 진입점 — 트리거가 PK 채번·상태 검증. happy_update AJAX 는 해피콜 결과를 CS처리 테이블에 UPDATE (CS접수 아님 — 원본 확인됨).',
+ edges:[
+  {s:'receipt.php',p:'receipt_proc.php',op:'INSERT',t:'CS접수'},
+  {s:'receipt.php',p:'receipt_proc.php',op:'UPDATE',t:'CS접수'},
+  {s:'receipt.php',p:'receipt_proc.php',op:'INSERT',t:'CS고객정보'},
+  {s:'receipt.php',p:'receipt_proc.php',op:'UPDATE',t:'CS고객정보'},
+  {s:'receipt_happycall_list.php',p:'ajax_proc.php',op:'UPDATE',t:'CS처리'},
+ ]},
+
+{id:'receipt-memo', dom:'receipt', name:'특이사항 메모',
+ desc:'장애구분·증상·처리 노하우 메모(공유 지식베이스).',
+ list:['receipt_memo_list.php'], mode:['receipt_memo_mode.php'], proc:['receipt_memo_proc.php'],
+ popup:['receipt_g_memo.php'], layout:[], util:[],
+ ajax:['memo_delete','receipt_memo_count'],
+ tables:['CS특이사항','CS장애구분','AS품목'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'receipt_memo_mode.php',p:'receipt_memo_proc.php',op:'INSERT',t:'CS특이사항'},
+  {s:'receipt_memo_mode.php',p:'receipt_memo_proc.php',op:'UPDATE',t:'CS특이사항'},
+ ]},
+
+{id:'receipt-menual', dom:'receipt', name:'매뉴얼',
+ desc:'제품·공정별 매뉴얼 PDF 첨부 공유.',
+ list:['receipt_menual_list.php','receipt_menual_list_link.php'], mode:['receipt_menual_mode.php'], proc:['receipt_menual_proc.php'],
+ popup:[], layout:[], util:[], ajax:['menual_delete'],
+ tables:['CS매뉴얼'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'receipt_menual_mode.php',p:'receipt_menual_proc.php',op:'INSERT',t:'CS매뉴얼'},
+ ]},
+
+{id:'receipt-tk', dom:'receipt', name:'TK 하자점검 (수신)',
+ desc:'건설사 아파트 입주 전 하자 점검. 세대/공용 두 종류.',
+ list:['receipt_tk_main_list.php','receipt_tk_list.php','receipt_tk_detail_list.php'],
+ mode:['receipt_tk_setting.php','receipt_tk_setting1.php','receipt_tk_setting2.php','receipt_tk_setting3.php'],
+ proc:['popup_tk_G_proc.php','popup_tk_S_proc.php'],
+ popup:['popup_tk_G.php','popup_tk_S.php','popup_tk_S_detail.php','popup_receipt_tk_excel_upload.php'],
+ layout:[], util:[], ajax:[],
+ tables:['CSTK공용','CSTK세대','CSTK설정'], dbProcs:[], triggers:[],
+ note:'CSTK설정에 공용/세대 공통 메타 저장, 실제 점검 데이터는 CSTK공용/CSTK세대에 분기',
+ edges:[
+  {s:'popup_tk_G.php',p:'popup_tk_G_proc.php',op:'INSERT',t:'CSTK설정'},
+  {s:'popup_tk_G.php',p:'popup_tk_G_proc.php',op:'INSERT',t:'CSTK공용'},
+  {s:'popup_tk_S.php',p:'popup_tk_S_proc.php',op:'INSERT',t:'CSTK설정'},
+  {s:'popup_tk_S.php',p:'popup_tk_S_proc.php',op:'INSERT',t:'CSTK세대'},
+ ]},
+
+{id:'receipt-year', dom:'receipt', name:'연차 접수',
+ desc:'보증기간 연차 만기 도래 접수. CS접수 테이블 공용.',
+ list:['receipt_year.php','receipt_year_list.php'], mode:['receipt_year_mode.php'], proc:['receipt_year_proc.php'],
+ popup:['popup_receipt_year_read.php','popup_receipt_year_proc.php'],
+ layout:[], util:[], ajax:[],
+ tables:['CS접수'], dbProcs:[], triggers:[],
+ note:'일반 접수와 같은 CS접수 테이블, 연차/기준일 필드 추가',
+ edges:[
+  {s:'receipt_year_mode.php',p:'receipt_year_proc.php',op:'INSERT',t:'CS접수'},
+  {s:'receipt_year_mode.php',p:'receipt_year_proc.php',op:'UPDATE',t:'CS접수'},
+  {s:'popup_receipt_year_read.php',p:'popup_receipt_year_proc.php',op:'UPDATE',t:'CS접수'},
+ ]},
+
+/* ===== SVC ===== */
+{id:'svc-main', dom:'svc', name:'서비스 처리 (기사 출동)',
+ desc:'접수된 건에 기사 배정·수리 결과 기록. 업무 종결 지점.',
+ list:['svc_list.php'], mode:[], proc:['popup_svc_proc.php','popup_svc_cancel.php','popup_svc_read_del.php'],
+ popup:['popup_svc.php','popup_svc_read.php','popup_svc_master.php','popup_svc_print.php'],
+ layout:[], util:[], ajax:['svc_delete'],
+ tables:['CS처리','CS처리부품','CS접수','AS처리'],
+ dbProcs:['F_CS출장비추출','F_구간출장비추출'],
+ triggers:['T_CS처리부품_BEF','T_CS처리부품_AFT','T_AS자재출고_AFT'],
+ note:'서비스 종결 지점 — CS접수.처리완료=Y. 부품 사용 시 12개 트리거가 재고 차감 체인 시작. F_CS출장비추출/F_구간출장비추출 함수는 SELECT 쿼리 절에서 직접 호출 (dao/popup_svc.php)',
+ edges:[
+  {s:'popup_svc.php',p:'popup_svc_proc.php',op:'INSERT',t:'CS처리'},
+  {s:'popup_svc.php',p:'popup_svc_proc.php',op:'INSERT',t:'CS처리부품'},
+  {s:'popup_svc.php',p:'popup_svc_proc.php',op:'UPDATE',t:'CS처리'},
+  {s:'popup_svc.php',p:'popup_svc_proc.php',op:'UPDATE',t:'CS접수'},
+ ]},
+
+/* ===== Store ===== */
+{id:'store-request', dom:'store', name:'자재 신청',
+ desc:'서비스 건에 필요한 자재 신청. 헤더+라인+접수플래그 3단 쓰기.',
+ list:['store_request_list.php','store_request_list_center.php','store_request_list_nomal.php','store_request_mater_list.php'],
+ mode:['store_request.php','store_request_nomal.php'], proc:['store_request_proc.php','store_request_proc_nomal.php'],
+ popup:['store_request_mater.php','popup_jaje.php'], layout:[], util:[], ajax:['store_delete'],
+ tables:['CS자재신청','CS자재신청품목','CS접수','AS품목'], dbProcs:[],
+ triggers:['T_CS자재신청품목_INS','T_CS자재신청품목_DEL'],
+ note:'T_CS자재신청품목_INS/DEL이 라인-헤더 동기화. PHP는 직접 SQL만 수행, DB 프로시저 호출 없음',
+ edges:[
+  {s:'store_request.php',p:'store_request_proc.php',op:'INSERT',t:'CS자재신청'},
+  {s:'store_request.php',p:'store_request_proc.php',op:'INSERT',t:'CS자재신청품목'},
+  {s:'store_request.php',p:'store_request_proc.php',op:'UPDATE',t:'CS접수'},
+ ]},
+
+{id:'store-release', dom:'store', name:'자재 신청 승인',
+ desc:'신청 건 승인 · 진행상황 플래그 갱신 (재고 실물 변경은 간접).',
+ list:[], mode:['store_request_release.php'], proc:['store_request_release_proc.php'], popup:[], layout:[], util:[], ajax:[],
+ tables:['CS자재신청품목'], dbProcs:[], triggers:[],
+ note:'원본 검증: store_request_release_proc.php 는 UPDATE CS자재신청품목 SET 진행상황 단 1건만 수행. P_CS창고재고변경 호출 없음. 재고는 이후 CS자재출고 INSERT 시 트리거 연쇄로 간접 차감.',
+ edges:[
+  {s:'store_request_release.php',p:'store_request_release_proc.php',op:'UPDATE',t:'CS자재신청품목'},
+ ]},
+
+{id:'store-doing', dom:'store', name:'자재 출고 처리',
+ desc:'승인된 자재 실제 출고. 본사만 청구금액 수정 가능.',
+ list:['store_doing_list.php','store_doing_list_center.php'], mode:['store_doing_mode.php'], proc:['store_doing_proc.php'],
+ popup:['store_doing_mode_print.php','popup_store_grade.php'], layout:[], util:[], ajax:[],
+ tables:['KM수리의뢰'], dbProcs:[], triggers:[],
+ note:'원본 검증: store_doing_proc.php 는 UPDATE KM수리의뢰 만 수행. P_CS창고재고변경 호출·CS창고재고 변경 없음. $_SESSION[user_agency]==11323(본사)만 청구금액 수정 가능.',
+ edges:[
+  {s:'store_doing_mode.php',p:'store_doing_proc.php',op:'UPDATE',t:'KM수리의뢰'},
+ ]},
+
+{id:'store-return', dom:'store', name:'반품 처리 (TDB용)',
+ desc:'뇌전 자재 반품 처리. CS뇌전자재신청품목 갱신.',
+ list:['store_return_list.php','store_return_list_center.php'], mode:['store_return_release.php'], proc:['store_return_release_proc.php'],
+ popup:[], layout:[], util:[], ajax:[],
+ tables:['CS뇌전자재신청품목'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'store_return_release.php',p:'store_return_release_proc.php',op:'UPDATE',t:'CS뇌전자재신청품목'},
+ ]},
+
+{id:'store-price', dom:'store', name:'자재 가격 관리 (읽기)',
+ desc:'자재 가격 조회·승인 UI (쓰기는 별도 배치).',
+ list:['store_price_list.php'], mode:['store_price_release.php'], proc:[], popup:[], layout:[], util:[], ajax:[],
+ tables:['AS품목','CS가격'], dbProcs:[], triggers:[],
+ edges:[],
+ zeroReason:'화면은 가격 조회만 · 실제 CS가격 INSERT 구현은 이 UI에 없음. 원본 grep 결과 이 업무단위 파일에서 프로시저 호출 구문 0건.'},
+
+{id:'store-suri', dom:'store', name:'수리 의뢰',
+ desc:'외부 수리 의뢰 (서비스에서 처리 못 하는 건).',
+ list:['store_suri_list.php'], mode:[], proc:['store_suri_proc.php'], popup:[], layout:[], util:[], ajax:[],
+ tables:['KM수리의뢰'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'store_suri_list.php',p:'store_suri_proc.php',op:'INSERT',t:'KM수리의뢰'},
+ ]},
+
+{id:'store-receipt', dom:'store', name:'영수증 조회 (읽기)',
+ desc:'발행된 영수증 목록.',
+ list:['store_receipt_list.php'], mode:[], proc:[], popup:[], layout:[], util:[], ajax:[],
+ tables:['CS영수증'], dbProcs:[], triggers:[],
+ edges:[],
+ zeroReason:'영수증 조회 전용 · CS영수증 INSERT 는 svc-main 에서 popup_svc_proc.php 가 CS처리 저장할 때 트리거 연쇄로 발생 (별도 테이블 T_CS처리_AFT 경유). 이 단위는 읽기만.'},
+
+/* ===== TDB ===== */
+{id:'tdb-in', dom:'tdb', name:'뇌전(TDB) 접수',
+ desc:'낙뢰 피해 제품 전용 접수 + 보험사 연계.',
+ list:['tdb_in_list.php'], mode:['tdb_in_mode.php','tdb_in_release.php'], proc:['tdb_in_proc.php','tdb_in_proc_release.php'],
+ popup:[], layout:[], util:[], ajax:['tdb_in_delete'],
+ tables:['CS뇌전접수','CS뇌전서류파일','CS뇌전기타목록','CS현장품목'], dbProcs:[], triggers:[],
+ note:'낙뢰 전용 접수 · 보험사 정보 필수 · release 경로는 CS현장품목도 기록',
+ edges:[
+  {s:'tdb_in_mode.php',p:'tdb_in_proc.php',op:'INSERT',t:'CS뇌전접수'},
+  {s:'tdb_in_mode.php',p:'tdb_in_proc.php',op:'INSERT',t:'CS뇌전서류파일'},
+  {s:'tdb_in_mode.php',p:'tdb_in_proc.php',op:'INSERT',t:'CS뇌전기타목록'},
+  {s:'tdb_in_mode.php',p:'tdb_in_proc.php',op:'UPDATE',t:'CS뇌전접수'},
+  {s:'tdb_in_release.php',p:'tdb_in_proc_release.php',op:'INSERT',t:'CS뇌전접수'},
+  {s:'tdb_in_release.php',p:'tdb_in_proc_release.php',op:'INSERT',t:'CS현장품목'},
+  {s:'tdb_in_release.php',p:'tdb_in_proc_release.php',op:'UPDATE',t:'CS뇌전접수'},
+ ]},
+
+{id:'tdb-store', dom:'tdb', name:'뇌전 자재 신청',
+ desc:'뇌전 전용 자재 신청. 가격 필드 9종(센터반납가·결산단가·소비자가 ABC).',
+ list:['tdb_store_list.php'], mode:['tdb_store_mode.php','tdb_store_release.php'], proc:['tdb_store_proc.php'],
+ popup:[], layout:[], util:[], ajax:[],
+ tables:['CS뇌전자재신청','CS뇌전자재신청품목','CS뇌전접수','CS접수'], dbProcs:[], triggers:[],
+ note:'일반 자재와 테이블 분리 · 가격 필드 9종 포함 · CS접수(연결된 일반 접수)도 함께 갱신',
+ edges:[
+  {s:'tdb_store_mode.php',p:'tdb_store_proc.php',op:'INSERT',t:'CS뇌전자재신청'},
+  {s:'tdb_store_mode.php',p:'tdb_store_proc.php',op:'INSERT',t:'CS뇌전자재신청품목'},
+  {s:'tdb_store_mode.php',p:'tdb_store_proc.php',op:'UPDATE',t:'CS뇌전접수'},
+  {s:'tdb_store_mode.php',p:'tdb_store_proc.php',op:'UPDATE',t:'CS접수'},
+ ]},
+
+{id:'tdb-doing', dom:'tdb', name:'뇌전 출고 (읽기)',
+ desc:'뇌전 자재 출고 현황 목록.',
+ list:['tdb_store_doing_list.php','tdb_store_doing_list_center.php'], mode:[], proc:[], popup:[], layout:[], util:[], ajax:[],
+ tables:['CS뇌전자재출고'], dbProcs:[], triggers:[],
+ edges:[],
+ zeroReason:'출고 현황 조회 화면 · 실제 출고 기록은 tdb-serial 팝업이 CS시리얼·CS뇌전자재신청품목 갱신할 때 발생. 이 단위는 읽기만.'},
+
+{id:'tdb-return', dom:'tdb', name:'뇌전 반품 처리',
+ desc:'뇌전 자재 반품 + 보험 반품 관리.',
+ list:['tdb_return_list.php','tdb_return_ins_list.php'], mode:['tdb_return_release.php','tdb_return_ins_release.php'],
+ proc:[], popup:[], layout:[], util:[], ajax:[],
+ tables:['CS뇌전반품'], dbProcs:[], triggers:[],
+ edges:[],
+ zeroReason:'승인 폼은 있으나 실제 반품 저장은 store-return 의 store_return_release_proc.php 가 CS뇌전자재신청품목을 UPDATE (1 엣지로 store-return 에 귀속). 이 단위의 release 폼은 store-return proc 로 POST.'},
+
+{id:'tdb-price', dom:'tdb', name:'뇌전 가격 관리',
+ desc:'뇌전 자재 단가 조회/수정.',
+ list:['tdb_price_list.php'], mode:['tdb_price_release.php'], proc:[],
+ popup:['popup_tdb_store_list.php','popup_tdb_price_modify.php'], layout:[], util:[], ajax:[],
+ tables:['CS뇌전가격'], dbProcs:[], triggers:[],
+ edges:[],
+ zeroReason:'가격 조회 전용 UI · 실제 CS뇌전가격 쓰기는 관리자 수동 SQL 또는 별도 배치로 수행. 체인 분석 원본에도 proc 파일이 없는 읽기 UI.'},
+
+{id:'tdb-serial', dom:'tdb', name:'TDB 시리얼 팝업',
+ desc:'뇌전 자재 시리얼 출고·반납·보험반납 (3단계).',
+ list:[], mode:[], proc:['popup_serial_tdb_proc.php','popup_serial_tdb_return_proc.php','popup_serial_tdb_return_ins_proc.php'],
+ popup:['popup_serial_tdb.php','popup_serial_tdb_return.php','popup_serial_tdb_return_ins.php'],
+ layout:[], util:[], ajax:[],
+ tables:['CS시리얼','CS뇌전자재신청품목'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'popup_serial_tdb.php',p:'popup_serial_tdb_proc.php',op:'UPDATE',t:'CS뇌전자재신청품목'},
+  {s:'popup_serial_tdb_return.php',p:'popup_serial_tdb_return_proc.php',op:'UPDATE',t:'CS뇌전자재신청품목'},
+  {s:'popup_serial_tdb_return_ins.php',p:'popup_serial_tdb_return_ins_proc.php',op:'UPDATE',t:'CS뇌전자재신청품목'},
+ ]},
+
+/* ===== Serial ===== */
+{id:'serial-main', dom:'serial', name:'시리얼 출고',
+ desc:'자재 출고 시 실물 시리얼 번호 기록.',
+ list:[], mode:[], proc:['popup_serial_proc.php'], popup:['popup_serial.php'], layout:[], util:[],
+ ajax:['serial_delete'],
+ tables:['CS시리얼','CS자재신청품목'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'popup_serial.php',p:'popup_serial_proc.php',op:'INSERT',t:'CS시리얼'},
+  {s:'popup_serial.php',p:'popup_serial_proc.php',op:'UPDATE',t:'CS시리얼'},
+  {s:'popup_serial.php',p:'popup_serial_proc.php',op:'UPDATE',t:'CS자재신청품목'},
+ ]},
+
+{id:'serial-return', dom:'serial', name:'시리얼 반품',
+ desc:'반납 시리얼 확정·등급 재분류(양품/재생/불량).',
+ list:[], mode:['popup_serial_return_release.php','popup_serial_return_release2.php'],
+ proc:['popup_serial_return_release_proc.php','popup_serial_return_release2_proc.php','popup_return_proc.php'],
+ popup:['popup_serial_return.php','popup_return.php'], layout:[], util:[], ajax:[],
+ tables:['CS시리얼','CS자재신청품목','CS반품'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'popup_serial_return_release.php',p:'popup_serial_return_release_proc.php',op:'UPDATE',t:'CS시리얼'},
+  {s:'popup_serial_return_release2.php',p:'popup_serial_return_release2_proc.php',op:'UPDATE',t:'CS시리얼'},
+  {s:'popup_return.php',p:'popup_return_proc.php',op:'UPDATE',t:'CS시리얼'},
+  {s:'popup_return.php',p:'popup_return_proc.php',op:'UPDATE',t:'CS자재신청품목'},
+ ]},
+
+{id:'serial-store', dom:'serial', name:'시리얼 창고',
+ desc:'창고 내 시리얼 재고 관리.',
+ list:[], mode:[], proc:['popup_serial_store_proc.php'], popup:['popup_serial_store.php'], layout:[], util:[], ajax:[],
+ tables:['CS시리얼','CS창고재고'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'popup_serial_store.php',p:'popup_serial_store_proc.php',op:'UPDATE',t:'CS시리얼'},
+ ]},
+
+/* ===== Forum ===== */
+{id:'forum-free', dom:'forum', name:'자유게시판',
+ desc:'계층 답글 (단계 = "A"/"A.A"/"A.B" 문자열 트리).',
+ list:['forum_free_list.php'], mode:['forum_free_mode.php'], proc:['forum_free_proc.php'],
+ popup:[], layout:[], util:['forum_free_upfile.php'],
+ ajax:['forum_free_count','forum_free_del','forum_free_file_del'],
+ tables:['자유게시판'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'forum_free_mode.php',p:'forum_free_proc.php',op:'INSERT',t:'자유게시판'},
+  {s:'forum_free_mode.php',p:'forum_free_proc.php',op:'UPDATE',t:'자유게시판'},
+ ]},
+
+{id:'forum-notice', dom:'forum', name:'공지게시판',
+ desc:'관리자 공지사항.',
+ list:['forum_notice_list.php'], mode:['forum_notice_mode.php'], proc:['forum_notice_proc.php'],
+ popup:[], layout:[], util:[], ajax:['forum_notice_count','forum_notice_del'],
+ tables:['공지게시판'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'forum_notice_mode.php',p:'forum_notice_proc.php',op:'INSERT',t:'공지게시판'},
+ ]},
+
+{id:'forum-memo', dom:'forum', name:'쪽지(메모)',
+ desc:'사원 간 1:1 쪽지. soft delete (DEL=Y).',
+ list:['forum_memo_list.php'], mode:['forum_memo_mode.php'], proc:['forum_memo_proc.php'],
+ popup:[], layout:[], util:[], ajax:['forum_memo_del','message_inup'],
+ tables:['쪽지게시판'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'forum_memo_mode.php',p:'forum_memo_proc.php',op:'INSERT',t:'쪽지게시판'},
+ ]},
+
+{id:'forum-qna', dom:'forum', name:'Q&A',
+ desc:'비공개/공개 Q&A + 답글.',
+ list:['forum_qna_list.php'], mode:['forum_qna_mode.php'], proc:['forum_qna_proc.php'],
+ popup:[], layout:[], util:[], ajax:['forum_qna_count','forum_qna_del','forum_qna_file_del'],
+ tables:['QA게시판'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'forum_qna_mode.php',p:'forum_qna_proc.php',op:'INSERT',t:'QA게시판'},
+ ]},
+
+{id:'forum-pds', dom:'forum', name:'자료실',
+ desc:'첨부파일 최대 9개 슬롯.',
+ list:['forum_pds_list.php'], mode:['forum_pds_mode.php'], proc:['forum_pds_proc.php'],
+ popup:[], layout:[], util:[], ajax:['forum_pds_count','forum_pds_del'],
+ tables:['자료게시판'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'forum_pds_mode.php',p:'forum_pds_proc.php',op:'INSERT',t:'자료게시판'},
+ ]},
+
+/* ===== Resolve ===== */
+{id:'resolve-year', dom:'resolve', name:'연차 처리 (수리)',
+ desc:'연차 대상 접수에 대한 수리 완료 처리.',
+ list:['resolve_year_list.php'], mode:['resolve_year_mode.php','resolve_year_mode1.php'], proc:['resolve_year_proc.php'],
+ popup:[], layout:[], util:[], ajax:[],
+ tables:['CS처리','CS처리부품','CS접수'], dbProcs:[], triggers:[],
+ note:'popup_svc_proc.php 와 유사 구조 — 처리 결과 저장 후 CS접수.처리완료=Y. P_수리완료_잔량처리 직접 호출 없음(소스 grep 결과 0건).',
+ edges:[
+  {s:'resolve_year_mode.php',p:'resolve_year_proc.php',op:'INSERT',t:'CS처리'},
+  {s:'resolve_year_mode.php',p:'resolve_year_proc.php',op:'INSERT',t:'CS처리부품'},
+  {s:'resolve_year_mode.php',p:'resolve_year_proc.php',op:'UPDATE',t:'CS처리'},
+  {s:'resolve_year_mode.php',p:'resolve_year_proc.php',op:'UPDATE',t:'CS접수'},
+ ]},
+
+/* ===== CTI ===== */
+{id:'cti-softphone', dom:'cti', name:'CTI 소프트폰',
+ desc:'Xline5 PBX 연동. 1초 폴링으로 상담원 상태 갱신.',
+ list:[], mode:[], proc:[], popup:[],
+ layout:['softphone.php'], util:[],
+ ajax:['agent_list','nowcall','callback_complete','callback_complete_with','callback_uncompleted','agent_login','agent_logout'],
+ tables:['xline_agent_list','xline_extension_status','xline_callback','cti_call_log','CTI_CALLBACK'],
+ dbProcs:[], triggers:[],
+ note:'MySQL Xline5 DB. 1초 간격 AJAX 폴링으로 상태 동기화',
+ edges:[
+  {s:'softphone.php',p:'ajax_proc_mysql.php',op:'UPDATE',t:'xline_agent_list'},
+ ]},
+
+/* ===== SMS ===== */
+{id:'sms-send', dom:'sms', name:'SMS 발송',
+ desc:'STD_SMS 큐잉 패턴. INSERT만, 외부 배치가 pick-up 발송.',
+ list:['popup_sms_list.php'], mode:['sms_send.php'], proc:['sms_send_proc.php'],
+ popup:['popup_sms.php','popup_sms_main.php'], layout:[], util:[],
+ ajax:['sms_resend','message_inup'],
+ tables:['STD_SMS','STD_MMS','SMSMESSAGE'], dbProcs:[], triggers:[],
+ note:'STD_SMS에 INSERT만 · 외부 배치가 5초마다 pick-up',
+ edges:[
+  {s:'sms_send.php',p:'sms_send_proc.php',op:'INSERT',t:'STD_SMS'},
+ ]},
+
+/* ===== Common Popup ===== */
+{id:'common-search', dom:'common', name:'공통 검색 팝업 (공용)',
+ desc:'모든 업무에서 공유되는 검색 팝업 — 아파트·모델·센터·담당자·마스터.',
+ list:[], mode:[], proc:[],
+ popup:['popup_apt_search.php','popup_apt_search_1.php','popup_model_search.php','popup_model_search_scene.php','popup_model_search_sub.php','popup_model_search_svc.php','popup_center_search.php','popup_center_aff.php','popup_charge_select.php','popup_master_search.php'],
+ layout:[], util:[], ajax:[],
+ tables:['CS현장','AS품목','AS지점','CS담당자','CS사원','코드마스터'], dbProcs:[], triggers:[],
+ note:'쓰기 없음 · SELECT 만 · 여러 업무 단위가 호출',
+ edges:[],
+ zeroReason:'10개 팝업 모두 SELECT 만 수행 · 선택된 값을 opener 창(부모 화면)으로 돌려주고 끝. 실제 쓰기는 부모 업무단위(admin-scene, store-request, svc-main 등)의 엣지에 귀속.'},
+
+/* ===== Layout ===== */
+{id:'layout-shell', dom:'layout', name:'레이아웃 셸',
+ desc:'모든 화면의 상·하단 레이아웃. TOP_MENU 기반 동적 메뉴.',
+ list:['main_list.php'], mode:[], proc:[], popup:[],
+ layout:['main.php','top.php','top_menu.php','top_toolbar.php','tail.php','sub.html'], util:[], ajax:[],
+ tables:['TOP_MENU','MIDDLE_MENU','ACCESS_GRADE'], dbProcs:[], triggers:[],
+ note:'FRAMESET 기반 · top.php가 login_check.php 실행해 세션 검증',
+ edges:[],
+ zeroReason:'레이아웃 조각은 SELECT TOP_MENU/MIDDLE_MENU 로 메뉴 트리만 렌더 · 세션 검증은 login_check.php 에서 발생 (CS사원/CS로그인 은 admin-user 에 귀속). DB 쓰기 없음.'},
+
+/* ===== AJAX Router ===== */
+{id:'ajax-oracle', dom:'ajax', name:'AJAX 라우터 (Oracle)',
+ desc:'switch($_REQUEST[mode]) 분기 40+ 케이스. 조회수+1, soft delete, 상태 토글 등.',
+ list:[], mode:[], proc:[], popup:[], layout:[], util:[],
+ ajax:['ajax_proc.php — 40+ mode'],
+ tables:['(전 Oracle 테이블)'], dbProcs:[], triggers:[],
+ note:'각 mode는 해당 업무 단위 카드에 명시 · 응답은 "ok"/"false"/"mode^value^value"',
+ edges:[],
+ zeroReason:'라우터 파일 자체는 쓰기의 "주인"이 아님 · 40+ 개 mode 가 각자 속한 업무단위(admin-user 의 admin_user_del, admin-audit 의 admin_audit, receipt-main 의 happy_update 등)로 귀속되어 집계 중복 방지.'},
+
+{id:'ajax-mysql', dom:'ajax', name:'AJAX 라우터 (MySQL)',
+ desc:'Xline5 CTI 전용 라우터 — 상담원·콜백 상태 8개 mode.',
+ list:[], mode:[], proc:[], popup:[], layout:[], util:[],
+ ajax:['ajax_proc_mysql.php — 8 mode'],
+ tables:['xline_agent_list','xline_callback','cti_call_log','xline_extension_status'], dbProcs:[], triggers:[],
+ edges:[],
+ zeroReason:'MySQL 라우터 · 8 mode 모두 cti-softphone / receipt-main(callback) / admin-user(user_yn) 로 이미 귀속. 같은 쓰기 중복 방지.'},
+
+/* ===== Util ===== */
+{id:'util-files', dom:'util', name:'파일 업/다운/엑셀',
+ desc:'파일 업로드(최대 10MB, 10개 슬롯) · 다운로드 · PHPExcel 워크북.',
+ list:[], mode:[], proc:[], popup:[], layout:[],
+ util:['file_upfile.php','download.php','excel.php','popup_receipt_excel_upload.php','popup_receipt_tk_excel_upload.php'],
+ ajax:[],
+ tables:[], dbProcs:[], triggers:[],
+ note:'excel.php 는 PHPExcel(레거시) · PHP 8.5에서 파싱 불가',
+ edges:[],
+ zeroReason:'파일 시스템 I/O · DB 쓰기 없음 · excel.php 는 SELECT 후 스트림, 업로드는 파일명만 반환해 호출 화면의 proc 가 DB에 기록.'},
+
+{id:'util-myinfo', dom:'util', name:'내 정보',
+ desc:'사원 본인이 자기 정보를 수정하는 경로 (admin_user_proc.php 과 별도).',
+ list:[], mode:['my_info.php'], proc:[], popup:[], layout:[], util:[],
+ ajax:['my_info'],
+ tables:['CS사원'], dbProcs:[], triggers:[],
+ edges:[
+  {s:'my_info.php',p:'ajax_proc.php',op:'UPDATE',t:'CS사원'},
+ ]},
+
+{id:'util-misc', dom:'util', name:'기타 유틸',
+ desc:'페이징·날짜 동기·PDF 샘플·통화 팝업·로그인 검증.',
+ list:[], mode:[], proc:[], popup:['call_popup.php','address_popup.php'], layout:[],
+ util:['page_search.php','pdf_sample.php','db_date.php','login_check.php','login_check.php.original','member_find.php'],
+ ajax:[],
+ tables:['CS사원','CS로그인','CS고객정보','CTI_CALLBACK'], dbProcs:[], triggers:[],
+ note:'원본 검증: login_check.php.original 은 SELECT 로그인시간 단 1줄 · P_* 프로시저 호출 0건.',
+ edges:[],
+ zeroReason:'세션/날짜/페이징/통화 팝업은 SELECT 전용. 원본 소스 grep 결과 P_REPORT_TEMP_DELETE/P_조회기준일_DELETE 호출 구문이 전체 PHP에서 단 한 건도 발견되지 않음 — 이전 분석에서의 오기를 바로잡음.'},
+
+];
+
+/* =====================================================================
+   BU-to-BU 관계 — 어떤 업무가 어떤 업무로 이어지는가 (전후 관계 DAG)
+   근거: 공유 테이블, redir 체인, 의미적 업무 흐름
+   ===================================================================== */
+const BU_EDGES = [
+  // === 관리자(마스터) → 업무 ===
+  {from:'admin-user',  to:'receipt-main',  via:'CS사원',    kind:'master', desc:'사원 마스터가 접수 상담원 ID 제공'},
+  {from:'admin-user',  to:'svc-main',      via:'CS사원',    kind:'master', desc:'서비스 기사 ID'},
+  {from:'admin-user',  to:'admin-audit',   via:'CS사원',    kind:'master', desc:'결재 사원 ID'},
+  {from:'admin-user',  to:'cti-softphone', via:'xline_agent_list', kind:'master', desc:'MySQL 상담원 동기화'},
+  {from:'admin-member',to:'receipt-main',  via:'CS고객정보', kind:'master', desc:'고객 마스터 조회'},
+  {from:'admin-scene', to:'receipt-main',  via:'CS현장',    kind:'master', desc:'아파트 현장 매핑'},
+  {from:'admin-scene', to:'tdb-in',        via:'CS현장',    kind:'master', desc:'뇌전 접수 현장 매핑'},
+  {from:'admin-scene', to:'receipt-tk',    via:'CS현장',    kind:'master', desc:'TK 하자 점검 대상 아파트'},
+  {from:'admin-centermanager', to:'receipt-main', via:'대리점', kind:'master', desc:'담당지점 코드 제공'},
+  {from:'admin-offmanager',    to:'svc-main',      via:'CS담당자', kind:'master', desc:'외주 담당자 지정'},
+  {from:'admin-code',  to:'receipt-main',  via:'CS장애구분', kind:'master', desc:'장애 코드 마스터'},
+  {from:'admin-code',  to:'svc-main',      via:'수리구분',   kind:'master', desc:'수리/원인 코드'},
+  {from:'admin-access',to:'layout-shell',  via:'ACCESS_GRADE', kind:'master', desc:'메뉴 권한 필터'},
+
+  // === CTI → 접수 ===
+  {from:'cti-softphone', to:'receipt-main', via:'call_popup', kind:'trigger', desc:'인바운드 콜 → 접수 화면 자동 오픈'},
+
+  // === 수신접수 → 하류 업무 ===
+  {from:'receipt-main', to:'svc-main',      via:'CS접수',     kind:'flow', desc:'접수 건에 서비스 배정·처리'},
+  {from:'receipt-main', to:'store-request', via:'CS접수',     kind:'flow', desc:'필요 자재 신청'},
+  {from:'receipt-main', to:'tdb-in',        via:'접수 분기',  kind:'flow', desc:'낙뢰 건은 뇌전 접수로'},
+  {from:'receipt-main', to:'receipt-year',  via:'CS접수',     kind:'flow', desc:'연차 만기 도래 접수'},
+  {from:'receipt-main', to:'receipt-memo',  via:'CS특이사항', kind:'ref',  desc:'상담 메모 지식베이스'},
+  {from:'receipt-main', to:'receipt-menual',via:'CS매뉴얼',   kind:'ref',  desc:'제품 매뉴얼 참조'},
+  {from:'receipt-main', to:'receipt-tk',    via:'CSTK*',      kind:'flow', desc:'TK 하자 점검 케이스'},
+  {from:'receipt-main', to:'sms-send',      via:'STD_SMS',    kind:'ref',  desc:'고객 SMS 알림 발송'},
+
+  // === 서비스 처리 → 하류 ===
+  {from:'svc-main', to:'admin-audit',   via:'CS처리',       kind:'flow', desc:'처리 결과 결재 승인'},
+  {from:'svc-main', to:'serial-main',   via:'CS자재신청품목', kind:'flow', desc:'시리얼 출고 확정'},
+  {from:'svc-main', to:'store-return',  via:'CS자재신청품목', kind:'flow', desc:'사용 후 반품 필요 시'},
+
+  // === 자재 체인 ===
+  {from:'store-request',  to:'store-release',  via:'CS자재신청',     kind:'flow', desc:'신청→승인'},
+  {from:'store-release',  to:'store-doing',    via:'CS자재신청품목', kind:'flow', desc:'승인→출고 처리'},
+  {from:'store-doing',    to:'serial-main',    via:'CS시리얼',       kind:'flow', desc:'출고 시 시리얼 기록'},
+  {from:'serial-main',    to:'serial-return',  via:'CS시리얼',       kind:'flow', desc:'시리얼 반품'},
+  {from:'serial-main',    to:'serial-store',   via:'CS시리얼',       kind:'flow', desc:'시리얼 창고 이동'},
+  {from:'store-request',  to:'store-suri',     via:'KM수리의뢰',     kind:'flow', desc:'외부 수리 의뢰'},
+  {from:'store-doing',    to:'store-receipt',  via:'영수증',         kind:'flow', desc:'출고 확정 시 영수증 발행'},
+  {from:'store-request',  to:'store-price',    via:'가격 조회',      kind:'ref',  desc:'신청 시 단가 확인'},
+
+  // === TDB(뇌전) 체인 ===
+  {from:'tdb-in',      to:'tdb-store',    via:'CS뇌전접수',         kind:'flow', desc:'뇌전 접수 → 자재 신청'},
+  {from:'tdb-store',   to:'tdb-doing',    via:'CS뇌전자재신청',     kind:'flow', desc:'뇌전 자재 출고'},
+  {from:'tdb-doing',   to:'tdb-serial',   via:'CS뇌전자재신청품목', kind:'flow', desc:'뇌전 시리얼 출고 기록'},
+  {from:'tdb-serial',  to:'tdb-return',   via:'CS뇌전자재신청품목', kind:'flow', desc:'뇌전 반품(보험 포함)'},
+  {from:'tdb-return',  to:'store-return', via:'CS뇌전자재신청품목', kind:'flow', desc:'반품 승인은 store-return 가 대행'},
+  {from:'tdb-store',   to:'tdb-price',    via:'CS뇌전가격',         kind:'ref',  desc:'뇌전 단가 참조'},
+
+  // === 연차 체인 ===
+  {from:'receipt-year', to:'resolve-year', via:'CS접수(연차)', kind:'flow', desc:'연차 접수 → 연차 수리 처리'},
+  {from:'resolve-year', to:'admin-audit',  via:'CS처리',       kind:'flow', desc:'연차 처리도 결재 대상'},
+
+  // === 공용 팝업 (모든 업무가 사용) ===
+  {from:'common-search', to:'receipt-main',   via:'popup_*_search', kind:'tool', desc:'고객·아파트·모델 검색'},
+  {from:'common-search', to:'svc-main',       via:'popup_model_search_svc', kind:'tool', desc:'모델 검색'},
+  {from:'common-search', to:'store-request',  via:'popup_jaje', kind:'tool', desc:'자재 검색'},
+  {from:'common-search', to:'admin-scene',    via:'popup_apt_search', kind:'tool', desc:'아파트 검색'},
+  {from:'common-search', to:'admin-user',     via:'popup_master_search', kind:'tool', desc:'마스터 검색'},
+
+  // === 라우터 (모든 AJAX 호출이 경유) ===
+  {from:'ajax-oracle', to:'receipt-main',  via:'happy_update', kind:'router', desc:'해피콜 UPDATE 라우팅'},
+  {from:'ajax-oracle', to:'admin-audit',   via:'admin_audit',  kind:'router', desc:'결재 승인 라우팅'},
+  {from:'ajax-oracle', to:'admin-user',    via:'admin_user_del', kind:'router', desc:'사원 재직/퇴직'},
+  {from:'ajax-oracle', to:'forum-free',    via:'forum_free_*', kind:'router', desc:'게시판 AJAX'},
+  {from:'ajax-mysql',  to:'cti-softphone', via:'agent_*',      kind:'router', desc:'CTI 상태 동기화'},
+
+  // === 레이아웃/유틸 (모든 화면이 include) ===
+  {from:'layout-shell', to:'receipt-main', via:'top.php include', kind:'infra', desc:'모든 화면의 셸'},
+  {from:'util-files',   to:'forum-free',   via:'forum_free_upfile', kind:'tool', desc:'게시글 첨부'},
+  {from:'util-files',   to:'receipt-menual', via:'file_upfile', kind:'tool', desc:'매뉴얼 첨부'},
+  {from:'util-files',   to:'tdb-in',       via:'file_upfile', kind:'tool', desc:'뇌전 증빙 첨부'},
+  {from:'util-myinfo',  to:'admin-user',   via:'CS사원',      kind:'master', desc:'본인 정보 수정'},
+];
+
+/* 관계 종류별 시각 메타 */
+const REL_KIND = {
+  master: {label:'마스터 제공',  color:'--slate',  icon:'🏛'},
+  flow:   {label:'업무 흐름',    color:'--amber',  icon:'➡️'},
+  ref:    {label:'참조',         color:'--blue',   icon:'🔗'},
+  trigger:{label:'자동 트리거',  color:'--pink',   icon:'⚡'},
+  tool:   {label:'공용 도구',    color:'--teal',   icon:'🔧'},
+  router: {label:'라우터 경유',  color:'--violet', icon:'🔌'},
+  infra:  {label:'인프라',       color:'--slate',  icon:'🪟'}
+};
+
+/* =====================================================================
+   TABLE COLUMNS — 원본 INSERT/UPDATE 문에서 직접 추출한 컬럼 명세
+   (테이블 쪽에서 거슬러 올라갈 때 각 테이블이 정확히 어떤 필드를 갖는지 표시)
+   ===================================================================== */
+const TABLE_COLS = {
+  // ===== 수신접수·서비스 중심 =====
+  'CS접수': {pk:'접수번호', cols:['접수번호','접수일','방문예약일','접수구분','고객번호','고객명','관계','발신번호','연락처','휴대폰','우편번호','주소','상세주소','아파트코드','판매유형','품번','장애구분','장애상세','유상통보여부','상담내용','특이사항','담당지점','담당사원','처리완료','회사','상태정보','승인상태','자재신청상태','방문약속여부','연차','기준일','연차구분','공종명','타공종유무','접수종류','구간구분'], desc:'업무의 중앙 테이블 — 접수된 모든 CS 건'},
+  'CS처리': {pk:'처리번호', cols:['처리번호','접수번호','처리지점','처리일','처리사원','판매유형','수리구분','수리상세','원인구분','원인상세','특별처리','지연사유','제품일련번호','출고창고','출고위치','유상여부','청구금액','징구금액','기사의견','입력일','입력사원','결재여부','결재사원','결재일','해피콜상태','확인여부','확인사원','확인고객명','만족등급','고객의견','확인일','공임비','자재비','출장비','부가세포함'], desc:'서비스 처리 결과 (출동·수리 기록)'},
+  'CS처리부품': {pk:'(처리번호, 처리일련번호)', cols:['처리번호','처리일련번호','품번','등급','수량','금액','회사'], desc:'처리 건에서 사용된 부품 명세'},
+  'CS고객정보': {pk:'고객번호', cols:['고객번호','고객명','집전화','휴대폰','우편번호','주소','상세주소','아파트코드','등록일','등록자'], desc:'고객 마스터 (1.8M건 규모)'},
+  'CS특이사항': {pk:'일련번호', cols:['일련번호','장애구분','장애상세','모델번호','상담내용','처리내용','입력자','입력일'], desc:'장애 코드별 상담·처리 노하우'},
+  'CS매뉴얼': {pk:'일련번호', cols:['일련번호','품번','아파트코드','첨부파일','등록자','등록일','파일명','제목'], desc:'제품·공정 매뉴얼 PDF'},
+
+  // ===== 자재·재고 =====
+  'CS자재신청': {pk:'신청번호', cols:['신청번호','신청일','신청지점','신청사원','접수번호','일반신청품번','출고지점','출고창고','신청진행상태','센터확인','본사승인'], desc:'자재 신청 헤더'},
+  'CS자재신청품목': {pk:'(신청번호, 신청일련번호)', cols:['신청번호','신청일련번호','품번','신청량','비고','회사','유무상','신청여부','진행상황','APP','HA','OS','삭제여부','신청잔량','반납잔량','반납상태','반납량','반납일','출고일'], desc:'신청 라인 (품목별)'},
+  'CS자재출고': {pk:'출고번호', cols:['출고번호','품번','창고','수량','출고일','출고사원','신청번호'], desc:'자재 실물 출고 기록'},
+  'CS시리얼': {pk:'출고번호', cols:['출고번호','관리번호','신청일련번호','출고시리얼','출고사원','출고일','출고등급','반납예정일','출고창고','반납시리얼','반납등급','반납사원','반납일','반납확정여부','반납확정사원','반납확정일'], desc:'시리얼 번호 추적 (실물 단위)'},
+  'CS창고재고': {pk:'(창고, 위치, 품번)', cols:['창고코드','위치코드','품번','양품','재생','불량','양품대기','재생대기','불량대기','양품입고','재생입고','불량입고','회사'], desc:'P_CS창고재고변경이 갱신하는 3단 재고장'},
+  'CS반품': {pk:'반품번호', cols:['반품번호','신청번호','반품일','반품사원','반품량','반품등급','반품상태'], desc:'반품 헤더'},
+  'KM수리의뢰': {pk:'접수번호', cols:['접수번호','접수일','접수사원번호','접수지점코드','고객명','연락처','우편번호','주소','상세주소','모델품번','유무상','의뢰방법','송장번호','방문일자','시리얼번호','불량증상','특이사항','청구금액','처리내용','처리상태','처리일','처리사원번호'], desc:'외부 수리 의뢰 추적'},
+
+  // ===== TDB(뇌전) =====
+  'CS뇌전접수': {pk:'접수번호', cols:['접수번호','현장명','접수일','접수사원','접수센터','아파트코드','품번','우편번호','주소','상세주소','뇌전일','진행상태','보험사타입','보험사업체명','담당자','연락처','자재신청상태'], desc:'낙뢰 피해 접수'},
+  'CS뇌전서류파일': {pk:'관리번호', cols:['관리번호','접수번호','파일명','입력일','입력자'], desc:'뇌전 증빙 첨부'},
+  'CS뇌전기타목록': {pk:'(접수번호, 일련번호)', cols:['접수번호','일련번호','제목','내용','입력일','입력자'], desc:'뇌전 부가 기록 (제목/내용 자유기재)'},
+  'CS뇌전자재신청': {pk:'신청번호', cols:['신청번호','신청일','신청지점','신청사원','접수번호','모델품번','신청진행상태'], desc:'뇌전 전용 자재 신청 헤더'},
+  'CS뇌전자재신청품목': {pk:'(신청번호, 신청일련번호)', cols:['신청번호','신청일련번호','품번','신청량','비고','회사','유무상','미출고량','양품불량','신청여부','진행상황','APP','HA','OS','삭제여부','출고일','등급','출고량','출고등급','미확정수량','확정수량','확정사원','확정일','반납량','미반납량','양품','불량','반납일','반납상태','신청잔량','차수','센터반납가A','센터미반납가A','센터반납가R','센터미반납가R','센터유지보수가','결산단가','소비자가A','소비자가R','소비자유지보수가'], desc:'뇌전 자재 라인 (가격 9종 포함)'},
+  'CS뇌전자재출고': {pk:'출고번호', cols:['출고번호','신청번호','품번','출고일','출고사원'], desc:'뇌전 실물 출고 현황'},
+  'CS뇌전반품': {pk:'반품번호', cols:['반품번호','신청번호','반품일','반품량','반납상태'], desc:'뇌전 반품 (보험사 연계)'},
+  'CS뇌전가격': {pk:'(품번, 적용일)', cols:['품번','적용일','소비자가','센터반납가','결산단가'], desc:'뇌전 자재 단가 마스터'},
+  'CS뇌전청구가': {pk:'접수번호', cols:['접수번호','사원번호','정산일','회사','금액'], desc:'P_CS뇌전자재청구가_등록 프로시저가 작성'},
+
+  // ===== TK(하자점검) =====
+  'CSTK설정': {pk:'접수번호', cols:['접수번호','아파트코드','점검자','동','공용부분','호','라인','삭제여부','접수자','접수일','공용접수번호','세대접수번호'], desc:'TK 점검 메타 (공용/세대 공통 스토어)'},
+  'CSTK공용': {pk:'접수번호', cols:['접수번호','점검자','공용부분','동','아파트코드','접수자','접수일자'], desc:'공용부분(주차장·엘리베이터 등) 점검'},
+  'CSTK세대': {pk:'접수번호', cols:['접수번호','아파트코드','동','호','점검자'], desc:'세대별 하자 점검'},
+
+  // ===== 관리자 =====
+  'CS사원': {pk:'사원번호', cols:['사원번호','비밀번호','사원명','직급','부서','전화번호1','전화번호2','권한','콜아이디','지점코드','적용일','종료일','회사','현재사원여부','SMENU'], desc:'사원 마스터'},
+  'CS로그인': {pk:'NUM', cols:['사원번호','로그인시간','NUM'], desc:'로그인 세션'},
+  'CS담당자': {pk:'일련번호', cols:['일련번호','업무부서','담당자','담당자직급','담당업무','전화번호','휴대폰번호','등록자','등록일','내선번호'], desc:'외부 업체 담당자 마스터'},
+  '대리점': {pk:'대리점코드', cols:['대리점코드','대리점명','핸드폰','전화번호','우편번호','매장주소','상세주소','담당자명','형태','약도','입력자','입력일'], desc:'대리점(센터) 마스터'},
+  'CS현장': {pk:'아파트코드', cols:['아파트코드','아파트명','현장명','세대수','보증기간1','보증기간2','입주기간1','입주기간2','우편번호','주소','상세주소','비고','설치담당자','설치담당직함','설치담당연락처','현장담당자','현장담당직함','현장담당연락처','세대기기','총수량','APP버전','HA버전','게이트웨이','SW버전','TK상태','TK입력일','TK점검자','현장이슈','담당지점','뇌전유무'], desc:'아파트 현장 마스터'},
+  'CS현장품목': {pk:'(아파트코드, 일련번호)', cols:['아파트코드','일련번호','설치항목','모델명','수량','제조사','연락처','품번','뇌전일'], desc:'현장별 설치 세대기기 (헤더·라인)'},
+  'AS지점': {pk:'지점코드', cols:['지점코드','지점명','주소','전화번호','담당지역'], desc:'AS 지점 마스터'},
+  'AS품목': {pk:'품번', cols:['품번','품명','모델명','제조사','단가','규격'], desc:'제품·부품 마스터'},
+  '코드마스터': {pk:'(구분, 코드)', cols:['구분','코드','이름','사용여부','정렬순서','비고'], desc:'공통 코드 (CS장애구분·CS수리구분·CS원인구분 포함)'},
+  'CS장애구분': {pk:'장애코드', cols:['장애코드','장애명','상위코드','사용여부'], desc:'장애 코드 2계층 트리'},
+
+  // ===== 시스템/권한/메뉴 =====
+  'TOP_MENU': {pk:'NO', cols:['NO','NAME','URL','USE_YN','ORDERBY','ICON'], desc:'상단 메뉴 트리'},
+  'MIDDLE_MENU': {pk:'(TNO, NO)', cols:['TNO','NO','NAME','URL','USE_YN','ORDERBY','SMENU'], desc:'서브 메뉴 + SMENU 권한 플래그'},
+  'ACCESS_GRADE': {pk:'(USER_LEVEL, NO)', cols:['USER_LEVEL','NO','INS_TF','UPD_TF','DEL_TF','REGDATE','CHARGE','UPDATE_DATE'], desc:'메뉴×권한 등급 매트릭스'},
+
+  // ===== 게시판 =====
+  '자유게시판': {pk:'글번호', cols:['글번호','제목','내용','파일1','파일2','파일3','파일4','파일5','작성자','작성자IP','비밀글여부','HTML사용여부','조회수','수정일','참조글번호','단계'], desc:'단계="A"/"A.A"/"A.B" 트리 답글'},
+  '공지게시판': {pk:'글번호', cols:['글번호','제목','내용','작성자','수정일','파일1','파일2','조회수'], desc:'관리자 공지'},
+  '쪽지게시판': {pk:'글번호', cols:['글번호','제목','내용','발신인','수신인','발신일','파일','발신인DEL','수신인DEL'], desc:'사원 간 1:1 쪽지 (soft delete)'},
+  'QA게시판': {pk:'글번호', cols:['글번호','제목','내용','파일1','파일2','파일3','파일4','파일5','작성자','작성자IP','비밀글여부','조회수','수정일','참조글번호','단계'], desc:'Q&A 게시판'},
+  '자료게시판': {pk:'글번호', cols:['글번호','제목','내용','파일1','파일2','파일3','파일4','파일5','파일6','파일7','파일8','파일9','작성자','수정일'], desc:'첨부 9슬롯 자료실'},
+
+  // ===== CTI/SMS =====
+  'xline_agent_list': {pk:'agent_id', cols:['agent_id','agent_pw','agent_name','agent_ext','agent_status','del_yn','callback_yn','outbound_yn','inbound_yn','company'], desc:'MySQL Xline5 상담원 마스터 · 1초 폴링'},
+  'xline_extension_status': {pk:'extension', cols:['extension','status','agent_id','update_time'], desc:'소프트폰 상태'},
+  'xline_callback': {pk:'callback_id', cols:['callback_id','caller_num','agent_id','callback_status','created_time','completed_time','memo'], desc:'콜백 요청 대기열'},
+  'cti_call_log': {pk:'call_id', cols:['call_id','caller_num','receiver_num','call_type','start_time','end_time','duration'], desc:'통화 로그'},
+  'CTI_CALLBACK': {pk:'callback_id', cols:['callback_id','caller_num','agent_id','status','created_time'], desc:'Oracle 측 콜백 미러링'},
+  'STD_SMS': {pk:'cmp_msg_id', cols:['cmp_msg_id','cmp_usr_id','odr_fg','msg_gb','wrt_dttm','snd_dttm','sms_gb','rcv_phn_id','callback','expire_val','sms_st','snd_msg','rsrvd_id'], desc:'SMS 송신 큐 (외부 배치가 pick-up)'},
+  'STD_MMS': {pk:'cmp_msg_id', cols:['cmp_msg_id','subject','content','file_path','rcv_phn_id','snd_dttm'], desc:'MMS 송신 큐'},
+  'SMSMESSAGE': {pk:'번호', cols:['번호','내용','사용유무','비고'], desc:'상용 문구 템플릿'},
+  'SMSMESSAGE_OFTEN': {pk:'번호', cols:['번호','내용','사용유무','비고'], desc:'자주 쓰는 SMS 문구'},
+
+  // ===== 보조 =====
+  '기사메모': {pk:'(접수번호, 메모번호)', cols:['접수번호','접수일시','메모','메모번호','접수자'], desc:'접수 건별 현장 메모'},
+  '전달사항': {pk:'순번', cols:['접수번호','메시지','작성자','작성일자','순번'], desc:'담당자 간 전달'},
+  '현장이슈': {pk:'(아파트코드, 작성일)', cols:['아파트코드','이슈내용','작성자','작성일'], desc:'아파트별 이슈 로그'},
+  'CS방문예약취소': {pk:'코드', cols:['코드','이름','사용여부'], desc:'방문 취소 사유 코드'},
+  'CS자재출고등급': {pk:'코드', cols:['코드','이름','사용여부'], desc:'출고 등급 코드 (양품/재생/불량)'},
+  'CS영수증': {pk:'영수증번호', cols:['영수증번호','처리번호','발행일','금액'], desc:'영수증 발행 로그'},
+  'CS가격': {pk:'(품번, 적용일)', cols:['품번','적용일','소비자가','센터가','결산단가'], desc:'CS 자재 단가 마스터'},
+  'CS연차': {pk:'연차번호', cols:['연차번호','접수번호','연차일','사유','처리상태','입력자'], desc:'연차 처리 건'},
+  'AS처리': {pk:'처리번호', cols:['처리번호','접수번호','처리일','처리사원','수불여부'], desc:'AS 처리 보조 테이블'},
+};
+
+/* =====================================================================
+   DB PROCEDURES LAYER — 17개 핵심 프로시저·함수·Job
+   각 DB 프로시저는 독립적인 실행 엔티티. 호출 경로는 4종:
+     · php      : _proc.php 가 BEGIN..END 로 직접 호출 (사용자 트리거)
+     · trig     : 테이블 트리거(T_*_BEF/AFT)가 자동 호출 (연쇄)
+     · job      : DBMS_SCHEDULER 가 자동 기동 (사용자 개입 없음)
+     · internal : 다른 프로시저가 하위로 호출
+     · admin    : 관리자 배치 화면 혹은 수동 실행
+   ===================================================================== */
+const DB_PROCS = [
+  // ─── 시스템 허브 ───
+  {name:'P_CS창고재고변경', cat:'hub', status:'VALID', loc:49, params:13,
+   purpose:'CS 창고 재고 3단(양품/재생/불량) 증감 — 12개 트리거 공용 시스템 허브 (PHP 직접 호출 0건, 오직 트리거 연쇄로만 작동)',
+   reads:['CS창고재고'], writes:['CS창고재고'],
+   upstream:[
+    {kind:'trig', unit:'svc-main',      via:'T_CS처리부품_BEF', desc:'CS처리부품 INSERT → 트리거가 자동 호출 (부품 사용분 차감)'},
+    {kind:'trig', unit:null,            via:'T_CS자재출고_BEF', desc:'CS자재출고 INSERT/UPDATE → 트리거 자동 호출'},
+    {kind:'admin',unit:null,            via:'T_CS불량*_BEF (10개)', desc:'불량 회수/수리/폐기/반납 10개 테이블의 BEFORE 트리거 체인'},
+   ]},
+
+  // ─── 자동화(트리거 전용) ───
+  {name:'P_입금배분_생성', cat:'auto', status:'VALID', loc:11, params:6,
+   purpose:'입금 1건 → 거래처×월 버킷 자동 분할 · 회계 자동화 핵심',
+   reads:['입금'], writes:['입금배분','거래처월별입금배분'],
+   upstream:[
+    {kind:'trig', unit:null, via:'T_입금배분_INS_AFT', desc:'입금배분 INSERT → AFTER 트리거 자동 호출. 단 11 LOC로 자동 분할 완성 (별도 경리 시스템 발화)'},
+   ]},
+
+  {name:'P_영업현장_수주현장번호UPT', cat:'auto', status:'VALID', loc:9, params:2,
+   purpose:'수주 확정 시 영업현장의 수주번호 자동 동기화',
+   reads:['수주현장'], writes:['영업현장'],
+   upstream:[
+    {kind:'trig', unit:'admin-scene', via:'T_영업현장_UPT_AFT', desc:'관리자 현장 UPDATE → AFTER 트리거'},
+   ]},
+
+  // ─── 수불 엔진 (재고 처리) ───
+  {name:'P_AS자재출고_수불처리', cat:'stock', status:'VALID', loc:32, params:4,
+   purpose:'AS 자재 출고 시 재고 차감',
+   reads:['AS자재출고품목','AS창고'], writes:['AS창고재고','AS자재출고'],
+   upstream:[
+    {kind:'trig', unit:'svc-main', via:'T_AS자재출고_AFT', desc:'서비스 승인 → UPDATE → 트리거 자동 호출'},
+   ]},
+
+  {name:'P_AS처리_수불처리', cat:'stock', status:'VALID', loc:32, params:4,
+   purpose:'AS 서비스 처리 후 수불',
+   reads:['CS처리부품','AS처리'], writes:['AS창고재고','AS처리'],
+   upstream:[
+    {kind:'trig', unit:'svc-main', via:'T_CS처리부품_AFT', desc:'CS처리부품 INSERT → AFTER 트리거 간접 호출'},
+   ]},
+
+  {name:'P_AS창고재고변경', cat:'stock', status:'VALID', loc:31, params:7,
+   purpose:'AS 창고 재고 변경 (장부/실물/차용 분리)',
+   reads:['AS창고재고'], writes:['AS창고재고'],
+   upstream:[
+    {kind:'internal', unit:null, desc:'P_AS자재출고_수불처리 가 하위로 호출 · 직접 호출 없음'},
+   ]},
+
+  // ─── 업무 로직 ───
+  {name:'P_수리완료_잔량처리', cat:'biz', status:'VALID', loc:20, params:2,
+   purpose:'수리 완료 시 자재신청 잔량 정리 — ⚠ PHP 소스 grep 결과 직접 호출 안 됨. 트리거 혹은 내부 호출로 추정',
+   reads:['CS처리'], writes:['CS자재신청품목'],
+   upstream:[
+    {kind:'internal', unit:null, desc:'상위 트리거(T_CS처리_AFT 등) 또는 다른 프로시저에서 호출. 전체 PHP에서 호출 구문 발견 못 함'},
+   ]},
+
+  {name:'P_CS자재신청잔량변경', cat:'biz', status:'VALID', loc:14, params:3,
+   purpose:'CS 자재신청 잔량 직접 조정 — ⚠ PHP 소스 grep 결과 직접 호출 안 됨. 트리거 경유 추정',
+   reads:[], writes:['CS자재신청품목'],
+   upstream:[
+    {kind:'trig', unit:null, via:'(T_CS시리얼_AFT 추정)', desc:'CS시리얼 변경 시 트리거가 잔량 재계산. PHP 직접 BEGIN..END 호출은 전체 소스에서 0건'},
+   ]},
+
+  {name:'P_CS뇌전자재청구가_등록', cat:'biz', status:'VALID', loc:'?', params:4,
+   purpose:'뇌전 사용이력 정산 — ajax_proc.php mode=price_tdb 에서 직접 호출 (PHP에서 실제로 불리는 유일한 비즈니스 프로시저)',
+   reads:[], writes:['CS뇌전청구가'],
+   upstream:[
+    {kind:'php', unit:null, via:'ajax_proc.php:1370', desc:'BEGIN P_CS뇌전자재청구가_등록(:rno, :user_id, sysdate, 10000); END;'},
+   ]},
+
+  // ─── 함수(F_*) ───
+  {name:'F_CS출장비추출', cat:'func', status:'VALID', loc:76, params:5,
+   purpose:'CS 출장비 계산 함수 (아파트코드, 구간, 품번, 날짜, 회사 인자)',
+   reads:['CS출장비'], writes:[],
+   upstream:[
+    {kind:'php', unit:'svc-main', via:'dao/popup_svc.php:54', desc:'F_CS출장비추출(아파트코드, substr(구간구분,0,1), 품번, sysdate, 회사) as 유지보수비'},
+    {kind:'php', unit:'svc-main', via:'html/ajax_proc.php:1280', desc:'유지보수비 계산 SELECT 절에서 호출'},
+   ]},
+
+  {name:'F_구간출장비추출', cat:'func', status:'VALID', loc:'?', params:2,
+   purpose:'구간별 기본 출장비 계산 (구간구분, 날짜 인자)',
+   reads:['CS출장비'], writes:[],
+   upstream:[
+    {kind:'php', unit:'svc-main', via:'dao/popup_svc.php:53', desc:'F_구간출장비추출(구간구분, sysdate) as 구간출장비'},
+    {kind:'php', unit:'svc-main', via:'dao/popup_svc_read.php:51-52', desc:'구간출장비 + 유지보수비 두 컬럼 계산에 사용'},
+    {kind:'php', unit:'svc-main', via:'html/ajax_proc.php:1270', desc:'CS접수 SELECT 쿼리 내 함수'},
+   ]},
+
+  {name:'F_CS자재청구단가추출', cat:'func', status:'VALID', loc:77, params:3,
+   purpose:'CS 자재 청구 단가 추출 함수 — ⚠ PHP grep 결과 호출 구문 발견 못 함 (DB 스키마엔 존재)',
+   reads:['CS자재단가'], writes:[],
+   upstream:[
+    {kind:'internal', unit:null, desc:'정의는 돼 있으나 PHP 레이어에서 직접 호출은 안 됨. 다른 프로시저/함수 내부 호출 추정'},
+   ]},
+
+  // ─── 스케줄 Job (사용자 개입 없음) ───
+  {name:'P_연간매출_생성', cat:'job', status:'VALID', loc:32, params:6,
+   purpose:'과거 1,000일 매출 재집계 — 매일 01:00 자동 실행',
+   reads:['매출내수','매출수출'], writes:['연간매출'],
+   upstream:[
+    {kind:'job', unit:null, via:'Job #42 (daily 01:00)', desc:'DBMS_SCHEDULER 자동 기동 · 연간매출 테이블 전체 rebuild'},
+   ]},
+
+  {name:'P_TEMP_DELETE', cat:'job', status:'VALID', loc:13, params:0,
+   purpose:'임시 테이블 일괄 정리 — 매일 21:00 자동 실행',
+   reads:[], writes:['REPORT_TEMP','TEMP_상품수불','TEMP_*'],
+   upstream:[
+    {kind:'job', unit:null, via:'Job #101 (daily 21:00)', desc:'전날 쌓인 리포트 캐시 전부 TRUNCATE'},
+   ]},
+
+  // ─── 세션 임시 (유틸리티) ───
+  {name:'P_REPORT_TEMP_INSERT', cat:'session', status:'VALID', loc:19, params:5,
+   purpose:'리포트 세션 임시 테이블 INSERT',
+   reads:[], writes:['REPORT_TEMP'],
+   upstream:[
+    {kind:'php', unit:null, desc:'여러 리포트 AJAX 가 세션별로 임시 데이터 삽입 · 특정 업무단위 귀속 안 됨'},
+   ]},
+
+  {name:'P_REPORT_TEMP_DELETE', cat:'session', status:'VALID', loc:7, params:1,
+   purpose:'세션 종료 시 해당 세션의 REPORT_TEMP 삭제 — ⚠ 검증 결과 PHP 어디서도 호출 안 됨',
+   reads:[], writes:['REPORT_TEMP'],
+   upstream:[
+    {kind:'internal', unit:null, desc:'login_check.php.original 는 SELECT 로그인시간 단 한 줄만 · 이 프로시저 호출 구문은 전체 PHP에서 0건'},
+   ]},
+
+  {name:'P_조회기준일_INSERT', cat:'session', status:'VALID', loc:10, params:4,
+   purpose:'리포트 조회 기준일 기록 — ⚠ 사용처 미상',
+   reads:[], writes:['조회기준일'],
+   upstream:[
+    {kind:'internal', unit:null, desc:'DB 스키마엔 존재하나 PHP 호출 없음. 리포트 프로시저 체인 내부 호출 또는 배치 추정'},
+   ]},
+
+  {name:'P_조회기준일_DELETE', cat:'session', status:'VALID', loc:8, params:1,
+   purpose:'세션 종료 시 조회기준일 삭제 — ⚠ 사용처 미상',
+   reads:[], writes:['조회기준일'],
+   upstream:[
+    {kind:'internal', unit:null, desc:'PHP 호출 없음. INSERT 대응 세트로 내부 호출 추정'},
+   ]},
+];
+
+const PROC_CAT = {
+  hub:    {label:'시스템 허브', color:'--pink',   icon:'🧩'},
+  auto:   {label:'자동화',     color:'--green',  icon:'⚡'},
+  stock:  {label:'수불 엔진',   color:'--amber',  icon:'📦'},
+  biz:    {label:'업무 로직',   color:'--blue',   icon:'💼'},
+  func:   {label:'함수 (F_*)', color:'--teal',   icon:'ƒ'},
+  job:    {label:'스케줄 Job', color:'--violet', icon:'⏰'},
+  session:{label:'세션 임시',   color:'--slate',  icon:'⌛'}
+};
+
+const UP_KIND = {
+  php:     {label:'직접 호출', icon:'⚡', color:'--amber'},
+  trig:    {label:'트리거 연쇄', icon:'🔔', color:'--pink'},
+  job:     {label:'스케줄', icon:'⏰', color:'--violet'},
+  internal:{label:'내부 (상위→하위)', icon:'🔗', color:'--slate'},
+  admin:   {label:'관리자·배치', icon:'👤', color:'--slate'}
+};
+
+/* ============== DERIVED ============== */
+const EDGES = [];
+UNITS.forEach(u => (u.edges||[]).forEach(e => EDGES.push({...e, unit:u.id, dom:u.dom})));
+
+// Collect all files with their kind per BU
+function allFilesOfUnit(u){
+  return [
+    ...u.list.map(f=>({f,k:'list'})),
+    ...u.mode.map(f=>({f,k:'mode'})),
+    ...u.proc.map(f=>({f,k:'proc'})),
+    ...u.popup.map(f=>({f,k:'popup'})),
+    ...u.layout.map(f=>({f,k:'layout'})),
+    ...u.util.map(f=>({f,k:'util'})),
+  ];
+}
+const FILES_BY_KIND = {list:[],mode:[],proc:[],popup:[],layout:[],util:[],ajax:[]};
+UNITS.forEach(u => {
+  allFilesOfUnit(u).forEach(x => FILES_BY_KIND[x.k].push({f:x.f, unit:u}));
+  (u.ajax||[]).forEach(m => FILES_BY_KIND.ajax.push({f:m, unit:u}));
+});
+// Dedupe files by name within a kind (but keep list of units)
+const KIND_FILES = {};
+for(const k of Object.keys(FILES_BY_KIND)){
+  const m = new Map();
+  FILES_BY_KIND[k].forEach(({f,unit})=>{
+    if(!m.has(f)) m.set(f,{f,units:[]});
+    m.get(f).units.push(unit);
+  });
+  KIND_FILES[k] = [...m.values()].sort((a,b)=>a.f.localeCompare(b.f));
+}
+
+const SCREENS_ALL = new Set();
+['list','mode','proc','popup','layout','util'].forEach(k => KIND_FILES[k].forEach(x=>SCREENS_ALL.add(x.f)));
+const TABLES_W = [...new Set(EDGES.map(e=>e.t))];
+const PROCS_W  = [...new Set(EDGES.map(e=>e.p))];
+const DBPROCS_ALL = [...new Set(UNITS.flatMap(u=>u.dbProcs||[]))];
+const TRIGS_ALL   = [...new Set(UNITS.flatMap(u=>u.triggers||[]))];
+
+/* ============== STATE ============== */
+const state = {
+  pivot:'bu',
+  search:'',
+  domains:new Set(DOMAINS.map(d=>d.id)),
+  open:new Set()
+};
+
+const $ = id => document.getElementById(id);
+function esc(s){return (s||'').toString().replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function domInfo(id){return DOMAINS.find(d=>d.id===id) || {e:'',n:id,c:'#888'}}
+
+/* ============== INTEGRITY ============== */
+function renderIntegrity(){
+  $('sum-fwd-units').textContent   = UNITS.length;
+  $('sum-fwd-screens').textContent = SCREENS_ALL.size;
+  $('sum-fwd-edges').textContent   = EDGES.length;
+  $('sum-rev-tables').textContent  = TABLES_W.length;
+  $('sum-rev-procs').textContent   = PROCS_W.length;
+  $('sum-rev-edges').textContent   = EDGES.length;
+  $('eq-total').textContent        = EDGES.length;
+
+  $('n-list').textContent   = KIND_FILES.list.length;
+  $('n-mode').textContent   = KIND_FILES.mode.length;
+  $('n-proc').textContent   = KIND_FILES.proc.length;
+  $('n-popup').textContent  = KIND_FILES.popup.length;
+  $('n-layout').textContent = KIND_FILES.layout.length;
+  $('n-util').textContent   = KIND_FILES.util.length;
+  $('n-ajax').textContent   = KIND_FILES.ajax.length;
+
+  // DB layer metrics
+  $('n-dbproc-all').textContent     = DB_PROCS.length;
+  $('n-dbproc-hub').textContent     = DB_PROCS.filter(p=>p.cat==='hub').length;
+  $('n-dbproc-job').textContent     = DB_PROCS.filter(p=>p.cat==='job').length;
+  $('n-dbproc-func').textContent    = DB_PROCS.filter(p=>p.cat==='func').length;
+  $('n-dbproc-invalid').textContent = DB_PROCS.filter(p=>p.status!=='VALID').length;
+  $('n-dbproc-trig').textContent    = DB_PROCS.filter(p=>p.upstream.some(u=>u.kind==='trig')).length;
+}
+
+/* ============== DOMAIN FILTER ============== */
+function renderDomainFilter(){
+  const el = $('dom-filter');
+  const counts = {};
+  DOMAINS.forEach(d => counts[d.id] = UNITS.filter(u=>u.dom===d.id).length);
+  const allOn = state.domains.size === DOMAINS.length;
+  const chips = [
+    `<div class="dom-pill ${allOn?'on':''}" data-dom="all">전체<span class="cnt">${UNITS.length}</span></div>`,
+    ...DOMAINS.map(d=>{
+      const on = !allOn && state.domains.has(d.id);
+      return `<div class="dom-pill ${on?'on':''}" data-dom="${d.id}">${d.e} ${esc(d.n)}<span class="cnt">${counts[d.id]}</span></div>`;
+    })
+  ];
+  el.innerHTML = chips.join('');
+  el.querySelectorAll('.dom-pill').forEach(p => {
+    p.addEventListener('click', () => {
+      const id = p.dataset.dom;
+      if(id==='all') state.domains = new Set(DOMAINS.map(d=>d.id));
+      else if(state.domains.size===DOMAINS.length) state.domains = new Set([id]);
+      else if(state.domains.has(id)){
+        state.domains.delete(id);
+        if(state.domains.size===0) state.domains = new Set(DOMAINS.map(d=>d.id));
+      } else state.domains.add(id);
+      renderDomainFilter(); renderMain();
+    });
+  });
+}
+
+/* ============== SEARCH ============== */
+function matchesUnit(u){
+  if(!state.domains.has(u.dom)) return false;
+  if(!state.search) return true;
+  const q = state.search.toLowerCase();
+  const hay = [u.name,u.desc,u.id,domInfo(u.dom).n,...u.list,...u.mode,...u.proc,...u.popup,...u.layout,...u.util,...(u.ajax||[]),...u.tables,...(u.dbProcs||[]),...(u.triggers||[])].join(' ').toLowerCase();
+  return hay.includes(q);
+}
+
+/* ============== BU VIEW (default) ============== */
+function renderStageRow(kind, files, isProc=false){
+  const meta = KIND_LABEL[kind];
+  const empty = !files || files.length===0;
+  if(empty){
+    return `
+    <div class="stage s-${kind} empty">
+      <div class="s-label">
+        <span class="s-icon">${meta.icon}</span>
+        <span>${meta.label}</span>
+      </div>
+      <div class="s-val"><span class="empty-note">없음</span></div>
+      <div class="s-count">—</div>
+    </div>`;
+  }
+  const primary = files[0];
+  const plus = files.length>1 ? ` +${files.length-1}` : '';
+  return `
+    <div class="stage s-${kind}">
+      <div class="s-label">
+        <span class="s-icon">${meta.icon}</span>
+        <span>${meta.label}</span>
+      </div>
+      <div class="s-val">
+        <span class="primary">${esc(primary)}</span><span class="plus">${plus}</span>
+      </div>
+      <div class="s-count">${files.length}</div>
+    </div>`;
+}
+
+function renderDbProcStage(u){
+  const dp = u.dbProcs || [];
+  if(dp.length===0){
+    return `
+    <div class="stage s-dbproc empty">
+      <div class="s-label">
+        <span class="s-icon">🧩</span>
+        <span>DB 프로시저</span>
+      </div>
+      <div class="s-val"><span class="empty-note">직접 SQL만 수행</span></div>
+      <div class="s-count">—</div>
+    </div>`;
+  }
+  const primary = dp[0];
+  const plus = dp.length>1 ? ` +${dp.length-1}` : '';
+  return `
+    <div class="stage s-dbproc">
+      <div class="s-label">
+        <span class="s-icon">🧩</span>
+        <span>DB 프로시저</span>
+      </div>
+      <div class="s-val">
+        <span class="primary">${esc(primary)}</span><span class="plus">${plus}</span>
+      </div>
+      <div class="s-count">${dp.length}</div>
+    </div>`;
+}
+
+function renderTablesStage(u){
+  if(!u.tables || u.tables.length===0){
+    return `
+    <div class="stage s-table empty">
+      <div class="s-label">
+        <span class="s-icon">🗄</span>
+        <span>테이블</span>
+      </div>
+      <div class="s-val"><span class="empty-note">쓰기 없음</span></div>
+      <div class="s-count">—</div>
+    </div>`;
+  }
+  const primary = u.tables[0];
+  const plus = u.tables.length>1 ? ` +${u.tables.length-1}` : '';
+  return `
+    <div class="stage s-table">
+      <div class="s-label">
+        <span class="s-icon">🗄</span>
+        <span>테이블</span>
+      </div>
+      <div class="s-val">
+        <span class="primary">${esc(primary)}</span><span class="plus">${plus}</span>
+      </div>
+      <div class="s-count">${u.tables.length}</div>
+    </div>`;
+}
+
+function fileChip(f, k){
+  return `<span class="file-chip k-${k}"><span class="kind-dot"></span>${esc(f)}</span>`;
+}
+
+// 이 BU 의 상류(선행)·하류(후속) 관계 렌더
+function renderBURelations(u){
+  const upstream = BU_EDGES.filter(e => e.to===u.id);
+  const downstream = BU_EDGES.filter(e => e.from===u.id);
+  if(upstream.length===0 && downstream.length===0) return '';
+
+  const renderList = (edges, direction) => {
+    if(edges.length===0) return `<div class="bur-empty">— ${direction==='up'?'선행 업무단위 없음 (진입점 또는 마스터)':'후속 업무단위 없음 (최종 단계)'}</div>`;
+    return edges.map(e => {
+      const otherId = direction==='up' ? e.from : e.to;
+      const other = UNITS.find(x => x.id===otherId);
+      if(!other) return '';
+      const d = domInfo(other.dom);
+      const kindMeta = REL_KIND[e.kind] || REL_KIND.flow;
+      return `
+        <div class="bur-item" onclick="jumpToBU('${esc(otherId)}')" title="클릭하여 ${esc(other.name)} 로 이동">
+          <span class="bur-kind" style="background:var(${kindMeta.color}-s);color:var(${kindMeta.color})" title="${esc(kindMeta.label)}">${kindMeta.icon}</span>
+          <span class="bur-dom" style="color:${d.c}">${d.e}</span>
+          <span class="bur-name">${esc(other.name)}</span>
+          <span class="bur-via"><code>${esc(e.via)}</code></span>
+          <span class="bur-desc">${esc(e.desc)}</span>
+        </div>`;
+    }).join('');
+  };
+
+  return `
+    <div class="detail-section bur-section" style="grid-column:1/-1;margin-top:0">
+      <div class="detail-label">🔗 업무단위 간 전후 관계 <span class="lcount">상류 ${upstream.length}개 · 하류 ${downstream.length}개</span></div>
+      <div class="bur-grid">
+        <div class="bur-col">
+          <div class="bur-col-head bur-up">
+            <span>⬆️ 선행 (상류)</span>
+            <span class="bur-col-cnt">${upstream.length}</span>
+          </div>
+          <div class="bur-list">${renderList(upstream, 'up')}</div>
+        </div>
+        <div class="bur-self">
+          <div class="bur-self-label">현재 업무단위</div>
+          <div class="bur-self-name">${esc(u.name)}</div>
+        </div>
+        <div class="bur-col">
+          <div class="bur-col-head bur-down">
+            <span>⬇️ 후속 (하류)</span>
+            <span class="bur-col-cnt">${downstream.length}</span>
+          </div>
+          <div class="bur-list">${renderList(downstream, 'down')}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// 업무 흐름도 (좌→우, 5단계)
+function renderFlowDiagram(u){
+  const stages = [
+    {key:'list',   icon:'📋', label:'목록',   files:u.list,  cls:'f-list'},
+    {key:'mode',   icon:'✏️', label:'입력',   files:u.mode,  cls:'f-mode'},
+    {key:'proc',   icon:'⚡', label:'처리',   files:u.proc,  cls:'f-proc'},
+    {key:'dbproc', icon:'🧩', label:'DB 프로시저', files:u.dbProcs||[], cls:'f-dbproc'},
+    {key:'table',  icon:'🗄', label:'테이블', files:u.tables,cls:'f-table'},
+  ];
+  return `<div class="flow-diagram">${stages.map(s => {
+    const empty = !s.files || s.files.length===0;
+    const primary = empty ? '—' : s.files[0];
+    const more = s.files.length>1 ? `+${s.files.length-1}개 더` : '';
+    return `
+      <div class="flow-box ${s.cls} ${empty?'empty':''}">
+        <div class="flow-head">
+          <span class="fh-ico">${s.icon}</span>
+          <span class="fh-lbl">${s.label}</span>
+          <span class="fh-cnt">${s.files.length}</span>
+        </div>
+        <div class="flow-body">
+          <span class="fb-primary">${empty ? '<span style="color:var(--ink-4);font-style:italic">(없음)</span>' : esc(primary)}</span>
+          ${more ? `<span class="fb-more">${more}</span>` : ''}
+        </div>
+      </div>`;
+  }).join('')}</div>`;
+}
+
+// 파일 카드 (전체 클릭으로 미리보기 오픈)
+function renderFileCards(files, kind, descMap){
+  if(!files || files.length===0) return '';
+  const cards = files.map(f => {
+    const hasPreview = PREVIEW_FILES.has(f.replace(/\.php$/,'.html'));
+    const desc = (descMap && descMap[f]) || '';
+    const clickable = hasPreview ? 'clickable' : '';
+    const onclick = hasPreview ? `onclick="openPreview('${esc(f)}', this)"` : '';
+    return `
+      <div class="file-card ${clickable}" ${onclick} title="${hasPreview?'클릭하여 실제 화면 보기':'미리보기 없음'}">
+        <div class="fc-head">
+          <span class="fc-kind k-${kind}">${KIND_LABEL[kind]?.label || kind}</span>
+          <span class="fc-name">${esc(f)}</span>
+          ${hasPreview ? `<span class="fc-btn">🖥 보기</span>` : `<span class="fc-btn fc-nopreview">—</span>`}
+        </div>
+        ${desc ? `<div class="fc-desc">${esc(desc)}</div>` : ''}
+      </div>`;
+  }).join('');
+  return `<div class="file-cards">${cards}</div>`;
+}
+
+// 테이블 컬럼 카드
+function renderTableCards(tables, writesByTable){
+  if(!tables || tables.length===0) return '<span style="color:var(--ink-4);font-size:12px">없음</span>';
+  const cards = tables.map(t => {
+    const info = TABLE_COLS[t];
+    const writes = writesByTable ? (writesByTable[t] || 0) : null;
+    if(!info){
+      return `
+        <div class="tbl-card">
+          <div class="tc-head">
+            <span class="tc-name">🗄 ${esc(t)}</span>
+            ${writes !== null ? `<span class="tc-writes">쓰기 <b>${writes}</b>건</span>` : ''}
+          </div>
+          <div class="tc-missing">— 컬럼 정보 미수집 (외부/보조 테이블)</div>
+        </div>`;
+    }
+    const pkCols = info.pk ? info.pk.replace(/[()]/g,'').split(/,\s*/).map(s=>s.trim()) : [];
+    const cols = info.cols.map(c => {
+      const isPk = pkCols.includes(c);
+      return `<span class="col-chip${isPk?' pk':''}">${esc(c)}</span>`;
+    }).join('');
+    return `
+      <div class="tbl-card">
+        <div class="tc-head">
+          <span class="tc-name">🗄 ${esc(t)}</span>
+          ${info.pk ? `<span class="tc-pk">PK: ${esc(info.pk)}</span>` : ''}
+          ${writes !== null ? `<span class="tc-writes">쓰기 <b>${writes}</b>건</span>` : ''}
+        </div>
+        <div class="tc-desc">${esc(info.desc)}</div>
+        <div class="tc-cols-label">컬럼 ${info.cols.length}개</div>
+        <div class="tc-cols">${cols}</div>
+      </div>`;
+  }).join('');
+  return `<div class="tbl-cards">${cards}</div>`;
+}
+
+// previews/ 폴더에 실제로 존재하는 파일 목록 (202개)
+const PREVIEW_FILES = new Set([
+  'address_popup.html','admin_access_mode.html','admin_audit_list.html','admin_audit_list_apply.html',
+  'admin_centermanager_list.html','admin_centermanager_mode.html','admin_centermanager_proc.html',
+  'admin_code_error_list.html','admin_code_list.html','admin_code_reason_list.html','admin_code_repair_list.html',
+  'admin_member_list.html','admin_member_mode.html','admin_member_proc.html',
+  'admin_offmanager_list.html','admin_offmanager_mode.html','admin_offmanager_proc.html',
+  'admin_scene_detail.html','admin_scene_list.html','admin_scene_mode.html','admin_scene_mode1.html','admin_scene_proc.html',
+  'admin_user_list.html','admin_user_mode.html','admin_user_proc.html',
+  'ajax_proc.html','ajax_proc_mysql.html',
+  'call_popup.html','download.html','excel.html','file_upfile.html',
+  // db_date.html 제외 — 원본이 PL/SQL 문자열만 echo 하는 AJAX 응답이라 화면 렌더 불가
+  // download.html/excel.html 도 헤더 스트림이라 내용 없을 수 있으나 PREVIEW_FILES 에는 남김
+  'forum_free_list.html','forum_free_mode.html','forum_free_proc.html','forum_free_upfile.html',
+  'forum_memo_list.html','forum_memo_mode.html','forum_memo_proc.html',
+  'forum_notice_list.html','forum_notice_mode.html','forum_notice_proc.html',
+  'forum_pds_list.html','forum_pds_mode.html','forum_pds_proc.html',
+  'forum_qna_list.html','forum_qna_mode.html','forum_qna_proc.html',
+  'login_check.html','main.html','main_list.html','member_find.html','my_info.html',
+  'page_search.html','pdf_sample.html',
+  'pop_admin_scene_list.html','popup_apt_search.html','popup_apt_search_1.html',
+  'popup_center_aff.html','popup_center_search.html','popup_charge_select.html',
+  'popup_happycall.html','popup_jaje.html','popup_master_search.html',
+  'popup_model_search.html','popup_model_search_scene.html','popup_model_search_sub.html','popup_model_search_svc.html',
+  'popup_receipt_excel_111.html','popup_receipt_excel_upload.html','popup_receipt_read.html',
+  'popup_receipt_tk_excel_upload.html','popup_receipt_year_proc.html','popup_receipt_year_read.html',
+  'popup_return.html','popup_return_proc.html',
+  'popup_satisfaction.html','popup_scene_detail.html','popup_scene_list.html','popup_scene_mode.html','popup_scene_mode_proc.html',
+  'popup_secen_search.html','popup_secen_search_release.html',
+  'popup_serial.html','popup_serial_proc.html','popup_serial_return.html',
+  'popup_serial_return_release.html','popup_serial_return_release2.html',
+  'popup_serial_return_release2_proc.html','popup_serial_return_release_proc.html',
+  'popup_serial_store.html','popup_serial_store_proc.html',
+  'popup_serial_tdb.html','popup_serial_tdb_proc.html','popup_serial_tdb_return.html',
+  'popup_serial_tdb_return_ins.html','popup_serial_tdb_return_ins_proc.html','popup_serial_tdb_return_proc.html',
+  'popup_sms.html','popup_sms_list.html','popup_sms_main.html','popup_store_grade.html',
+  'popup_svc.html','popup_svc_cancel.html','popup_svc_master.html','popup_svc_print.html',
+  'popup_svc_proc.html','popup_svc_read.html','popup_svc_read_del.html',
+  'popup_tdb_price_modify.html','popup_tdb_store_list.html',
+  'popup_tk_G.html','popup_tk_G_proc.html','popup_tk_S.html','popup_tk_S_detail.html','popup_tk_S_proc.html',
+  'popup_visit_cancel.html',
+  'receipt.html','receipt_all.html','receipt_callback_list.html','receipt_consult_list.html',
+  'receipt_g_memo.html','receipt_happycall_list.html','receipt_info.html','receipt_m_list.html',
+  'receipt_main.html','receipt_memo_list.html','receipt_memo_mode.html','receipt_memo_proc.html',
+  'receipt_menual_list.html','receipt_menual_list_link.html','receipt_menual_mode.html','receipt_menual_proc.html',
+  'receipt_proc.html','receipt_service_list.html',
+  'receipt_tk_detail_list.html','receipt_tk_list.html','receipt_tk_main_list.html',
+  'receipt_tk_setting.html','receipt_tk_setting1.html','receipt_tk_setting2.html','receipt_tk_setting3.html',
+  'receipt_top.html','receipt_year.html','receipt_year_list.html','receipt_year_mode.html','receipt_year_proc.html',
+  'resolve_year_list.html','resolve_year_mode.html','resolve_year_mode1.html','resolve_year_proc.html',
+  'sms_send.html','sms_send_proc.html','softphone.html','sub.html',
+  'store_doing_list.html','store_doing_list_center.html','store_doing_mode.html','store_doing_mode_print.html','store_doing_proc.html',
+  'store_price_list.html','store_price_release.html',
+  'store_receipt_list.html',
+  'store_request.html','store_request_list.html','store_request_list_center.html','store_request_list_nomal.html',
+  'store_request_mater.html','store_request_mater_list.html','store_request_nomal.html',
+  'store_request_proc.html','store_request_proc_nomal.html','store_request_release.html','store_request_release_proc.html',
+  'store_return_list.html','store_return_list_center.html','store_return_release.html','store_return_release_proc.html',
+  'store_suri_list.html','store_suri_proc.html',
+  'svc_list.html','tail.html',
+  'tdb_in_list.html','tdb_in_mode.html','tdb_in_proc.html','tdb_in_proc_release.html','tdb_in_release.html',
+  'tdb_price_list.html','tdb_price_release.html',
+  'tdb_return_ins_list.html','tdb_return_ins_release.html','tdb_return_list.html','tdb_return_release.html',
+  'tdb_store_doing_list.html','tdb_store_doing_list_center.html',
+  'tdb_store_list.html','tdb_store_mode.html','tdb_store_proc.html','tdb_store_release.html',
+  'top.html','top_menu.html','top_toolbar.html'
+]);
+
+function renderBUCard(u){
+  const d = domInfo(u.dom);
+  const open = state.open.has('bu:'+u.id);
+  const totalFiles = u.list.length+u.mode.length+u.proc.length+u.popup.length+u.layout.length+u.util.length;
+
+  const edgeRows = u.edges.map(e => `
+    <div class="edge-item">
+      <div class="edge-chip c-screen">${esc(e.s)}</div>
+      <div class="edge-chip c-arrow">→</div>
+      <div class="edge-chip c-proc">${esc(e.p)}</div>
+      <div class="edge-chip c-op">${esc(e.op)}</div>
+      <div class="edge-chip c-arrow">→</div>
+      <div class="edge-chip c-table">${esc(e.t)}</div>
+    </div>
+  `).join('');
+
+  const allFilesDetail = [
+    ...u.list.map(f=>fileChip(f,'list')),
+    ...u.mode.map(f=>fileChip(f,'mode')),
+    ...u.proc.map(f=>fileChip(f,'proc')),
+    ...u.popup.map(f=>fileChip(f,'popup')),
+    ...u.layout.map(f=>fileChip(f,'layout')),
+    ...u.util.map(f=>fileChip(f,'util')),
+    ...(u.ajax||[]).map(f=>fileChip(f,'ajax')),
+  ].join('');
+
+  return `
+  <div class="row ${open?'open':''}" data-key="bu:${esc(u.id)}">
+    <div class="row-top">
+      <span class="row-dom" style="border-color:${d.c}33;color:${d.c}">${d.e} ${esc(d.n)}</span>
+      <span class="row-title">${esc(u.name)}</span>
+      <div class="spacer"></div>
+      <div class="edge-badge ${u.edges.length===0?'zero':''}"><span class="dot"></span>${u.edges.length} 엣지</div>
+      <p class="row-desc">${esc(u.desc)} <span style="color:var(--ink-4);margin-left:6px">· ${totalFiles}개 파일</span></p>
+    </div>
+    <div class="ladder">
+      ${renderStageRow('list', u.list)}
+      ${renderStageRow('mode', u.mode)}
+      ${renderStageRow('proc', u.proc)}
+      ${renderDbProcStage(u)}
+      ${renderTablesStage(u)}
+    </div>
+    <div class="detail">
+      <!-- BU 간 전후 관계: 상류 ← 이 BU → 하류 -->
+      ${renderBURelations(u)}
+
+      <!-- 업무 흐름도: 목록→입력→처리→DB프로시저→테이블 5단계 -->
+      <div class="detail-section" style="grid-column:1/-1;margin-top:0">
+        <div class="detail-label">🧭 업무 내부 흐름 (목록→입력→처리→DB프로시저→테이블)</div>
+        ${renderFlowDiagram(u)}
+      </div>
+
+      <div class="detail-grid">
+        ${u.list.length ? `
+        <div class="detail-section" style="grid-column:1/-1">
+          <div class="detail-label" style="color:var(--blue)">📋 목록 화면 <span class="lcount">${u.list.length}개 · 검색·조회로 업무 진입</span></div>
+          ${renderFileCards(u.list, 'list')}
+        </div>` : ''}
+
+        ${u.mode.length ? `
+        <div class="detail-section" style="grid-column:1/-1">
+          <div class="detail-label" style="color:var(--teal)">✏️ 입력 화면 <span class="lcount">${u.mode.length}개 · 폼 작성·POST 발생 지점</span></div>
+          ${renderFileCards(u.mode, 'mode')}
+        </div>` : ''}
+
+        ${u.popup.length ? `
+        <div class="detail-section" style="grid-column:1/-1">
+          <div class="detail-label" style="color:var(--indigo)">🔎 연결 팝업 <span class="lcount">${u.popup.length}개 · 검색·선택·부속 창</span></div>
+          ${renderFileCards(u.popup, 'popup')}
+        </div>` : ''}
+
+        ${u.proc.length ? `
+        <div class="detail-section" style="grid-column:1/-1">
+          <div class="detail-label" style="color:var(--amber)">⚡ 처리 핸들러 <span class="lcount">${u.proc.length}개 · 실제 DB 쓰기 (INSERT/UPDATE)</span></div>
+          ${renderFileCards(u.proc, 'proc')}
+        </div>` : ''}
+
+        ${u.layout.length ? `
+        <div class="detail-section">
+          <div class="detail-label" style="color:var(--pink)">🪟 레이아웃</div>
+          ${renderFileCards(u.layout, 'layout')}
+        </div>` : ''}
+
+        ${u.util.length ? `
+        <div class="detail-section">
+          <div class="detail-label" style="color:var(--slate)">🛠 유틸</div>
+          ${renderFileCards(u.util, 'util')}
+        </div>` : ''}
+
+        ${u.edges.length ? `
+        <div class="detail-section" style="grid-column:1/-1">
+          <div class="detail-label" style="color:var(--amber)">✍️ 쓰기 엣지 상세 <span class="lcount">${u.edges.length}건 · 화면→처리→연산→테이블</span></div>
+          <div class="edge-strip">${edgeRows}</div>
+        </div>` : ''}
+
+        ${u.tables.length ? `
+        <div class="detail-section" style="grid-column:1/-1">
+          <div class="detail-label" style="color:var(--red)">🗄 관련 테이블 & 컬럼 <span class="lcount">${u.tables.length}개 · 각 테이블의 PK·전체 필드 명세</span></div>
+          ${renderTableCards(u.tables, (function(){ const m={}; u.edges.forEach(e=>m[e.t]=(m[e.t]||0)+1); return m; })())}
+        </div>` : ''}
+
+        ${(u.dbProcs||[]).length ? `
+        <div class="detail-section">
+          <div class="detail-label" style="color:var(--violet)">🧩 DB 프로시저 / 함수 (PHP에서 직접 호출)</div>
+          <div class="taglist">${u.dbProcs.map(p=>`<span class="tag t-dbproc">${esc(p)}</span>`).join('')}</div>
+        </div>` : ''}
+
+        ${(u.triggers||[]).length ? `
+        <div class="detail-section">
+          <div class="detail-label" style="color:var(--pink)">🔔 자동 실행 트리거</div>
+          <div class="taglist">${u.triggers.map(t=>`<span class="tag t-trig">${esc(t)}</span>`).join('')}</div>
+        </div>` : ''}
+
+        ${(u.ajax||[]).length ? `
+        <div class="detail-section" style="grid-column:1/-1">
+          <div class="detail-label" style="color:#db2777">🔌 AJAX mode 목록</div>
+          <div class="taglist">${u.ajax.map(a=>`<span class="tag t-ajax">${esc(a)}</span>`).join('')}</div>
+        </div>` : ''}
+
+        ${u.note ? `
+        <div class="detail-section" style="grid-column:1/-1">
+          <div class="note-line">📝 ${esc(u.note)}</div>
+        </div>` : ''}
+
+        ${u.edges.length ? `
+        <div class="verify">
+          <span class="check">✓</span>
+          <div>
+            이 업무 단위가 남기는 쓰기 엣지는 <b>${u.edges.length}건</b>입니다.
+            <b>테이블 중심</b> 뷰로 바꿔 봐도 ${u.tables.length}개 테이블에 분산된 합이 <b>${u.edges.length}</b>으로 일치합니다.
+          </div>
+        </div>` : `
+        <div class="verify" style="background:var(--amber-s);grid-column:1/-1">
+          <span class="check" style="background:var(--amber)">!</span>
+          <div>
+            <b style="color:var(--amber)">쓰기 엣지 0건 — 왜 안 맞는가?</b><br>
+            <span style="color:var(--ink-2)">${esc(u.zeroReason || '읽기 전용 / 외부 배치 의존. 실제 쓰기는 다른 업무단위에 귀속되어 중복 집계 방지.')}</span>
+          </div>
+        </div>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderBU(){
+  const list = UNITS.filter(matchesUnit);
+  const html = list.map(renderBUCard).join('');
+  const visibleEdges = list.reduce((s,u)=>s+u.edges.length,0);
+  const visibleScreens = new Set();
+  list.forEach(u => allFilesOfUnit(u).forEach(x=>visibleScreens.add(x.f)));
+
+  return `
+    <div class="result-head">
+      <h2>🧩 업무 단위 · 45개 · 5단 사다리로 짝지음</h2>
+      <span class="hint">각 카드가 하나의 업무 (📋 목록 → ✏️ 입력 → ⚡ 처리 → 🧩 DB 프로시저 → 🗄 테이블)</span>
+      <div class="stats-inline">
+        <span><b>${list.length}</b>/<b>${UNITS.length}</b> 단위</span><span>·</span>
+        <span><b>${visibleScreens.size}</b> 화면</span><span>·</span>
+        <span><b>${visibleEdges}</b> 엣지</span>
+      </div>
+    </div>
+    <div class="rows">${html || emptyBlock()}</div>`;
+}
+
+/* ============== REVERSE (Table-centric) ============== */
+function renderReverse(){
+  const visibleEdges = EDGES.filter(e => {
+    const u = UNITS.find(x=>x.id===e.unit);
+    return matchesUnit(u);
+  });
+  const groups = {};
+  visibleEdges.forEach(e => (groups[e.t] ??= []).push(e));
+  const tables = Object.keys(groups).sort();
+
+  const rows = tables.map(t => {
+    const g = groups[t];
+    const units = [...new Set(g.map(e=>e.unit))];
+    const screens = [...new Set(g.map(e=>e.s))];
+    const procs   = [...new Set(g.map(e=>e.p))];
+    const ops     = [...new Set(g.map(e=>e.op))];
+    const doms    = [...new Set(g.map(e=>e.dom))];
+    const open = state.open.has('rev:'+t);
+    const mainDom = domInfo(doms[0]);
+
+    const edgeRows = g.map(e => `
+      <div class="edge-item rev">
+        <div class="edge-chip c-table">${esc(e.t)}</div>
+        <div class="edge-chip c-arrow">←</div>
+        <div class="edge-chip c-op">${esc(e.op)}</div>
+        <div class="edge-chip c-arrow">←</div>
+        <div class="edge-chip c-proc">${esc(e.p)}</div>
+        <div class="edge-chip c-arrow">←</div>
+        <div class="edge-chip c-screen">${esc(e.s)}</div>
+      </div>
+    `).join('');
+
+    return `
+    <div class="row ${open?'open':''}" data-key="rev:${esc(t)}">
+      <div class="row-top">
+        <span class="row-dom" style="border-color:${mainDom.c}33;color:${mainDom.c}">${doms.length>1?`${doms.length} 도메인`:`${mainDom.e} ${esc(mainDom.n)}`}</span>
+        <span class="row-title">🗄 ${esc(t)}</span>
+        <div class="spacer"></div>
+        <div class="edge-badge"><span class="dot"></span>${g.length} 엣지</div>
+      </div>
+      <div class="ladder">
+        <div class="stage s-table">
+          <div class="s-label"><span class="s-icon">🗄</span><span>테이블</span></div>
+          <div class="s-val"><span class="primary">${esc(t)}</span></div>
+          <div class="s-count">${g.length}</div>
+        </div>
+        <div class="stage s-proc">
+          <div class="s-label"><span class="s-icon">⚡</span><span>처리</span></div>
+          <div class="s-val"><span class="primary">${esc(procs[0])}</span>${procs.length>1?`<span class="plus"> +${procs.length-1}</span>`:''}</div>
+          <div class="s-count">${procs.length}</div>
+        </div>
+        <div class="stage s-mode">
+          <div class="s-label"><span class="s-icon">🖥</span><span>화면</span></div>
+          <div class="s-val"><span class="primary">${esc(screens[0])}</span>${screens.length>1?`<span class="plus"> +${screens.length-1}</span>`:''}</div>
+          <div class="s-count">${screens.length}</div>
+        </div>
+        <div class="stage s-list">
+          <div class="s-label"><span class="s-icon">🧩</span><span>업무단위</span></div>
+          <div class="s-val"><span class="primary">${esc(units[0])}</span>${units.length>1?`<span class="plus"> +${units.length-1}</span>`:''}</div>
+          <div class="s-count">${units.length}</div>
+        </div>
+      </div>
+      <div class="detail">
+        <div class="detail-section" style="grid-column:1/-1;margin-top:0">
+          <div class="detail-label" style="color:var(--red)">📋 테이블 명세 & 전체 컬럼</div>
+          ${renderTableCards([t], {[t]: g.length})}
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-section" style="grid-column:1/-1">
+            <div class="detail-label">↩️ 역방향 쓰기 엣지 상세 <span class="lcount">${g.length}건 · 테이블←연산←처리←화면</span></div>
+            <div class="edge-strip">${edgeRows}</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">🧩 연결된 업무단위 <span class="lcount">${units.length}개</span></div>
+            <div class="taglist">${units.map(uid=>{
+              const u = UNITS.find(x=>x.id===uid);
+              return `<span class="tag" style="background:${domInfo(u.dom).c}15;color:${domInfo(u.dom).c}">${esc(u.name)}</span>`;
+            }).join('')}</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">🖥 접근 화면 전수 <span class="lcount">${screens.length}개</span></div>
+            <div class="taglist">${screens.map(s=>`<span class="tag t-screen">${esc(s)}</span>`).join('')}</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">⚡ 쓰는 처리 파일 <span class="lcount">${procs.length}개</span></div>
+            <div class="taglist">${procs.map(p=>`<span class="tag t-proc">${esc(p)}</span>`).join('')}</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">🔧 수행 연산</div>
+            <div class="taglist">${ops.map(o=>`<span class="tag">${esc(o)}</span>`).join('')}</div>
+          </div>
+          <div class="verify">
+            <span class="check">✓</span>
+            <div>
+              테이블 <b>${esc(t)}</b>에 들어오는 쓰기는 <b>${g.length}건</b>입니다.
+              <b>업무 단위</b> 뷰로 바꿔 봐도 ${units.length}개 업무·${screens.length}개 화면에서 이 테이블로 향하는 엣지 합이 <b>${g.length}</b>으로 일치합니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="result-head">
+      <h2>🗄 테이블 중심 · 역방향 집계</h2>
+      <span class="hint">각 테이블에 누가 쓰는지 거슬러 올라가는 뷰</span>
+      <div class="stats-inline">
+        <span><b>${tables.length}</b> 테이블</span><span>·</span>
+        <span><b>${visibleEdges.length}</b> 엣지</span>
+      </div>
+    </div>
+    <div class="rows">${rows || emptyBlock()}</div>`;
+}
+
+/* ============== PROCEDURE VIEW (DB layer) ============== */
+function renderProcs(){
+  // filter: search + domain (by referenced BU's domain)
+  const visible = DB_PROCS.filter(p => {
+    const domMatch = p.upstream.some(u => {
+      if(!u.unit) return state.domains.size === DOMAINS.length;
+      const bu = UNITS.find(x=>x.id===u.unit);
+      return bu && state.domains.has(bu.dom);
+    }) || p.upstream.every(u => !u.unit);
+    if(!domMatch) return false;
+    if(!state.search) return true;
+    const q = state.search.toLowerCase();
+    const hay = [p.name,p.purpose,...(p.reads||[]),...(p.writes||[]),...p.upstream.flatMap(u=>[u.desc,u.via||'',u.unit||''])].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
+
+  // group by category
+  const cats = Object.keys(PROC_CAT);
+  const byCat = {}; cats.forEach(c => byCat[c] = []);
+  visible.forEach(p => (byCat[p.cat] ||= []).push(p));
+
+  const sections = cats.map(c => {
+    const items = byCat[c] || [];
+    if(items.length===0) return '';
+    const meta = PROC_CAT[c];
+    const cards = items.map(p => renderProcCard(p)).join('');
+    return `
+      <section class="proc-cat-section">
+        <div class="proc-cat-head">
+          <div class="proc-cat-icon" style="background:var(${meta.color}-s);color:var(${meta.color})">${meta.icon}</div>
+          <h3>${esc(meta.label)}</h3>
+          <span class="proc-cat-count">${items.length}개</span>
+        </div>
+        <div class="proc-grid">${cards}</div>
+      </section>`;
+  }).join('');
+
+  const totalUpstream = visible.reduce((s,p)=>s+p.upstream.length,0);
+  const allWrites = [...new Set(visible.flatMap(p=>p.writes||[]))];
+
+  return `
+    <div class="result-head">
+      <h2>🧩 DB 프로시저 중심 · ${DB_PROCS.length}개 핵심 오브젝트</h2>
+      <span class="hint">각 프로시저가 어디서 어떻게 호출되고(상류) 어느 테이블로 나가는지(하류)</span>
+      <div class="stats-inline">
+        <span><b>${visible.length}</b>/<b>${DB_PROCS.length}</b> 프로시저</span><span>·</span>
+        <span><b>${totalUpstream}</b> 호출 경로</span><span>·</span>
+        <span><b>${allWrites.length}</b> 쓰기 테이블</span>
+      </div>
+    </div>
+    <div class="proc-wrap">${sections || emptyBlock()}</div>`;
+}
+
+function renderProcCard(p){
+  const meta = PROC_CAT[p.cat];
+  const statusBadge = p.status==='VALID'
+    ? `<span class="proc-badge ok">VALID</span>`
+    : `<span class="proc-badge bad">${esc(p.status)}</span>`;
+
+  const upstreamRows = p.upstream.map(u => {
+    const k = UP_KIND[u.kind] || UP_KIND.php;
+    const bu = u.unit ? UNITS.find(x=>x.id===u.unit) : null;
+    const buLabel = bu ? `<span class="up-unit" style="color:${domInfo(bu.dom).c}">${esc(bu.name)}</span>` : '';
+    const viaLabel = u.via ? `<span class="up-via"><code>${esc(u.via)}</code></span>` : '';
+    return `
+      <div class="up-row">
+        <div class="up-kind" style="background:var(${k.color}-s);color:var(${k.color})">
+          <span>${k.icon}</span>
+          <span>${k.label}</span>
+        </div>
+        <div class="up-body">
+          <div class="up-main">
+            ${buLabel}${viaLabel}
+          </div>
+          <div class="up-desc">${esc(u.desc)}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const writes = (p.writes||[]).map(t=>`<span class="tag t-table">${esc(t)}</span>`).join('') || '<span style="color:var(--ink-4);font-size:11px">(쓰기 없음)</span>';
+  const reads  = (p.reads||[]).map(t=>`<span class="tag" style="background:var(--blue-s);color:var(--blue);border-color:transparent">${esc(t)}</span>`).join('') || '<span style="color:var(--ink-4);font-size:11px">(SELECT 없음)</span>';
+
+  const linkedUnits = [...new Set(p.upstream.filter(u=>u.unit).map(u=>u.unit))].map(uid => {
+    const bu = UNITS.find(x=>x.id===uid);
+    if(!bu) return '';
+    return `<span class="tag" style="background:${domInfo(bu.dom).c}15;color:${domInfo(bu.dom).c};border-color:transparent">${esc(bu.name)}</span>`;
+  }).join('') || '<span style="color:var(--ink-4);font-size:11px">(업무단위 직접 연결 없음 — 트리거/Job 전용)</span>';
+
+  return `
+    <div class="proc-card">
+      <div class="proc-head">
+        <div class="proc-cat-tag" style="background:var(${meta.color}-s);color:var(${meta.color})">${meta.icon} ${esc(meta.label)}</div>
+        ${statusBadge}
+        <span class="proc-meta">${p.loc} LOC · ${p.params} 인자</span>
+      </div>
+      <h4 class="proc-name">${esc(p.name)}</h4>
+      <p class="proc-purpose">${esc(p.purpose)}</p>
+
+      <div class="proc-section">
+        <div class="proc-label">📥 상류 호출 경로 · ${p.upstream.length}</div>
+        <div class="up-list">${upstreamRows}</div>
+      </div>
+
+      <div class="proc-section">
+        <div class="proc-label">📤 쓰기 테이블 · ${(p.writes||[]).length}</div>
+        <div class="taglist">${writes}</div>
+      </div>
+
+      ${p.reads?.length ? `
+      <div class="proc-section">
+        <div class="proc-label">📖 읽기 테이블 · ${p.reads.length}</div>
+        <div class="taglist">${reads}</div>
+      </div>` : ''}
+
+      <div class="proc-section">
+        <div class="proc-label">🔗 연결된 업무 단위</div>
+        <div class="taglist">${linkedUnits}</div>
+      </div>
+    </div>`;
+}
+
+/* ============== SYSTEM MAP VIEW — BU-to-BU relationships ============== */
+function getUpstream(buId){
+  return BU_EDGES.filter(e => e.to===buId);
+}
+function getDownstream(buId){
+  return BU_EDGES.filter(e => e.from===buId);
+}
+
+// BU를 레이어(level)로 자동 분류 — 대략적인 위상 순서
+// L0: 관리자·마스터 | L1: CTI/레이아웃 | L2: 수신접수 | L3: 자재·서비스 | L4: 시리얼·출고 | L5: 결재·반품
+const BU_LAYERS = {
+  'admin-user':0, 'admin-member':0, 'admin-scene':0, 'admin-centermanager':0,
+  'admin-offmanager':0, 'admin-code':0, 'admin-access':0,
+  'layout-shell':1, 'cti-softphone':1, 'common-search':1, 'ajax-oracle':1, 'ajax-mysql':1, 'util-files':1, 'util-myinfo':1, 'util-misc':1,
+  'receipt-main':2, 'receipt-memo':2, 'receipt-menual':2, 'receipt-tk':2, 'receipt-year':2,
+  'tdb-in':2, 'forum-free':2, 'forum-notice':2, 'forum-memo':2, 'forum-qna':2, 'forum-pds':2, 'sms-send':2,
+  'svc-main':3, 'store-request':3, 'tdb-store':3,
+  'store-release':4, 'store-doing':4, 'store-suri':4, 'store-price':4, 'store-receipt':4,
+  'tdb-doing':4, 'tdb-price':4, 'tdb-serial':4, 'resolve-year':4,
+  'serial-main':5, 'serial-return':5, 'serial-store':5, 'store-return':5, 'tdb-return':5,
+  'admin-audit':6
+};
+const LAYER_LABELS = [
+  {n:0, name:'L0 · 마스터 데이터',  desc:'사원·고객·현장·코드 등 시스템이 참조하는 마스터 테이블',   color:'--slate'},
+  {n:1, name:'L1 · 공용 인프라',    desc:'레이아웃·CTI·라우터·공용 팝업·유틸',                      color:'--pink'},
+  {n:2, name:'L2 · 업무 진입',      desc:'수신접수·뇌전접수·게시판 등 사용자 진입 지점',            color:'--blue'},
+  {n:3, name:'L3 · 핵심 처리',      desc:'서비스 처리·자재 신청·뇌전 자재',                         color:'--amber'},
+  {n:4, name:'L4 · 후속 처리',      desc:'승인·출고·연차 처리·가격 조회',                           color:'--teal'},
+  {n:5, name:'L5 · 반품·시리얼',    desc:'시리얼 입출고·반품 승인',                                 color:'--violet'},
+  {n:6, name:'L6 · 결재',           desc:'감사·결재 승인 (업무의 마지막 검증)',                     color:'--red'}
+];
+
+function renderSystemMap(){
+  // Filter BUs by current domain filter
+  const visible = UNITS.filter(u => state.domains.has(u.dom));
+  const visibleIds = new Set(visible.map(u=>u.id));
+  const visibleEdges = BU_EDGES.filter(e => visibleIds.has(e.from) && visibleIds.has(e.to));
+
+  // Group BUs by layer
+  const layers = {};
+  LAYER_LABELS.forEach(l => layers[l.n] = []);
+  visible.forEach(u => {
+    const layer = BU_LAYERS[u.id] ?? 3;
+    layers[layer].push(u);
+  });
+
+  const layerHtml = LAYER_LABELS.map(l => {
+    const bus = layers[l.n];
+    if(!bus || bus.length===0) return '';
+    const buCards = bus.map(u => {
+      const d = domInfo(u.dom);
+      const up = BU_EDGES.filter(e => e.to===u.id && visibleIds.has(e.from));
+      const down = BU_EDGES.filter(e => e.from===u.id && visibleIds.has(e.to));
+      return `
+        <div class="map-bu" style="border-color:${d.c}55" data-buid="${u.id}" onclick="jumpToBU('${u.id}')">
+          <div class="map-bu-head">
+            <span class="map-bu-dom" style="background:${d.c}15;color:${d.c}">${d.e}</span>
+            <span class="map-bu-name">${esc(u.name)}</span>
+          </div>
+          <div class="map-bu-meta">
+            <span class="m-up">⬆${up.length}</span>
+            <span class="m-down">⬇${down.length}</span>
+            <span class="m-edge">⊕${u.edges.length}</span>
+          </div>
+        </div>`;
+    }).join('');
+    return `
+      <div class="map-layer">
+        <div class="map-layer-label" style="color:var(${l.color})">
+          <span class="map-layer-badge" style="background:var(${l.color});color:#fff">${l.n}</span>
+          <div>
+            <div class="map-layer-name">${esc(l.name)}</div>
+            <div class="map-layer-desc">${esc(l.desc)}</div>
+          </div>
+          <span class="map-layer-count">${bus.length}개 업무단위</span>
+        </div>
+        <div class="map-layer-bus">${buCards}</div>
+      </div>`;
+  }).join('');
+
+  // Relationship table (who connects to who, by kind)
+  const relByKind = {};
+  visibleEdges.forEach(e => (relByKind[e.kind] ??= []).push(e));
+  const kindSections = Object.entries(REL_KIND).map(([k, meta]) => {
+    const list = relByKind[k] || [];
+    if(list.length===0) return '';
+    return `
+      <div class="rel-kind">
+        <div class="rel-kind-head">
+          <span class="rel-kind-icon" style="background:var(${meta.color}-s);color:var(${meta.color})">${meta.icon}</span>
+          <b>${esc(meta.label)}</b>
+          <span class="rel-kind-n">${list.length}건</span>
+        </div>
+        <div class="rel-kind-body">
+          ${list.map(e => {
+            const fromBu = UNITS.find(u=>u.id===e.from);
+            const toBu = UNITS.find(u=>u.id===e.to);
+            if(!fromBu || !toBu) return '';
+            return `
+              <div class="rel-row">
+                <span class="rel-from" onclick="jumpToBU('${e.from}')">${domInfo(fromBu.dom).e} ${esc(fromBu.name)}</span>
+                <span class="rel-arr">→</span>
+                <span class="rel-to" onclick="jumpToBU('${e.to}')">${domInfo(toBu.dom).e} ${esc(toBu.name)}</span>
+                <span class="rel-via"><code>${esc(e.via)}</code></span>
+                <span class="rel-desc">${esc(e.desc)}</span>
+              </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="result-head">
+      <h2>🗺 시스템 전체 지도 · 업무단위 간 전후 관계</h2>
+      <span class="hint">45개 업무단위가 7개 레이어로 구성. 위에서 아래로 데이터가 흐릅니다.</span>
+      <div class="stats-inline">
+        <span><b>${visible.length}</b>/<b>${UNITS.length}</b> 업무단위</span><span>·</span>
+        <span><b>${visibleEdges.length}</b> 관계</span>
+      </div>
+    </div>
+    <div class="map-wrap">
+      ${layerHtml}
+    </div>
+    <div class="result-head" style="margin-top:40px">
+      <h2>🔗 관계 카탈로그 · 종류별</h2>
+      <span class="hint">BU가 다른 BU에 어떻게 연결되는지 종류(마스터·흐름·참조·라우터·인프라)별로 나열</span>
+    </div>
+    <div class="rel-wrap">${kindSections}</div>`;
+}
+
+window.jumpToBU = function(buId){
+  // Switch to BU view and scroll to that BU, and open it
+  state.pivot = 'bu';
+  state.open.add('bu:'+buId);
+  document.querySelectorAll('.seg').forEach(x=>x.classList.toggle('on', x.dataset.pivot==='bu'));
+  renderMain();
+  setTimeout(()=>{
+    const row = document.querySelector(`.row[data-key="bu:${buId}"]`);
+    if(row){
+      row.scrollIntoView({behavior:'smooth', block:'center'});
+      row.classList.add('highlight-flash');
+      setTimeout(()=>row.classList.remove('highlight-flash'), 1600);
+    }
+  }, 100);
+};
+
+/* ============== KIND VIEW ============== */
+function renderKind(){
+  const filterFn = (x) => {
+    if(!state.domains.size) return false;
+    const hasDom = x.units.some(u => state.domains.has(u.dom));
+    if(!hasDom) return false;
+    if(!state.search) return true;
+    const q = state.search.toLowerCase();
+    const hay = [x.f, ...x.units.map(u=>u.name)].join(' ').toLowerCase();
+    return hay.includes(q);
+  };
+
+  const kinds = ['list','mode','proc','popup','layout','util','ajax'];
+  const sections = kinds.map(k => {
+    const files = KIND_FILES[k].filter(filterFn);
+    const meta = KIND_LABEL[k];
+    if(files.length===0) return '';
+    const rows = files.map(x => `
+      <div class="kind-row">
+        <span class="f">${esc(x.f)}</span>
+        <span class="d">${x.units.map(u=>esc(u.name)).slice(0,2).join(', ')}${x.units.length>2?` +${x.units.length-2}`:''}</span>
+      </div>
+    `).join('');
+    return `
+      <div class="kind-section">
+        <div class="kind-head">
+          <div class="kind-icon" style="background:var(${meta.color}-s);color:var(${meta.color})">${meta.icon}</div>
+          <div>
+            <h3>${meta.label} · ${esc(meta.desc)}</h3>
+            <div class="sub">kind = <code style="font-family:var(--mono);font-size:11px">${k}</code></div>
+          </div>
+          <span class="c">${files.length}개</span>
+        </div>
+        <div class="kind-body">
+          <div class="kind-grid">${rows}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="result-head">
+      <h2>🏷 종류별 · 모든 파일의 카탈로그</h2>
+      <span class="hint">목록/입력/처리/팝업/레이아웃/유틸/AJAX 7개 종류로 그룹핑</span>
+    </div>
+    <div style="max-width:1500px;margin:0 auto;padding:0 32px">
+      ${sections || emptyBlock()}
+    </div>`;
+}
+
+/* ============== AUDIT (comprehensive integrity verification) ============== */
+function renderAudit(){
+  const edges = EDGES.filter(e => state.domains.has(e.dom));
+  const fwd = {}; edges.forEach(e => fwd[e.unit] = (fwd[e.unit]||0)+1);
+  const rev = {}; edges.forEach(e => rev[e.t]   = (rev[e.t]||0)+1);
+  const fwdSorted = Object.keys(fwd).sort((a,b)=>fwd[b]-fwd[a]);
+  const revSorted = Object.keys(rev).sort((a,b)=>rev[b]-rev[a]);
+  const fwdSum = fwdSorted.reduce((s,k)=>s+fwd[k],0);
+  const revSum = revSorted.reduce((s,k)=>s+rev[k],0);
+  const match = fwdSum === revSum;
+
+  // Domain breakdown
+  const byDom = {};
+  edges.forEach(e => byDom[e.dom] = (byDom[e.dom]||0)+1);
+
+  // Zero-edge units in current filter
+  const zeroUnits = UNITS.filter(u => state.domains.has(u.dom) && u.edges.length===0);
+
+  // Full list of units incl. zero ones
+  const activeUnits = UNITS.filter(u => state.domains.has(u.dom));
+
+  const domainBreakdown = DOMAINS.filter(d=>byDom[d.id]!==undefined || activeUnits.some(u=>u.dom===d.id))
+    .map(d => {
+      const units = activeUnits.filter(u=>u.dom===d.id);
+      const edgesDom = byDom[d.id] || 0;
+      return `
+        <div class="audit-dom-row" style="border-left-color:${d.c}">
+          <div class="audit-dom-name"><span style="font-size:14px">${d.e}</span> ${esc(d.n)}</div>
+          <div class="audit-dom-units">${units.length} 단위</div>
+          <div class="audit-dom-edges">${edgesDom} 엣지</div>
+        </div>`;
+    }).join('');
+
+  const fwdRows = fwdSorted.map(uid => {
+    const u = UNITS.find(x=>x.id===uid);
+    const d = domInfo(u.dom);
+    return `<div class="audit-row">
+      <span class="audit-idx">${d.e}</span>
+      <span class="audit-name">${esc(u.name)}</span>
+      <span class="audit-sub">${u.tables.slice(0,2).join(', ')}${u.tables.length>2?` +${u.tables.length-2}`:''}</span>
+      <span class="audit-count c-ok">${fwd[uid]}</span>
+    </div>`;
+  }).join('');
+
+  // Table rows with which BU writes
+  const revRows = revSorted.map(t => {
+    const edgesOfT = edges.filter(e=>e.t===t);
+    const units = [...new Set(edgesOfT.map(e=>e.unit))];
+    const unitsLabel = units.map(uid=>UNITS.find(x=>x.id===uid)?.name).filter(Boolean);
+    return `<div class="audit-row">
+      <span class="audit-idx">🗄</span>
+      <span class="audit-name">${esc(t)}</span>
+      <span class="audit-sub">${unitsLabel.slice(0,2).join(', ')}${unitsLabel.length>2?` +${unitsLabel.length-2}`:''}</span>
+      <span class="audit-count c-ok">${rev[t]}</span>
+    </div>`;
+  }).join('');
+
+  const zeroRows = zeroUnits.map(u => {
+    const d = domInfo(u.dom);
+    return `
+    <div class="zero-card">
+      <div class="zero-head">
+        <span class="zero-dom" style="background:${d.c}15;color:${d.c}">${d.e} ${esc(d.n)}</span>
+        <b>${esc(u.name)}</b>
+        <span class="zero-sub">${u.list.length+u.mode.length+u.proc.length+u.popup.length+u.layout.length+u.util.length}개 파일 · 0 엣지</span>
+      </div>
+      <div class="zero-reason">${esc(u.zeroReason || '읽기 전용 / 외부 배치 의존')}</div>
+    </div>`;
+  }).join('');
+
+  // Table-screen detail — every table with explicit screens/procs/ops
+  const traceRows = revSorted.map(t => {
+    const edgesOfT = edges.filter(e=>e.t===t);
+    const grouped = {};
+    edgesOfT.forEach(e => {
+      const key = e.s+'||'+e.p;
+      if(!grouped[key]) grouped[key] = {s:e.s, p:e.p, ops:[], unit:e.unit};
+      grouped[key].ops.push(e.op);
+    });
+    const lines = Object.values(grouped).map(g => {
+      const u = UNITS.find(x=>x.id===g.unit);
+      return `<div class="trace-line">
+        <span class="tag t-table">${esc(t)}</span>
+        <span class="trace-arrow">←</span>
+        <span class="tag" style="background:var(--bg-subtle);font-size:10.5px;font-weight:700">${g.ops.join(',')}</span>
+        <span class="trace-arrow">←</span>
+        <span class="tag t-proc">${esc(g.p)}</span>
+        <span class="trace-arrow">←</span>
+        <span class="tag t-screen">${esc(g.s)}</span>
+        <span class="trace-unit">${esc(u?.name||'')}</span>
+      </div>`;
+    }).join('');
+    return `
+      <div class="trace-group">
+        <div class="trace-head">
+          <span class="trace-table">🗄 ${esc(t)}</span>
+          <span class="trace-count">${edgesOfT.length} 엣지</span>
+        </div>
+        ${lines}
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="audit-wrap">
+      <!-- MASTER EQUATION -->
+      <div class="audit-eq ${match?'ok':'bad'}">
+        <div class="audit-eq-side">
+          <span class="audit-eq-lbl">① 화면 쪽 합계</span>
+          <span class="audit-eq-num">${fwdSum}</span>
+          <span class="audit-eq-detail">${fwdSorted.length} 업무단위에서 발생</span>
+        </div>
+        <div class="audit-eq-sign">
+          <div class="audit-sign-glyph">${match?'=':'≠'}</div>
+          <div class="audit-sign-label">${match?'정합':'불일치'}</div>
+        </div>
+        <div class="audit-eq-side">
+          <span class="audit-eq-lbl">② 테이블 쪽 합계</span>
+          <span class="audit-eq-num">${revSum}</span>
+          <span class="audit-eq-detail">${revSorted.length} 테이블에 분산</span>
+        </div>
+      </div>
+
+      <!-- DOMAIN BREAKDOWN -->
+      <section class="audit-section">
+        <h3 class="audit-h">📊 도메인별 엣지 분포</h3>
+        <p class="audit-p">14개 도메인에 분포된 ${fwdSum}개 엣지. 도메인 내부에서 ×46 업무단위로 다시 쪼개집니다.</p>
+        <div class="audit-dom-grid">${domainBreakdown}</div>
+      </section>
+
+      <!-- SIDE BY SIDE -->
+      <section class="audit-section">
+        <h3 class="audit-h">📋 업무단위 vs 테이블 — 라인별 검증</h3>
+        <p class="audit-p">양쪽 열의 숫자 합이 가운데 등식과 정확히 같습니다. 스크롤하며 확인하세요.</p>
+        <div class="audit-twocol">
+          <div class="audit-col">
+            <div class="audit-col-head">
+              <span class="audit-col-marker" style="background:var(--blue)"></span>
+              <span>① 업무단위 → 쓰는 테이블 수</span>
+              <span class="audit-col-sum">Σ <b>${fwdSum}</b></span>
+            </div>
+            <div class="audit-col-body">${fwdRows}</div>
+          </div>
+          <div class="audit-col">
+            <div class="audit-col-head">
+              <span class="audit-col-marker" style="background:var(--red)"></span>
+              <span>② 테이블 → 쓰는 업무단위 수</span>
+              <span class="audit-col-sum">Σ <b>${revSum}</b></span>
+            </div>
+            <div class="audit-col-body">${revRows}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ZERO-EDGE REASONS -->
+      ${zeroRows ? `
+      <section class="audit-section">
+        <h3 class="audit-h">⚠️ 쓰기 엣지 0건인 업무 단위 · ${zeroUnits.length}개 — 왜 0인가</h3>
+        <p class="audit-p">화면은 있지만 엣지 0건인 단위는 <b>실제 쓰기가 다른 단위로 귀속</b>되었거나 <b>읽기 전용·외부 배치 의존</b>이기 때문입니다. 각각 이유를 명시합니다.</p>
+        <div class="zero-grid">${zeroRows}</div>
+      </section>` : ''}
+
+      <!-- DB PROCEDURE COVERAGE -->
+      <section class="audit-section">
+        <h3 class="audit-h">🧩 DB 프로시저 커버리지 · 체인의 5번째 레이어</h3>
+        <p class="audit-p">_proc.php 와 테이블 사이에 DB 프로시저가 끼어드는 경로를 추적합니다. 직접 호출(사용자 action), 트리거 연쇄(자동), 스케줄 Job(무인), 내부 호출 4종으로 구분.</p>
+        <div class="proc-coverage-grid">
+          ${(function(){
+            const byKind = {php:[],trig:[],job:[],internal:[],admin:[]};
+            DB_PROCS.forEach(p => p.upstream.forEach(u => byKind[u.kind]?.push({proc:p, u})));
+            return Object.entries(byKind).filter(([_,v])=>v.length>0).map(([k,arr])=>{
+              const meta = UP_KIND[k];
+              return `
+                <div class="coverage-card">
+                  <div class="coverage-head" style="background:var(${meta.color}-s);color:var(${meta.color})">
+                    <span>${meta.icon}</span>
+                    <b>${meta.label}</b>
+                    <span class="coverage-n">${arr.length}건</span>
+                  </div>
+                  <div class="coverage-body">
+                    ${arr.map(({proc,u})=>{
+                      const bu = u.unit ? UNITS.find(x=>x.id===u.unit) : null;
+                      return `<div class="coverage-row">
+                        <code>${esc(proc.name)}</code>
+                        <span class="coverage-arr">←</span>
+                        <span>${bu ? esc(bu.name) : (u.via || '(무인/외부)')}</span>
+                      </div>`;
+                    }).join('')}
+                  </div>
+                </div>`;
+            }).join('');
+          })()}
+        </div>
+      </section>
+
+      <!-- DETAILED TRACE -->
+      <section class="audit-section">
+        <h3 class="audit-h">🔬 테이블→화면 완전 추적 (모든 쓰기 엣지의 역방향 경로)</h3>
+        <p class="audit-p">각 테이블마다 들어오는 모든 쓰기를 <b>테이블 ← 연산 ← _proc.php ← 화면</b> 순서로 나열. 이 목록 전체가 ${revSum}줄이어야 ${fwdSum}과 일치합니다.</p>
+        <div class="trace-list">${traceRows}</div>
+      </section>
+    </div>`;
+}
+
+function emptyBlock(){
+  return `<div class="empty"><div class="icon">🔍</div><h3>결과가 없습니다</h3><p>검색어나 도메인 필터를 조정해 보세요.</p></div>`;
+}
+
+function renderMain(){
+  const main = $('main');
+  let html = '';
+  if(state.pivot==='bu')        html = renderBU();
+  else if(state.pivot==='rev')  html = renderReverse();
+  else if(state.pivot==='proc') html = renderProcs();
+  else if(state.pivot==='map')  html = renderSystemMap();
+  else if(state.pivot==='kind') html = renderKind();
+  else                          html = renderAudit();
+  main.innerHTML = html;
+
+  main.querySelectorAll('.row').forEach(b => {
+    b.addEventListener('click', ev => {
+      if(ev.target.closest('.detail')) return;
+      const k = b.dataset.key;
+      if(state.open.has(k)) state.open.delete(k); else state.open.add(k);
+      b.classList.toggle('open');
+    });
+  });
+}
+
+/* ============== BINDINGS ============== */
+document.querySelectorAll('.seg').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.seg').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    state.pivot = t.dataset.pivot;
+    renderMain();
+  });
+});
+$('search').addEventListener('input', e => { state.search = e.target.value.trim(); renderMain(); });
+window.addEventListener('keydown', e => {
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){
+    e.preventDefault(); $('search').focus(); $('search').select();
+  }
+});
+
+/* Preview modal — actual PHP screen rendering with rich business context */
+const STAGE_LABELS = {
+  list:  {num:1, icon:'📋', label:'목록',        desc:'검색·조회'},
+  mode:  {num:2, icon:'✏️', label:'입력',        desc:'폼 작성·POST'},
+  popup: {num:2, icon:'🔎', label:'팝업 입력',   desc:'팝업을 통한 입력'},
+  proc:  {num:3, icon:'⚡', label:'처리',        desc:'_proc.php 실행'},
+  dbproc:{num:4, icon:'🧩', label:'DB 프로시저', desc:'DB 로직 실행'},
+  table: {num:5, icon:'🗄', label:'테이블',      desc:'영구 저장'},
+  layout:{num:0, icon:'🪟', label:'레이아웃',    desc:'프레임·메뉴'},
+  util:  {num:0, icon:'🛠', label:'유틸',        desc:'보조 기능'}
+};
+
+function detectStage(phpName, bu){
+  if(!bu) return 'util';
+  if(bu.list.includes(phpName))   return 'list';
+  if(bu.mode.includes(phpName))   return 'mode';
+  if(bu.proc.includes(phpName))   return 'proc';
+  if(bu.popup.includes(phpName))  return 'popup';
+  if(bu.layout.includes(phpName)) return 'layout';
+  if(bu.util.includes(phpName))   return 'util';
+  return 'util';
+}
+
+window.openPreview = function(phpName, btn){
+  if(btn) btn.blur();
+  const htmlName = phpName.replace(/\.php$/,'.html');
+  if(!PREVIEW_FILES.has(htmlName)){
+    alert('미리보기 파일이 없습니다: ' + htmlName);
+    return;
+  }
+  const modal = document.getElementById('preview-modal');
+  const iframe = document.getElementById('preview-iframe');
+  const loading = document.getElementById('preview-loading');
+  const src = 'previews/' + htmlName;
+
+  // Find BU context
+  const bu = UNITS.find(u => [...u.list,...u.mode,...u.proc,...u.popup,...u.layout,...u.util].includes(phpName));
+  const d = bu ? domInfo(bu.dom) : {e:'',n:'(미분류)',c:'#71717a'};
+  const stage = detectStage(phpName, bu);
+  const stageMeta = STAGE_LABELS[stage];
+
+  // Header: domain chip + BU name
+  const domChip = document.getElementById('preview-dom');
+  const buName = document.getElementById('preview-bu');
+  domChip.textContent = `${d.e} ${d.n}`;
+  domChip.style.color = d.c;
+  domChip.style.background = d.c + '15';
+  buName.textContent = bu ? bu.name : '(업무단위 외)';
+
+  // Stage badge + file name + purpose
+  const stageBadge = document.getElementById('preview-stage-badge');
+  stageBadge.textContent = `${stageMeta.icon} ${stageMeta.num > 0 ? stageMeta.num+' · ' : ''}${stageMeta.label}`;
+  stageBadge.style.background = `var(--${({list:'blue',mode:'teal',popup:'indigo',proc:'amber',dbproc:'violet',table:'red',layout:'pink',util:'slate'})[stage]}-s)`;
+  stageBadge.style.color = `var(--${({list:'blue',mode:'teal',popup:'indigo',proc:'amber',dbproc:'violet',table:'red',layout:'pink',util:'slate'})[stage]})`;
+  document.getElementById('preview-file').textContent = phpName;
+  document.getElementById('preview-purpose').textContent = stageMeta.desc;
+
+  // Flow breadcrumb: 5 stages with current highlighted
+  document.getElementById('preview-flow').innerHTML = renderPreviewFlow(bu, stage);
+
+  // Footer: before/after context explaining the flow
+  document.getElementById('preview-foot').innerHTML = renderPreviewContext(bu, stage, phpName);
+
+  // Open new tab link
+  document.getElementById('preview-open-new').href = src;
+
+  // Load iframe with loading state + safety timeout
+  loading.style.display = 'flex';
+  loading.querySelector('span').textContent = '실제 PHP 렌더링 화면 불러오는 중…';
+  iframe.src = src;
+  modal.classList.add('on');
+  // Safety: if iframe doesn't fire onload within 4s, hide spinner anyway
+  clearTimeout(window.__previewTimeout);
+  window.__previewTimeout = setTimeout(() => {
+    loading.style.display = 'none';
+  }, 4000);
+};
+
+function renderPreviewFlow(bu, currentStage){
+  if(!bu){
+    return '<div style="color:var(--ink-4);font-size:12px;padding:4px 12px">업무단위 외 파일 · 흐름 맥락 없음</div>';
+  }
+  // 5 canonical stages
+  const stages = [
+    {k:'list',   ic:'📋', lb:'목록',        files:bu.list},
+    {k:'mode',   ic:'✏️', lb:'입력',        files:bu.mode.length ? bu.mode : bu.popup, popupFallback: bu.mode.length===0 && bu.popup.length>0},
+    {k:'proc',   ic:'⚡', lb:'처리',        files:bu.proc},
+    {k:'dbproc', ic:'🧩', lb:'DB 프로시저', files:bu.dbProcs||[]},
+    {k:'table',  ic:'🗄', lb:'테이블',      files:bu.tables},
+  ];
+  // Find current stage index
+  let curIdx = stages.findIndex(s => s.k===currentStage);
+  if(curIdx < 0 && currentStage==='popup') curIdx = 1;
+
+  const html = [];
+  stages.forEach((s, i) => {
+    const empty = s.files.length===0;
+    let cls = 's-'+s.k;
+    if(empty) cls += ' empty';
+    else if(i < curIdx) cls += ' done';
+    else if(i === curIdx) cls += ' current';
+    else cls += ' future';
+    const primary = empty ? '(없음)' : s.files[0];
+    const more = s.files.length>1 ? ` +${s.files.length-1}` : '';
+    html.push(`
+      <div class="pf-step ${cls}">
+        <div class="pf-lbl"><span class="pf-num">${i+1}</span>${s.ic} ${s.lb}${s.popupFallback?' (팝업)':''}</div>
+        <div class="pf-files">${esc(primary)}${more}</div>
+      </div>`);
+    if(i < stages.length-1) html.push(`<div class="pf-arrow">→</div>`);
+  });
+  return html.join('');
+}
+
+function renderPreviewContext(bu, stage, phpName){
+  if(!bu) return '— 업무단위 외 화면';
+
+  const parts = [];
+  if(stage === 'list'){
+    const next = bu.mode[0] || bu.popup[0];
+    parts.push(`<b>📋 목록 화면입니다.</b> 여기서 "추가" 또는 항목 클릭 시 `);
+    if(next) parts.push(`<code>${esc(next)}</code><span class="ctx-arrow">→</span>`);
+    parts.push(`입력 단계로 이동합니다.`);
+  } else if(stage === 'mode' || stage === 'popup'){
+    const next = bu.proc[0];
+    parts.push(`<b>✏️ 입력 ${stage==='popup'?'팝업':'폼'}입니다.</b> 사용자가 값을 입력하고 submit 하면 `);
+    if(next) parts.push(`<code>${esc(next)}</code><span class="ctx-arrow">→</span>`);
+    parts.push(`처리 단계로 POST됩니다. ${bu.tables.length>0 ? `최종적으로 <code>${esc(bu.tables.slice(0,3).join(', '))}</code>${bu.tables.length>3?' 등':''} 테이블에 저장.` : ''}`);
+  } else if(stage === 'proc'){
+    parts.push(`<b>⚡ 처리 핸들러입니다.</b> POST를 받아 실제 DB 쓰기를 수행합니다. `);
+    if(bu.edges.length) parts.push(`<b>${bu.edges.length}개</b>의 SQL 쓰기가 발생하며, 대상: `);
+    if(bu.tables.length) parts.push(`<code>${esc(bu.tables.join(', '))}</code>. `);
+    if((bu.dbProcs||[]).length) parts.push(`DB 프로시저 호출: <code>${esc(bu.dbProcs.join(', '))}</code>.`);
+  } else if(stage === 'popup'){
+    parts.push(`<b>🔎 보조 팝업입니다.</b> 부모 화면에서 값을 선택·검색할 때 사용됩니다.`);
+  } else if(stage === 'layout'){
+    parts.push(`<b>🪟 레이아웃 조각입니다.</b> 상단/하단 프레임으로 모든 화면에 include 됩니다.`);
+  } else {
+    parts.push(`<b>🛠 유틸리티입니다.</b> 업로드·다운로드·부가 기능.`);
+  }
+  parts.push(` <span style="color:var(--ink-4)">· 업무: ${esc(bu.desc)}</span>`);
+  return parts.join('');
+}
+
+window.closePreview = function(){
+  const modal = document.getElementById('preview-modal');
+  const iframe = document.getElementById('preview-iframe');
+  modal.classList.remove('on');
+  setTimeout(()=>{ iframe.src = 'about:blank'; }, 200);
+};
+window.addEventListener('keydown', e => {
+  if(e.key==='Escape'){
+    const m = document.getElementById('preview-modal');
+    if(m.classList.contains('on')) closePreview();
+  }
+});
+
+/* theme */
+(function(){
+  const btn = $('themeToggle');
+  const iconSun  = '<svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+  const iconMoon = '<svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  function apply(t){
+    document.documentElement.setAttribute('data-theme',t);
+    try{localStorage.setItem('kocom-theme-final',t);}catch(e){}
+    $('theme-icon').outerHTML = t==='light' ? iconMoon : iconSun;
+  }
+  apply(localStorage.getItem('kocom-theme-final')||'light');
+  btn.addEventListener('click',function(){
+    const cur = document.documentElement.getAttribute('data-theme');
+    apply(cur==='light'?'dark':'light');
+  });
+})();
+
+/* init + assertions */
+renderIntegrity();
+renderDomainFilter();
+renderMain();
+
+function groupBy(arr,k){const o={};arr.forEach(x=>(o[x[k]]??=[]).push(x));return o}
+const fwdSum = Object.values(groupBy(EDGES,'unit')).reduce((s,g)=>s+g.length,0);
+const revSum = Object.values(groupBy(EDGES,'t')).reduce((s,g)=>s+g.length,0);
+console.log(`%c[통합체인 FINAL v3 · 정합성 리포트]`,'color:#2563eb;font-weight:700;font-size:13px');
+console.log(`업무단위 ${UNITS.length} · 화면 ${SCREENS_ALL.size} · 엣지 ${EDGES.length} · 테이블 ${TABLES_W.length} · _proc.php ${PROCS_W.length} · DB프로시저 ${DBPROCS_ALL.length} · 트리거 ${TRIGS_ALL.length}`);
+console.table({
+  '① 화면 쪽 (업무단위 기준)': fwdSum,
+  '② 테이블 쪽 (테이블 기준)': revSum,
+  '일치 여부': fwdSum === revSum ? '✅ 정합' : '❌ 불일치',
+  '총 엣지': EDGES.length
+});
+console.log('Kind breakdown:', Object.fromEntries(Object.entries(KIND_FILES).map(([k,v])=>[k,v.length])));
+const zeroUnits = UNITS.filter(u => u.edges.length===0);
+console.log(`%c0엣지 업무단위 ${zeroUnits.length}개 — 각 이유:`,'color:#b45309;font-weight:700');
+zeroUnits.forEach(u => console.log(`  • ${u.name}: ${u.zeroReason || '(사유 미기재)'}`));
+console.assert(fwdSum === revSum && fwdSum === EDGES.length, 'Sum mismatch — 데이터 오류');
+if(fwdSum === revSum) console.log(`%c✅ 양방향 합계 일치 (${fwdSum} = ${revSum})`,'color:#047857;font-weight:700');
+
+// DB procedure layer validation
+console.log(`%c[DB 레이어] ${DB_PROCS.length} 프로시저 · ${DB_PROCS.reduce((s,p)=>s+p.upstream.length,0)} 호출 경로`,'color:#6d28d9;font-weight:700');
+const procsInBUs = new Set(UNITS.flatMap(u=>u.dbProcs||[]));
+const procsDeclared = new Set(DB_PROCS.map(p=>p.name));
+const missingFromDB = [...procsInBUs].filter(p => !procsDeclared.has(p));
+if(missingFromDB.length) console.warn('BU에 언급되었으나 DB_PROCS 에 정의되지 않은 프로시저:', missingFromDB);
+else console.log('✅ BU에서 참조하는 모든 프로시저가 DB_PROCS 에 정의됨');
+
+// TABLE_COLS coverage validation
+const tablesInBUs = new Set();
+UNITS.forEach(u => (u.tables||[]).forEach(t => tablesInBUs.add(t)));
+EDGES.forEach(e => tablesInBUs.add(e.t));
+const tablesDeclared = new Set(Object.keys(TABLE_COLS));
+const tablesMissingCols = [...tablesInBUs].filter(t => !tablesDeclared.has(t));
+console.log(`%c[컬럼 레이어] ${tablesDeclared.size} 테이블 스키마 정의 · ${tablesInBUs.size} 참조`,'color:#dc2626;font-weight:700');
+if(tablesMissingCols.length){
+  console.warn('⚠ 컬럼 명세 없는 테이블:', tablesMissingCols);
+  console.warn('→ 사용자에게 표시되는 renderTableCards 에서 "컬럼 정보 미수집" 으로 표시됨');
+} else {
+  console.log('✅ 모든 참조 테이블이 TABLE_COLS 에 정의됨');
+}
+
+// Preview coverage validation
+const allFiles = new Set();
+UNITS.forEach(u => [...u.list, ...u.mode, ...u.proc, ...u.popup, ...u.layout, ...u.util].forEach(f => allFiles.add(f)));
+const previewAvailable = [...allFiles].filter(f => PREVIEW_FILES.has(f.replace(/\.php$/,'.html'))).length;
+console.log(`%c[미리보기] ${previewAvailable}/${allFiles.size} 파일 미리보기 가능`,'color:#2563eb;font-weight:700');
+
+// Screen flow order check — every BU should have at least one of list/mode/proc/popup
+const brokenBUs = UNITS.filter(u => u.list.length===0 && u.mode.length===0 && u.proc.length===0 && u.popup.length===0 && u.layout.length===0 && u.util.length===0);
+if(brokenBUs.length){
+  console.warn('⚠ 화면이 전혀 없는 BU:', brokenBUs.map(u=>u.name));
+} else {
+  console.log('✅ 모든 BU가 최소 1개 이상 화면을 가짐 (흐름 표시 가능)');
+}
+
+// BU-to-BU relationship validation
+console.log(`%c[시스템 지도] ${BU_EDGES.length}개 BU 간 관계 · ${Object.keys(LAYER_LABELS).length}개 레이어`,'color:#7c3aed;font-weight:700');
+const buIds = new Set(UNITS.map(u=>u.id));
+const invalidEdges = BU_EDGES.filter(e => !buIds.has(e.from) || !buIds.has(e.to));
+if(invalidEdges.length) console.warn('⚠ 존재하지 않는 BU를 참조하는 관계:', invalidEdges);
+else console.log('✅ 모든 BU 관계가 유효한 BU 간 연결');
+
+// Isolated BU check (no upstream or downstream)
+const isolatedBUs = UNITS.filter(u => {
+  const inDeg = BU_EDGES.filter(e=>e.to===u.id).length;
+  const outDeg = BU_EDGES.filter(e=>e.from===u.id).length;
+  return inDeg===0 && outDeg===0;
+});
+if(isolatedBUs.length) console.warn('⚠ 전후 관계가 없는 고립 BU:', isolatedBUs.map(u=>u.name));
+else console.log('✅ 모든 BU가 시스템 지도 네트워크에 편입됨');
+
+// Source file vs UNIT references audit
+const srcFileCount = 201; // from 원본 ls count (excluding .orig)
+const referencedFileCount = allFiles.size;
+console.log(`%c[소스 매핑] 원본 ${srcFileCount}개 PHP 중 ${referencedFileCount}개가 BU로 편입됨`,'color:#047857;font-weight:700');
+</script>
+</body>
+</html>

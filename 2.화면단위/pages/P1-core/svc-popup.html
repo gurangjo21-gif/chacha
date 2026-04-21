@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        'k-primary': '#6699FF', 'k-active': '#5acd3e',
+        'k-border': '#d7d7d7', 'k-text': '#333333',
+        'k-sub': '#545454', 'k-bg': '#f2f2f2', 'k-header': '#f3f3f3',
+      }}}
+    }
+  </script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+  <script src="../../../_shared/mock-data.js"></script>
+  <style>
+    body {
+      font-size: 12px;
+      font-family: 'Malgun Gothic', sans-serif;
+      color: #333;
+      background: #fff;
+      padding: 0;
+      margin: 0;
+    }
+    /* 팝업 헤더 */
+    .popup-header {
+      background: #eeeeee;
+      border-bottom: 1px solid #d0d0d0;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .popup-header strong { font-size: 14px; color: #333; }
+
+    /* 폼 테이블 공통 */
+    .form-table {
+      border-collapse: collapse;
+      width: 100%;
+      border-top: 2px solid #959595;
+    }
+    .form-table th {
+      background: #f3f3f3;
+      border-bottom: 1px solid #959595;
+      border-right: 1px solid #c0c0c0;
+      color: #333;
+      font-weight: bold;
+      padding: 5px 8px;
+      text-align: left;
+      white-space: nowrap;
+      width: 110px;
+    }
+    .form-table td {
+      border-bottom: 1px solid #d0d0d0;
+      border-right: 1px solid #e0e0e0;
+      color: #505050;
+      padding: 4px 6px;
+    }
+    .form-table td:last-child, .form-table th:last-child { border-right: 0; }
+
+    /* 읽기전용 인풋 */
+    .input-readonly {
+      background: #f6f6f6;
+      border: 1px solid #c0c0c0;
+      padding: 2px 5px;
+      font-size: 12px;
+      color: #555;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    /* 일반 인풋/셀렉트 */
+    input[type=text], input[type=date], select, textarea {
+      border: 1px solid #ccc;
+      padding: 2px 5px;
+      font-size: 12px;
+      border-radius: 2px;
+      box-sizing: border-box;
+    }
+    input[type=text]:focus, select:focus, textarea:focus {
+      outline: 1px solid #6699FF;
+    }
+    .inp-full { width: 100%; }
+    .inp-half { width: 48%; }
+
+    /* 자재 테이블 */
+    .jaje-table {
+      border-collapse: collapse;
+      width: 100%;
+      border-top: 1px solid #959595;
+    }
+    .jaje-table thead th {
+      background: #f3f3f3;
+      border: 1px solid #c0c0c0;
+      padding: 4px 6px;
+      text-align: center;
+      font-weight: bold;
+      color: #545454;
+      font-size: 12px;
+    }
+    .jaje-table tbody td {
+      border: 1px solid #d0d0d0;
+      padding: 3px 4px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .jaje-table tbody tr:nth-child(even) { background: #f9f9f9; }
+
+    /* 버튼 */
+    .btn-save {
+      background: #6699FF; color: #fff;
+      border: 1px solid #4477cc;
+      padding: 4px 14px; border-radius: 2px;
+      cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-save:hover { background: #4477cc; }
+    .btn-close {
+      background: #f2f2f2; color: #333;
+      border: 1px solid #ccc;
+      padding: 4px 14px; border-radius: 2px;
+      cursor: pointer; font-size: 12px;
+    }
+    .btn-close:hover { background: #e0e0e0; }
+    .btn-add {
+      background: #5acd3e; color: #fff;
+      border: 1px solid #3fa82e;
+      padding: 3px 10px; border-radius: 2px;
+      cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .btn-add:hover { background: #3fa82e; }
+    .btn-del {
+      background: #ff6666; color: #fff;
+      border: none; padding: 2px 8px;
+      border-radius: 2px; cursor: pointer; font-size: 11px;
+    }
+    .btn-del:hover { background: #cc3333; }
+    .btn-print {
+      background: #888; color: #fff;
+      border: none; padding: 4px 12px;
+      border-radius: 2px; cursor: pointer; font-size: 12px;
+    }
+
+    /* 섹션 타이틀 */
+    .section-title {
+      background: #e8e8e8;
+      border-top: 1px solid #bbb;
+      border-bottom: 1px solid #bbb;
+      padding: 4px 8px;
+      font-weight: bold;
+      font-size: 12px;
+      color: #333;
+      margin-top: 0;
+    }
+
+    /* 합계 영역 */
+    .total-bar {
+      background: #f3f3f3;
+      border-top: 2px solid #959595;
+      border-bottom: 1px solid #d0d0d0;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    .total-amount { color: #cc3300; font-size: 15px; }
+
+    .required { color: #cc0000; }
+
+    /* 처리내용 */
+    textarea.ps-memo {
+      width: 100%;
+      height: 70px;
+      resize: vertical;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+
+<div x-data="{
+  /* 접수번호 URL 파라미터에서 읽거나 기본값 사용 */
+  receiptNo: new URLSearchParams(window.location.search).get('rno') || '260415-0001',
+  info: null,
+  /* 처리 입력 폼 */
+  processDate: '2026-04-15',
+  processBranch: '',
+  processEngineer: '',
+  serialNo: '',
+  payType: '',
+  processMain: '',
+  processSub: '',
+  causeMain: '',
+  causeSub: '',
+  processContent: '',
+  engineerMemo: '',
+  vatYn: '',
+  /* 자재 목록 */
+  items: [],
+  addItem() {
+    this.items.push({ part: '', name: '', grade: '', qty: 1, price: 0 });
+  },
+  removeItem(i) {
+    this.items.splice(i, 1);
+  },
+  get materialTotal() {
+    return this.items.reduce((s, it) => s + (Number(it.qty) * Number(it.price)), 0);
+  },
+  get billTotal() {
+    return this.materialTotal;
+  },
+  formatNum(n) {
+    return Number(n).toLocaleString();
+  },
+  init() {
+    /* mock-data에서 해당 접수번호 행 찾기 */
+    if (window.MOCK && MOCK.svcList) {
+      this.info = MOCK.svcList.find(r => r.receiptNo === this.receiptNo) || MOCK.svcList[0];
+    }
+    if (this.info) {
+      this.processDate    = this.info.processDate || '2026-04-15';
+      this.processBranch  = this.info.processBranch || '';
+      this.processEngineer= this.info.processEngineer || '';
+      this.processMain    = this.info.processMain || '';
+      this.processSub     = this.info.processSub || '';
+      this.causeMain      = this.info.causeMain || '';
+      this.causeSub       = this.info.causeSub || '';
+      this.payType        = this.info.payType || '';
+      this.processContent = this.info.processContent || '';
+      /* 기존 처리가 있으면 자재 샘플 추가 */
+      if (this.info.processNo) {
+        this.items = [
+          { part: 'PCB-001', name: 'PCB 기판', grade: 'A', qty: 1, price: 45000 }
+        ];
+      }
+    }
+  },
+  save() {
+    if (!this.processEngineer) { alert('처리기사를 입력하세요.'); return; }
+    if (!this.serialNo && !this.info?.processNo) { alert('제조번호를 입력하세요. (4자 이상)'); return; }
+    if (!this.processMain) { alert('처리분류를 선택하세요.'); return; }
+    if (!this.processSub)  { alert('처리상세를 선택하세요.'); return; }
+    if (!this.causeMain)   { alert('원인분류를 선택하세요.'); return; }
+    if (!this.causeSub)    { alert('원인상세를 선택하세요.'); return; }
+    if (!this.processContent) { alert('처리내용을 입력하세요.'); return; }
+    if (!this.payType) { alert('요금적용을 선택하세요.'); return; }
+    alert('저장되었습니다. (프로토타입)');
+    window.close();
+  }
+}">
+
+  <!-- ① 팝업 헤더 -->
+  <div class="popup-header">
+    <strong>[서비스 처리]</strong>
+    <div style="display:flex;gap:4px;">
+      <button class="btn-print" onclick="window.print()">인쇄</button>
+      <button class="btn-save" @click="save()">저장</button>
+      <button class="btn-close" @click="window.close()">닫기</button>
+    </div>
+  </div>
+
+  <div style="padding: 8px; overflow-y: auto; max-height: calc(100vh - 42px);">
+
+    <!-- ② 접수 기본정보 (읽기전용) -->
+    <div class="section-title">접수 기본정보</div>
+    <table class="form-table" style="margin-bottom:0;">
+      <tbody>
+        <tr>
+          <th>접수번호</th>
+          <td>
+            <input type="text" class="input-readonly" readonly :value="info ? info.receiptNo : '-'">
+          </td>
+          <th>접수일시</th>
+          <td>
+            <input type="text" class="input-readonly" readonly :value="info ? info.receiptDate : '-'">
+          </td>
+        </tr>
+        <tr>
+          <th>고객명</th>
+          <td>
+            <input type="text" class="input-readonly" readonly :value="info ? info.customerName : '-'">
+          </td>
+          <th>연락처</th>
+          <td>
+            <input type="text" class="input-readonly" readonly :value="info ? (info.mobile || info.contact) : '-'">
+          </td>
+        </tr>
+        <tr>
+          <th>주소</th>
+          <td colspan="3">
+            <input type="text" class="input-readonly" readonly :value="info ? info.address : '-'">
+          </td>
+        </tr>
+        <tr>
+          <th>모델</th>
+          <td>
+            <input type="text" class="input-readonly" readonly :value="info ? info.model : '-'">
+          </td>
+          <th>판매유형</th>
+          <td>
+            <input type="text" class="input-readonly" readonly :value="info ? info.sellType : '-'">
+          </td>
+        </tr>
+        <tr>
+          <th>증상분류</th>
+          <td>
+            <input type="text" class="input-readonly" readonly :value="info ? info.errorMain : '-'">
+          </td>
+          <th>세부증상</th>
+          <td>
+            <input type="text" class="input-readonly" readonly :value="info ? info.errorSub : '-'">
+          </td>
+        </tr>
+        <tr>
+          <th>특이사항</th>
+          <td colspan="3">
+            <input type="text" class="input-readonly" readonly :value="info ? info.remark : ''">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ③ 처리 정보 입력 -->
+    <div class="section-title" style="margin-top:8px;">처리 정보</div>
+    <table class="form-table" style="margin-bottom:0;">
+      <tbody>
+        <tr>
+          <th>처리일 <span class="required">*</span></th>
+          <td>
+            <input type="date" x-model="processDate" style="width:130px;">
+          </td>
+          <th>처리번호</th>
+          <td>
+            <input type="text" class="input-readonly" readonly :value="info && info.processNo ? info.processNo : '(신규)'">
+          </td>
+        </tr>
+        <tr>
+          <th>처리지점 <span class="required">*</span></th>
+          <td>
+            <select x-model="processBranch" style="width:100%;">
+              <option value="">-- 선택 --</option>
+              <option value="강남지점">강남지점</option>
+              <option value="서초지점">서초지점</option>
+              <option value="분당지점">분당지점</option>
+              <option value="인천지점">인천지점</option>
+              <option value="부산지점">부산지점</option>
+              <option value="대구지점">대구지점</option>
+              <option value="광주지점">광주지점</option>
+              <option value="대전지점">대전지점</option>
+            </select>
+          </td>
+          <th>처리기사 <span class="required">*</span></th>
+          <td>
+            <input type="text" x-model="processEngineer" class="inp-full" placeholder="기사명 입력">
+          </td>
+        </tr>
+        <tr>
+          <th>제조번호 <span class="required">*</span></th>
+          <td colspan="3">
+            <input type="text" x-model="serialNo" style="width:60%;" placeholder="제품 일련번호 입력 (4자 이상)" maxlength="15">
+          </td>
+        </tr>
+        <tr>
+          <th>요금적용 <span class="required">*</span></th>
+          <td colspan="3">
+            <select x-model="payType" style="width:40%;" id="pay_gbn">
+              <option value="">-- 선택 --</option>
+              <option value="N">무상</option>
+              <option value="Y">유상</option>
+              <option value="I">유지보수</option>
+              <option value="C">취소</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>처리분류 <span class="required">*</span></th>
+          <td>
+            <select x-model="processMain" style="width:100%;">
+              <option value="">-- 선택 --</option>
+              <option value="수리">수리</option>
+              <option value="교체">교체</option>
+              <option value="점검">점검</option>
+              <option value="청소">청소</option>
+              <option value="설명">설명</option>
+              <option value="취소">취소</option>
+            </select>
+          </td>
+          <th>처리상세 <span class="required">*</span></th>
+          <td>
+            <select x-model="processSub" style="width:100%;">
+              <option value="">-- 선택 --</option>
+              <option value="부품교체">부품교체</option>
+              <option value="본체 교체">본체 교체</option>
+              <option value="케이블 재접속">케이블 재접속</option>
+              <option value="렌즈 청소">렌즈 청소</option>
+              <option value="버튼 교체">버튼 교체</option>
+              <option value="스피커 교체">스피커 교체</option>
+              <option value="설정 안내">설정 안내</option>
+              <option value="고객취소">고객취소</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>원인분류 <span class="required">*</span></th>
+          <td>
+            <select x-model="causeMain" style="width:100%;">
+              <option value="">-- 선택 --</option>
+              <option value="부품불량">부품불량</option>
+              <option value="오염">오염</option>
+              <option value="노후화">노후화</option>
+              <option value="접촉불량">접촉불량</option>
+              <option value="고객과실">고객과실</option>
+              <option value="설치불량">설치불량</option>
+              <option value="고객취소">고객취소</option>
+            </select>
+          </td>
+          <th>원인상세 <span class="required">*</span></th>
+          <td>
+            <select x-model="causeSub" style="width:100%;">
+              <option value="">-- 선택 --</option>
+              <option value="PCB 불량">PCB 불량</option>
+              <option value="먼지 누적">먼지 누적</option>
+              <option value="사용연한 초과">사용연한 초과</option>
+              <option value="커넥터 헐거움">커넥터 헐거움</option>
+              <option value="스위치 접점 불량">스위치 접점 불량</option>
+              <option value="스피커 단선">스피커 단선</option>
+              <option value="충격">충격</option>
+              <option value="고객요청">고객요청</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ④ 자재 목록 -->
+    <div class="section-title" style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;">
+      <span>자재 목록</span>
+      <button class="btn-add" @click="addItem()">+ 자재 추가</button>
+    </div>
+
+    <div style="max-height:190px;overflow-y:auto;border-bottom:1px solid #c0c0c0;">
+      <table class="jaje-table">
+        <thead>
+          <tr>
+            <th style="width:80px;">품번</th>
+            <th>품명</th>
+            <th style="width:70px;">등급</th>
+            <th style="width:60px;">수량</th>
+            <th style="width:80px;">금액 (원)</th>
+            <th style="width:50px;">삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-if="items.length === 0">
+            <tr>
+              <td colspan="6" style="color:#bbb;padding:12px;text-align:center;">자재 없음 — [+ 자재 추가] 버튼으로 추가하세요.</td>
+            </tr>
+          </template>
+          <template x-for="(item, i) in items" :key="i">
+            <tr>
+              <td>
+                <input type="text" x-model="item.part" style="width:70px;" placeholder="품번">
+              </td>
+              <td>
+                <input type="text" x-model="item.name" style="width:100%;" placeholder="품명">
+              </td>
+              <td>
+                <select x-model="item.grade" style="width:65px;">
+                  <option value="">선택</option>
+                  <option value="A">A등급</option>
+                  <option value="B">B등급</option>
+                  <option value="C">C등급</option>
+                  <option value="R">R등급</option>
+                </select>
+              </td>
+              <td>
+                <input type="text" x-model.number="item.qty"
+                       style="width:50px;text-align:right;padding-right:4px;"
+                       @input="item.qty = parseInt(item.qty) || 0">
+              </td>
+              <td>
+                <input type="text" x-model.number="item.price"
+                       style="width:75px;text-align:right;padding-right:4px;"
+                       @input="item.price = parseInt(item.price) || 0">
+              </td>
+              <td>
+                <button class="btn-del" @click="removeItem(i)">삭제</button>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ⑤ 청구금액 합계 -->
+    <div class="total-bar">
+      <span>자재합계:</span>
+      <span class="total-amount" x-text="formatNum(materialTotal) + ' 원'"></span>
+      <span style="margin-left:16px;">부가세:</span>
+      <label style="font-weight:normal;font-size:12px;">
+        <input type="radio" name="vat" value="Y" x-model="vatYn"> 포함
+      </label>
+      <label style="font-weight:normal;font-size:12px;">
+        <input type="radio" name="vat" value="N" x-model="vatYn"> 미포함
+      </label>
+      <span style="margin-left:16px;font-size:14px;">청구금액:</span>
+      <span class="total-amount" style="font-size:17px;" x-text="formatNum(billTotal) + ' 원'"></span>
+    </div>
+
+    <!-- ⑥ 처리내용 -->
+    <div class="section-title" style="margin-top:8px;">처리내용 <span class="required">*</span></div>
+    <div style="padding:6px 0 2px 0;">
+      <textarea class="ps-memo" x-model="processContent" placeholder="처리 내용을 입력하세요. (최대 1000자)"></textarea>
+    </div>
+
+    <!-- 기사 의견 (선택) -->
+    <div class="section-title" style="margin-top:4px;">기사 의견 <span style="color:#999;font-size:11px;">(선택, 최대 1000자)</span></div>
+    <div style="padding:6px 0 8px 0;">
+      <textarea x-model="engineerMemo"
+                style="width:100%;height:50px;resize:vertical;font-size:12px;border:1px solid #ccc;padding:4px;box-sizing:border-box;"
+                placeholder="기사 의견을 입력하세요."></textarea>
+    </div>
+
+  </div><!-- /scroll area -->
+
+</div><!-- /x-data -->
+
+</body>
+</html>

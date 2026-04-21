@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>권한 설정 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm" x-data="{
+  grade: '2',
+  grades: {'1':'센터+소장','2':'상담원','3':'자재담당자','4':'일반직원','7':'관리자','9':'슈퍼관리자'},
+  menus: [
+    { top:'접수관리', items:[
+      {id:101, name:'CS접수', ins:'T', upd:'T', del:'F', date:'2026-03-10'},
+      {id:102, name:'접수현황', ins:'F', upd:'F', del:'F', date:'2026-03-10'},
+      {id:103, name:'처리현황', ins:'T', upd:'T', del:'F', date:'2026-03-10'},
+    ]},
+    { top:'통계', items:[
+      {id:201, name:'월별통계', ins:'F', upd:'F', del:'F', date:'2026-03-10'},
+      {id:202, name:'기사별통계', ins:'F', upd:'F', del:'F', date:'2026-03-10'},
+    ]},
+    { top:'관리', items:[
+      {id:301, name:'현장관리', ins:'T', upd:'T', del:'T', date:'2026-03-10'},
+      {id:302, name:'고객관리', ins:'T', upd:'T', del:'F', date:'2026-03-10'},
+      {id:303, name:'코드관리', ins:'F', upd:'F', del:'F', date:'2026-03-10'},
+    ]},
+    { top:'게시판', items:[
+      {id:401, name:'공지사항', ins:'T', upd:'T', del:'F', date:'2026-03-10'},
+      {id:402, name:'자유게시판', ins:'T', upd:'T', del:'T', date:'2026-03-10'},
+      {id:403, name:'Q&A', ins:'T', upd:'T', del:'T', date:'2026-03-10'},
+    ]}
+  ]
+}">
+<div class="max-w-6xl mx-auto p-4">
+  <!-- 헤더 -->
+  <div class="flex items-center justify-between mb-4 pb-2 border-b border-k-border">
+    <h2 class="text-lg font-bold text-k-text">권한 설정</h2>
+  </div>
+
+  <!-- 권한 선택 -->
+  <div class="bg-white border border-k-border rounded mb-4">
+    <table class="w-full">
+      <thead>
+        <tr class="bg-k-header">
+          <th class="py-2 px-4 text-left font-bold text-k-sub border-b border-k-border w-32">권한</th>
+          <th class="py-2 px-4 text-left border-b border-k-border">
+            <select x-model="grade" class="border border-k-border rounded px-2 py-1 text-sm w-48">
+              <template x-for="(label, id) in grades" :key="id">
+                <option :value="id" x-text="label"></option>
+              </template>
+            </select>
+          </th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+  <!-- 메뉴 권한 테이블 -->
+  <div class="bg-white border border-k-border rounded overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-k-header">
+          <th class="py-2 px-3 text-center border-b border-r border-k-border w-24">대메뉴</th>
+          <th class="py-2 px-3 text-center border-b border-r border-k-border">메뉴명</th>
+          <th class="py-2 px-3 text-center border-b border-r border-k-border w-24">입력</th>
+          <th class="py-2 px-3 text-center border-b border-r border-k-border w-24">수정</th>
+          <th class="py-2 px-3 text-center border-b border-r border-k-border w-24">삭제</th>
+          <th class="py-2 px-3 text-center border-b border-r border-k-border w-28">수정일</th>
+          <th class="py-2 px-3 text-center border-b border-k-border w-20">변경</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="(group, gi) in menus" :key="gi">
+          <template x-for="(item, ii) in group.items" :key="item.id">
+            <tr class="border-b border-k-border hover:bg-blue-50">
+              <td x-show="ii === 0" :rowspan="group.items.length"
+                  class="py-2 px-3 text-center bg-blue-50 border-r border-k-border font-bold text-k-primary align-middle"
+                  x-text="group.top"></td>
+              <td class="py-2 px-3 border-r border-k-border text-left" x-text="item.name"></td>
+              <td class="py-2 px-3 text-center border-r border-k-border">
+                <select :id="'ins_'+item.id" x-model="item.ins" class="border border-k-border rounded px-2 py-0.5 text-xs w-20">
+                  <option value="F">F (불가)</option>
+                  <option value="T">T (허용)</option>
+                </select>
+              </td>
+              <td class="py-2 px-3 text-center border-r border-k-border">
+                <select :id="'upd_'+item.id" x-model="item.upd" class="border border-k-border rounded px-2 py-0.5 text-xs w-20">
+                  <option value="F">F (불가)</option>
+                  <option value="T">T (허용)</option>
+                </select>
+              </td>
+              <td class="py-2 px-3 text-center border-r border-k-border">
+                <select :id="'del_'+item.id" x-model="item.del" class="border border-k-border rounded px-2 py-0.5 text-xs w-20">
+                  <option value="F">F (불가)</option>
+                  <option value="T">T (허용)</option>
+                </select>
+              </td>
+              <td class="py-2 px-3 text-center border-r border-k-border text-gray-500" x-text="item.date"></td>
+              <td class="py-2 px-3 text-center">
+                <button @click="alert('권한이 변경되었습니다.')"
+                  class="bg-k-primary text-white px-3 py-1 rounded text-xs hover:opacity-80">변경</button>
+              </td>
+            </tr>
+          </template>
+        </template>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["admin"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>

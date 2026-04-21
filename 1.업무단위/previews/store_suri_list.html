@@ -1,0 +1,393 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>KOCOM</title>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<script type="text/javascript" src="../assets/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.selectbox.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tablescroll.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.tooltip.js"></script>
+<script type="text/javascript" src="../assets/js/controller.js"></script>
+<script type="text/javascript" src="../assets/js/common.js"></script>
+<script src="../assets/js/addon/jquery_plugin/thickbox-compressed.js" type="text/javascript"></script>
+<!-- daum postcode API removed for offline preview -->
+<link href="../assets/css/thickbox.css" rel="stylesheet" type="text/css" />
+
+<!-- 달력 start -->
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
+<link rel="stylesheet" href="../assets/css/jquery-ui.css">
+<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+<script src="../assets/js/jquery-1.10.2.js"></script>
+<script src="../assets/js/jquery-ui.js"></script>
+<!-- 달력 end -->   
+
+</head>
+<body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/store_suri_list.php</b>
+  <span class="purpose">수리 목록</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<div id="header">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<meta http-equiv="X-UA-Compatible" content="IE=6">
+<meta http-equiv="X-UA-Compatible" content="IE=7">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="Robots" content="noindex,nofollow">
+
+<script language="javascript">
+function open_receipt(){
+	//window.open('receipt.php','pop_receipt','width=665,height=720');
+	/*var cw = screen.availWidth;
+	var ch = screen.availHeight;
+	var sw = 650;
+	var sh = 650;
+	var ml = (cw-sw)/2;
+	var mt = (ch-sh)/2;*/
+	window.open('receipt.php?num=&mode=insert&cid_num=&UID=','pop_receipt','width=710,height=755top=50,left=1000');
+}
+function highlight(which,color){ 
+    if (document.all||document.getElementById) 
+    which.style.backgroundColor=color 
+}
+
+/*function title_ch(name) {
+	location.href="main.php?title_name"+name;
+	top.document.location.reload();
+}*/
+
+function log_out(){
+	var agent_ext = '1000';
+	var agent_id = 'demo';
+	var agent_pw = '';
+	
+	var server1 = '127.0.0.1'
+	if(server1 == '192.168.239') {
+		var server = '192.168.239.252';
+		var server_ip = '192.168.239.251';
+	} else {
+		var server = '222.108.131.73';
+		var server_ip = '222.108.131.123:888';
+	}
+
+	var params = "mode=LogoutAction&ext_no=" + agent_ext+ "&agent_id=" + agent_id+ "&agent_pw=" + agent_pw;
+	$.getJSON("http://"+server_ip+"/manager/callAPI/login.php?callback=?", 
+		params,
+		function(d)
+		{		
+			$.each(d, function(k, v){				
+				var response = v.data;
+				var res_array = response.split("|");
+				alert(res_array[0]);
+				if(res_array[0] == '-1') {
+					alert('DB접속실패');
+				} else if(res_array[0] == '-2'){
+					alert('DB쿼리에러및 기타');
+				}
+				else if(res_array[0] == '-3'){
+					alert('AMI오류입니다.');
+				}else if(res_array[0] == '0'){					
+					//top.location.replace('../logout.php?id='+agent_id);
+					top.location.replace('../logout.php');
+				}
+			}); 
+		}
+	);
+	//location.href = '../logout.php';
+	top.location.replace('../logout.php');
+}
+</script>
+	<div class="main-menu">
+		<div class="wrapper">
+			<ul class="menu">
+							<li >
+					<a href="/html/store_suri_list.php?Tidx=" title=""></a>
+					<ul>
+										</ul>
+				</li>
+						</ul>
+			<div class="btns">
+											<a href="#" class="btn1 btn-edit btn-color4" title="SMS" onclick="sms_open('demo','9');">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">SMS</span>
+				</a>
+								<a href="#" class="btn1 btn-edit btn-color4" title="대리점조회" onclick="window.open('popup_center_search.php','center','width=815,height=530,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">대리점조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color4" title="업무담당자조회" onclick="window.open('popup_master_search.php','master','width=800,height=500,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">업무담당자조회</span>
+				</a>
+				<a href="#" class="btn1 btn-edit btn-color3" title="정보수정" onclick="window.open('my_info.php','info','width=300,height=320,resizable=yes,scrollbars=yes');return false;">
+					<span class="bg">&nbsp;</span>
+					<span class="icon">&nbsp;</span>
+					<span class="text">정보수정</span>
+				</a>
+				<!--<a href="../logout.php" target="_top" class="btn1 btn-disconnect btn-color4" title="로그아웃">-->
+				<a href="javascript:log_out();" class="btn1 btn-disconnect btn-color4" title="로그아웃">
+					<span class="bg">&nbsp;</span>
+					<span class="icon" style='  background-position: -39px 0px;'>&nbsp;</span>
+					<span class="text">로그아웃</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="sub-menu">&nbsp;</div>
+</div>
+
+<script type='text/javascript'>
+	//초기화
+	function reset() {
+		location.href = location.href ;
+	}
+	function req_mode(mode){
+		var myform = document.eForm ;
+		var msg = '신청서를 제출하시겠습니까?';
+		if(mode == 'update') msg = '신청서를 수정하시겠습니까?';
+		
+		if(myform.charge.value == "") {
+			alert("고객명을 입력해 주세요!");
+			myform.charge.focus();
+			return ;
+		}
+		if(myform.telno.value == "") {
+			alert("연락처를 입력해 주세요!");
+			myform.telno.focus();
+			return ;
+		}
+		if(myform.addr1.value == "") {
+			alert("주소를 입력해 주세요!");
+			myform.addr1.focus();
+			return ;
+		}
+		
+		if(!confirm(msg))return ;
+		
+		myform.mode.value = mode;
+		myform.action = "store_suri_proc.php";
+		myform.submit();
+	}
+	function list_go() {
+		//location.href = "store_doing_list.php?Tidx=3&Sidx=38";	//본사용
+		//location.href = "store_doing_list.php?Tidx=3&Sidx=39";	//센터용
+	}
+	
+	function type_change(val) {
+		//alert(val);
+		if(val == 2) {
+			$("#type_1").html("방문일시");
+			$("#type_2").css("display","none");
+			$("#type_3").css("display","block");
+		} else {
+			$("#type_1").html("송장번호");
+			$("#type_2").css("display","block");
+			$("#type_3").css("display","none");
+		}
+	}
+	$(function(){	
+		/*$( "#visit_dt" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });
+	    $( "#req_dt" ).datepicker({
+	    	dateFormat: 'yy-mm-dd'
+	    });*/
+		$( "#visit_dt" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+		$( "#req_dt" ).datepicker({
+	    	dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+			dayNamesMin: ['일','월','화','수','목','금','토'],
+			changeMonth: true,
+			changeYear: true,
+			showMonthAfterYear: true
+	    });
+	});
+</script>
+<form method='post' name='eForm' >
+<input type='hidden' name='keyfield' value=''>
+<input type='hidden' name='keyword' value=''>
+<input type='hidden' name='pageno' value=''>
+<input type='hidden' name='Tidx' value='1'>
+<input type='hidden' name='Sidx' value='1'>
+<input type='hidden' name='mode' value=''>
+<input type='hidden' name='idx' value=''>
+
+<div id="contents">
+	<div class="wrapper">
+		<div class="header">
+			<h2>수리의뢰</h2>
+		</div>
+		<div class="data-table">
+			<table id="data_table" width="100%">
+				<tr>
+					<td valign="top">
+						<table id="data_table" width="100%">
+							<colgroup>
+								<col width="15%" />
+								<col width="35%" />
+								<col width="15%" />
+								<col width="35%" />
+							</colgroup>
+							<thead>
+								<tr height='30px;'>
+									<th colspan='4'><center>[ 신청서 작성 ]</center></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr height='30px;'>
+									<td>고객명<font class="font1">*</font></td>
+									<td class='left'><input type='text' name='charge' value="" style='width:90%;float:left;' ></td>
+									<td>연락처<font class="font1">*</font></td>
+									<td class='left'><input type='text' name='telno' value=""  style='width:90%;float:left;' ></td>
+								</tr>
+								<tr height='30px;'>
+									<td>신청일<font class="font1">*</font></td>
+									<td class='left'><input type='text' name='req_dt' id='req_dt' value="2026-04-20" style='width:100px;'></td>
+									<td>신청센터</td>
+									<td class='left'>
+										<input type='text' name='req_center_id' value=""  style='width:90%;float:left;'  readonly>
+										<input type='hidden' name='centerCode' value="11323">
+									</td>
+								</tr>
+								<tr height='30px;'>
+									<td>주소<font class="font1">*</font></td>
+									<td class='left' colspan='3'>
+										<input type='text' name='zip' id='zip' value=""  style="width:80px;" readonly onclick="open_zipcodebook()">
+										<input type='text' name='addr1' id='addr1' value="" style="width:250px;" readonly onclick="open_zipcodebook()">
+										<input type='text' name='addr2' id='addr2' value="" style="width:250px">&nbsp;
+										<IMG SRC="../assets/images/btn/zoom.png" WIDTH="16" HEIGHT="16" BORDER="0" ALT="찾기" align="absmiddle" onclick="open_zipcodebook()"; style="cursor:pointer;">
+									</td>
+								</tr>
+								<tr height='30px;'>
+									<td>코드번호</td>
+									<td class='left'><input type='text' name='model_no' value="" style='width:90%;float:left;'  readonly></td>
+									<td>모델명</td>
+									<td class='left'><input type='text' name='model_name' value="" style='width:90%;float:left;'  readonly>&nbsp;<IMG SRC="../assets/images/btn/zoom.png" WIDTH="16" HEIGHT="16" BORDER="0" ALT="찾기" align="absmiddle" onclick="modelsel('eForm');" style="cursor:pointer;"></td>
+								</tr>
+								<tr height='30px;'>
+									<td>의뢰방법</td>
+									<td class='left'>
+										<select name='rgb_type' onchange='type_change(this.value)' style='width:90%;float:left;' >
+											<option value='1' selected>택배</option>
+											<option value='2' >방문</option>
+										</select>
+									</td>
+									<td id='type_1'>송장번호</td>
+									<td class='left'>
+										<div id='type_2' style='display:block;'><input type='text' name='invoice_no' value="" style='width:90%;float:left;' ></div>
+									<div id='type_3' style='display:none;'><input type='text' name='visit_dt' id='visit_dt' value="" style='width:100px;'></div>
+									</td>
+																	</tr>
+								<TR height='30px;'>
+									<TH>S/N</TH>
+									<TD class='left' colspan="3"><input type='text' name='serial_no' value=""  style='width:30%;float:left;'></TD>
+								</TR>
+								<TR height='30px;'>
+									<TH>유무상</TH>
+									<TD class='left'>
+										<select name='s_type' style='width:100px;'>
+											<option value='' selected>--선택--</option>
+											<option value='1' >유상</option>
+											<option value='2' >무상</option>
+											<option value='3' >유지보수</option>
+											<!--<option value='4' >A급유상</option>
+											<option value='5' >A급무상</option>
+											<option value='6' >R급유상</option>
+											<option value='7' >R급무상</option>
+											<option value='8' >무상보유</option>-->
+										</select>
+									</TD>
+									<TH>청구금액</TH>
+									<TD class='left'><input type="text" name="pay_won" id="pay_won" style='widtn:100px;float:left;'>&nbsp;원</TD>
+								</TR>
+								<TR height='30px;'>
+									<TH>불량증상</TH>
+									<TD colspan="3" class='left'><input type='text' name='error_msg' value="" style='width:90%;float:left;' ></TD>
+								</TR>
+								<TR height='30px;'>
+									<TH>특이사항</TH>
+									<TD colspan="3" class='left'><TEXTAREA NAME="memo" ROWS="6" COLS="120"></TEXTAREA></TD>
+								</TR>
+								<tr>
+									<td colspan='4'>
+										<!--a href="javascript:list_go();" class="btn1 btn-sms btn-color5" title="목록으로">
+											<span class="bg">&nbsp;</span>
+											<span class="text">목록으로</span>
+										</a-->
+										<a href="javascript:reset();" class="btn1 btn-sms btn-color5" title="초기화">
+											<span class="bg">&nbsp;</span>
+											<span class="text">초기화</span>
+										</a>&nbsp;&nbsp;
+																				<a href="javascript:req_mode('insert');" class="btn1 btn-sms btn-color6" title="수리의뢰">
+											<span class="bg">&nbsp;</span>
+											<span class="text">수리의뢰</span>
+										</a>
+																			</td>
+								</tr>
+							</tbody>
+						</table>	
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+</form>
+<br>
+<div id="footer">
+	<div class="wrapper">
+		<div class="copy">Copyright &copy; kocom. All Rights Reserved.</div>
+	</div>
+</div>
+</body>
+</html>

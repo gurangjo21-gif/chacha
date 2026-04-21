@@ -1,0 +1,394 @@
+{
+  "tdb_in_list": {
+    "phpFile": "tdb_in_list.php",
+    "htmlFile": "screens/tdb/tdb_in_list.html",
+    "type": "list",
+    "title": "뇌전보고",
+    "purpose": "뇌전(낙뢰) 접수 리스트 및 신규접수 이동",
+    "workflow": "뇌전 > 뇌전보고 > 뇌전리스트 및 추가",
+    "searchFields": [
+      { "name": "sday", "type": "date", "label": "접수일(시작)" },
+      { "name": "eday", "type": "date", "label": "접수일(종료)" },
+      { "name": "keyword", "type": "text", "label": "현장명" }
+    ],
+    "tableColumns": [
+      { "name": "접수일" },
+      { "name": "현장명", "dbField": "현장명/아파트명" },
+      { "name": "보험사", "dbField": "보험사타입+보험사업체명+담당자+연락처" },
+      { "name": "뇌전일" },
+      { "name": "진행상황", "dbField": "진행상태", "render": "1:접수대기 2:진행중 3:보류 4:완료" },
+      { "name": "삭제여부", "action": "delete_next -> ajax tdb_in_delete", "conditional": "자재신청수=0 AND user_lv=9" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "excel_download -> ../excel/tdb_in_list.php" },
+      { "label": "뇌전접수", "action": "update_next1('','insert') -> tdb_in_release.php (특정 IP에서는 tdb_in_mode.php)" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "rowAction": { "event": "dblclick", "action": "update_next(접수번호,'update') -> tdb_in_mode.php" },
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["tdb_in_mode.php","tdb_in_release.php"]
+  },
+  "tdb_in_mode": {
+    "phpFile": "tdb_in_mode.php",
+    "htmlFile": "screens/tdb/tdb_in_mode.html",
+    "type": "form",
+    "title": "뇌전 등록/수정",
+    "purpose": "뇌전 접수의 상세 등록/수정. 보험사정보, 서류첨부, 기타메모 관리",
+    "workflow": "뇌전 > 뇌전보고 > 접수",
+    "formFields": [
+      { "name": "seace_name", "label": "현장명", "readonly": true, "required": true, "popup": "search_secen -> popup_secen_search.php" },
+      { "name": "apt_no", "type": "hidden", "label": "아파트코드" },
+      { "name": "in_date", "label": "신청일자", "type": "date", "required": true, "readonly": true },
+      { "name": "tdb_date", "label": "뇌전일", "type": "date", "readonly": true },
+      { "name": "zip", "label": "우편번호", "readonly": true },
+      { "name": "addr1", "label": "주소", "readonly": true },
+      { "name": "addr2", "label": "상세주소", "readonly": true },
+      { "name": "centerCode", "label": "담당지점", "type": "select" },
+      { "name": "model_name", "label": "모델명", "readonly": true },
+      { "name": "model_no", "type": "hidden" },
+      { "name": "insurance", "label": "보험사 업체명(타입)", "type": "select", "options": ["선택","1:보험사","2:손해사정"], "conditional": "mode=update" },
+      { "name": "insurance_name", "label": "보험사 업체명" },
+      { "name": "insurance_charge", "label": "보험사 담당자명" },
+      { "name": "insurance_tel", "label": "보험사 연락처" },
+      { "name": "status", "label": "진행상황", "type": "select", "options": ["1:뇌전접수","2:진행중","3:보류","4:완료"] },
+      { "name": "upfile1", "label": "뇌전서류 첨부", "type": "file" },
+      { "name": "subject", "label": "기타 제목" },
+      { "name": "content", "label": "기타 내용", "type": "textarea" }
+    ],
+    "buttons": [
+      { "label": "검색(현장)", "action": "search_secen -> popup_secen_search.php (660x560)" },
+      { "label": "변경하기(담당지점)", "action": "ch_cen -> ajax tdb_change", "conditional": "user_agency=11323" },
+      { "label": "자재신청현황", "action": "open_store_detail -> popup_tdb_store_list.php (1000x560)", "conditional": "자재신청상태=Y" },
+      { "label": "저장(기타)", "action": "update_next('insert') -> ajax tdb_etc_ins" },
+      { "label": "삭제(기타)", "action": "update_next('deleteETC') -> ajax tdb_etc_del" },
+      { "label": "등록/수정", "action": "go_next(mode) -> tdb_in_proc.php" },
+      { "label": "취소", "action": "tdb_in_list.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "현장검색", "popup": "popup_secen_search.php" },
+      { "trigger": "자재신청현황", "popup": "popup_tdb_store_list.php" },
+      { "trigger": "첨부파일", "popup": "../filedir/tdb/{filename}" }
+    ],
+    "flowFrom": ["tdb_in_list.php"],
+    "flowTo": ["tdb_in_proc.php","tdb_in_list.php"]
+  },
+  "tdb_in_release": {
+    "phpFile": "tdb_in_release.php",
+    "htmlFile": "screens/tdb/tdb_in_release.html",
+    "type": "form",
+    "title": "뇌전 등록 (간편)",
+    "purpose": "뇌전 접수 간편 등록 폼(현장+수량+모델)",
+    "workflow": "뇌전 > 뇌전보고 > 접수 (간편)",
+    "formFields": [
+      { "name": "seace_name", "label": "현장명", "readonly": true, "required": true, "popup": "search_secen -> popup_secen_search_release.php" },
+      { "name": "apt_no", "type": "hidden" },
+      { "name": "tdb_date", "label": "뇌전일", "type": "date", "required": true },
+      { "name": "tdb_num", "label": "수량", "required": true, "unit": "대" },
+      { "name": "zip/addr1/addr2", "label": "현장주소", "readonly": true, "required": true },
+      { "name": "model_name", "label": "모델명", "readonly": true, "required": true, "popup": "search_model -> popup_model_search.php" },
+      { "name": "model_no", "type": "hidden" }
+    ],
+    "buttons": [
+      { "label": "검색(현장)", "action": "search_secen -> popup_secen_search_release.php" },
+      { "label": "모델", "action": "search_model -> popup_model_search.php (600x560)" },
+      { "label": "등록/수정", "action": "go_next(mode) -> tdb_in_proc_release.php" },
+      { "label": "취소", "action": "tdb_in_list.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "현장검색", "popup": "popup_secen_search_release.php" },
+      { "trigger": "모델", "popup": "popup_model_search.php" }
+    ],
+    "flowFrom": ["tdb_in_list.php"],
+    "flowTo": ["tdb_in_proc_release.php"]
+  },
+  "tdb_price_list": {
+    "phpFile": "tdb_price_list.php",
+    "htmlFile": "screens/tdb/tdb_price_list.html",
+    "type": "list",
+    "title": "뇌전 자재 사용이력",
+    "purpose": "뇌전건 자재 사용/반납 이력 조회",
+    "workflow": "뇌전 > 사용이력",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "반납상태" },
+      { "name": "sday", "type": "date", "label": "반납일(시작)" },
+      { "name": "eday", "type": "date", "label": "반납일(종료)" },
+      { "name": "keyfield", "type": "select", "label": "센터" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명" }, { "name": "신청일" }, { "name": "신청사원" },
+      { "name": "품번" }, { "name": "품명" }, { "name": "신청수량" }, { "name": "출고수량" },
+      { "name": "미출고량" }, { "name": "상태" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/tdb_price_list.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["tdb_price_release.php","store_request.php"]
+  },
+  "tdb_price_release": {
+    "phpFile": "tdb_price_release.php",
+    "htmlFile": "screens/tdb/tdb_price_release.html",
+    "type": "detail",
+    "title": "뇌전자재 사용이력 상세",
+    "purpose": "뇌전건 자재 사용이력 상세. 정산/금액수정",
+    "workflow": "뇌전 > 사용이력 > 상세",
+    "formFields": [],
+    "tableColumns": [
+      { "name": "출고일" }, { "name": "반납일" }, { "name": "품번" }, { "name": "품명" },
+      { "name": "신청" }, { "name": "출고" }, { "name": "반납" }, { "name": "미반납" },
+      { "name": "양품" }, { "name": "불량" }, { "name": "진행상태" },
+      { "name": "반납가A" }, { "name": "미반납가A" }, { "name": "반납가R" }, { "name": "미반납가R" },
+      { "name": "유지보수가" }, { "name": "청구금액" }, { "name": "금액수정" }, { "name": "비고" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/tdb_price_release.php" },
+      { "label": "정산하기", "action": "price_next -> ajax" },
+      { "label": "금액수정", "action": "price_next_modify" },
+      { "label": "목록으로", "action": "-> tdb_price_list.php" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["tdb_price_list.php"],
+    "flowTo": ["tdb_price_list.php"]
+  },
+  "tdb_return_ins_list": {
+    "phpFile": "tdb_return_ins_list.php",
+    "htmlFile": "screens/tdb/tdb_return_ins_list.html",
+    "type": "list",
+    "title": "뇌전자재반납 신청현황 (보험사용)",
+    "purpose": "뇌전 보험사건의 자재반납 신청현황 조회",
+    "workflow": "뇌전 > 반납신청현황(보험) > 본사",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "진행상태" },
+      { "name": "state2", "type": "select", "label": "반납상태" },
+      { "name": "sday", "type": "date", "label": "신청일(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일(종료)" },
+      { "name": "keyword", "type": "text", "label": "품번" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명" }, { "name": "신청일" }, { "name": "반납일" },
+      { "name": "모델명" }, { "name": "품번" }, { "name": "품명" }, { "name": "신청수량" },
+      { "name": "출고수량" }, { "name": "미출고량" }, { "name": "진행상태" },
+      { "name": "반납량" }, { "name": "미반납량" }, { "name": "반납상태" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/tdb_return_ins_release.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["tdb_return_ins_release.php","store_request.php"]
+  },
+  "tdb_return_ins_release": {
+    "phpFile": "tdb_return_ins_release.php",
+    "htmlFile": "screens/tdb/tdb_return_ins_release.html",
+    "type": "detail",
+    "title": "자재반납현황 상세 (보험사)",
+    "purpose": "보험사 건 반납신청 건의 상세/상태변경",
+    "workflow": "뇌전 > 반납신청현황(보험) > 상세",
+    "formFields": [],
+    "tableColumns": [
+      { "name": "출고일" }, { "name": "반납일" }, { "name": "품번" }, { "name": "품명" },
+      { "name": "유/무상" }, { "name": "신청수량" }, { "name": "출고수량" }, { "name": "미출고수량" },
+      { "name": "진행상황" }, { "name": "반납수량" }, { "name": "미반납수량" },
+      { "name": "양품" }, { "name": "불량" }, { "name": "확정수량" }, { "name": "미확정수량" },
+      { "name": "반납상태" }
+    ],
+    "buttons": [
+      { "label": "목록으로", "action": "history.back()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["tdb_return_ins_list.php"],
+    "flowTo": []
+  },
+  "tdb_return_list": {
+    "phpFile": "tdb_return_list.php",
+    "htmlFile": "screens/tdb/tdb_return_list.html",
+    "type": "list",
+    "title": "뇌전자재반납 신청현황",
+    "purpose": "뇌전 자재반납 신청현황 조회 (본사)",
+    "workflow": "뇌전 > 자재반납신청현황 > 본사",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "진행상태" },
+      { "name": "state2", "type": "select", "label": "반납상태" },
+      { "name": "sday", "type": "date", "label": "신청일(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일(종료)" },
+      { "name": "keyfield", "type": "select", "label": "센터" },
+      { "name": "keyword", "type": "text", "label": "품번" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명" }, { "name": "신청일" }, { "name": "모델명" },
+      { "name": "품번" }, { "name": "품명" }, { "name": "신청수량" }, { "name": "출고수량" },
+      { "name": "미출고량" }, { "name": "진행상태" }, { "name": "반납일" },
+      { "name": "반납량" }, { "name": "미반납량" }, { "name": "반납상태" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/tdb_return_release.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["tdb_return_release.php","store_request.php"]
+  },
+  "tdb_return_release": {
+    "phpFile": "tdb_return_release.php",
+    "htmlFile": "screens/tdb/tdb_return_release.html",
+    "type": "detail",
+    "title": "자재신청현황 (본사) - 반납",
+    "purpose": "뇌전 자재 반납 상세 관리. 뇌전종료 처리 가능",
+    "workflow": "뇌전 > 자재반납신청현황 > 상세",
+    "formFields": [],
+    "tableColumns": [
+      { "name": "출고일" }, { "name": "반납일" }, { "name": "품번" }, { "name": "품명" },
+      { "name": "유/무상" }, { "name": "신청수량" }, { "name": "출고수량" }, { "name": "미출고수량" },
+      { "name": "진행상황" }, { "name": "반납수량" }, { "name": "미반납수량" },
+      { "name": "양품" }, { "name": "불량" }, { "name": "확정수량" }, { "name": "미확정수량" },
+      { "name": "반납상태" }
+    ],
+    "buttons": [
+      { "label": "뇌전종료", "action": "tdb_end()" },
+      { "label": "목록으로", "action": "history.back()" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["tdb_return_list.php"],
+    "flowTo": []
+  },
+  "tdb_store_doing_list": {
+    "phpFile": "tdb_store_doing_list.php",
+    "htmlFile": "screens/tdb/tdb_store_doing_list.html",
+    "type": "list",
+    "title": "뇌전 자재신청 현황 - 본사",
+    "purpose": "뇌전건 자재신청 현황(본사)",
+    "workflow": "뇌전 > 자재신청현황 > 본사",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "진행상태" },
+      { "name": "sday", "type": "date", "label": "신청일자(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일자(종료)" },
+      { "name": "req_pno", "type": "text", "label": "품번" },
+      { "name": "keyfield", "type": "select", "label": "센터" },
+      { "name": "keyword", "type": "text", "label": "신청사원" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명" }, { "name": "신청일" }, { "name": "신청사원" },
+      { "name": "품번" }, { "name": "품명" }, { "name": "신청수량" }, { "name": "출고수량" },
+      { "name": "미출고량" }, { "name": "상태" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/tdb_store_doing_release.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["tdb_store_release.php"]
+  },
+  "tdb_store_doing_list_center": {
+    "phpFile": "tdb_store_doing_list_center.php",
+    "htmlFile": "screens/tdb/tdb_store_doing_list_center.html",
+    "type": "list",
+    "title": "[센터명] 뇌전 자재신청 현황",
+    "purpose": "뇌전건 자재신청 현황(센터)",
+    "workflow": "뇌전 > 자재신청현황 > 센터",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "진행상태" },
+      { "name": "sday", "type": "date", "label": "신청일자(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일자(종료)" },
+      { "name": "req_pno", "type": "text", "label": "품번" },
+      { "name": "keyword", "type": "text", "label": "신청사원" }
+    ],
+    "tableColumns": [
+      { "name": "신청번호" }, { "name": "센터명" }, { "name": "신청일" }, { "name": "신청사원" },
+      { "name": "품번" }, { "name": "품명" }, { "name": "신청수량" }, { "name": "출고수량" },
+      { "name": "미출고량" }, { "name": "상태" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/tdb_store_doing_release_center.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["tdb_store_release.php","store_request.php"]
+  },
+  "tdb_store_list": {
+    "phpFile": "tdb_store_list.php",
+    "htmlFile": "screens/tdb/tdb_store_list.html",
+    "type": "list",
+    "title": "뇌전 자재 신청",
+    "purpose": "뇌전건 자재신청 리스트(접수)",
+    "workflow": "뇌전 > 뇌전 자재 신청",
+    "searchFields": [
+      { "name": "state", "type": "select", "label": "진행상태" },
+      { "name": "state2", "type": "select", "label": "자재신청상태" },
+      { "name": "sday", "type": "date", "label": "신청일자(시작)" },
+      { "name": "eday", "type": "date", "label": "신청일자(종료)" },
+      { "name": "keyword", "type": "text", "label": "현장명" }
+    ],
+    "tableColumns": [
+      { "name": "접수번호" }, { "name": "접수일" }, { "name": "현장명" }, { "name": "모델명" },
+      { "name": "보험사" }, { "name": "담당자명" }, { "name": "연락처" }, { "name": "뇌전일" },
+      { "name": "진행상태" }, { "name": "자재신청상태" }
+    ],
+    "buttons": [
+      { "label": "엑셀다운", "action": "-> ../excel/tdb_store_list.php" },
+      { "label": "검색", "action": "submit" }
+    ],
+    "rowAction": { "event": "click", "action": "update_next -> tdb_store_mode.php" },
+    "popupsCalled": [],
+    "flowFrom": ["main.php"],
+    "flowTo": ["tdb_store_mode.php"]
+  },
+  "tdb_store_mode": {
+    "phpFile": "tdb_store_mode.php",
+    "htmlFile": "screens/tdb/tdb_store_mode.html",
+    "type": "form",
+    "title": "뇌전자재신청",
+    "purpose": "뇌전 접수건에 대한 자재 신청서 작성",
+    "workflow": "뇌전 > 자재신청 등록/수정",
+    "formFields": [
+      { "name": "req_no", "label": "신청번호" },
+      { "name": "req_dt", "label": "신청일자" },
+      { "name": "req_center", "label": "신청센터" },
+      { "name": "ps_agent", "label": "신청사원", "type": "select" },
+      { "name": "m_no/m_name", "label": "코드번호/모델명", "readonly": true }
+    ],
+    "tableColumns": [
+      { "name": "품번" }, { "name": "품명" }, { "name": "상태", "required": true },
+      { "name": "신청수량", "required": true }, { "name": "APP" }, { "name": "HA" },
+      { "name": "OS" }, { "name": "비고" }, { "name": "진행상황" }, { "name": "삭제" }
+    ],
+    "buttons": [
+      { "label": "검색(자재)", "action": "search_model_sub -> popup_model_search_sub.php" },
+      { "label": "목록으로", "action": "history.back()" },
+      { "label": "신청의뢰", "action": "go_update -> tdb_store_proc.php" }
+    ],
+    "popupsCalled": [
+      { "trigger": "검색", "popup": "popup_model_search_sub.php" }
+    ],
+    "flowFrom": ["tdb_store_list.php"],
+    "flowTo": ["tdb_store_proc.php"]
+  },
+  "tdb_store_release": {
+    "phpFile": "tdb_store_release.php",
+    "htmlFile": "screens/tdb/tdb_store_release.html",
+    "type": "detail",
+    "title": "자재신청현황 상세 (뇌전 출고)",
+    "purpose": "뇌전 자재신청 건의 출고상태 관리",
+    "workflow": "뇌전 > 자재신청현황 > 상세(출고)",
+    "formFields": [],
+    "tableColumns": [
+      { "name": "품번" }, { "name": "품명" }, { "name": "신청수량" }, { "name": "출고수량" },
+      { "name": "미출고량" }, { "name": "APP" }, { "name": "HA" }, { "name": "OS" },
+      { "name": "진행상황" }, { "name": "삭제" }
+    ],
+    "buttons": [
+      { "label": "목록으로", "action": "history.back()" },
+      { "label": "S/N", "action": "시리얼 팝업" }
+    ],
+    "popupsCalled": [
+      { "trigger": "S/N", "popup": "popup_serial_release.php" }
+    ],
+    "flowFrom": ["tdb_store_doing_list.php","tdb_store_doing_list_center.php"],
+    "flowTo": []
+  }
+}

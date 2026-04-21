@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>store_request_proc_nomal.php</title></head><body>
+<!-- ========== baked static preview ========== -->
+<link rel="stylesheet" href="../assets/css/neostyle.css">
+<link rel="stylesheet" href="../assets/css/default.css">
+<style>
+  .__preview_banner{
+    background:linear-gradient(90deg,#1e293b,#334155);color:#fff;padding:8px 16px;
+    font-size:12px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #60a5fa;
+    font-family:"맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  .__preview_banner b{color:#60a5fa;font-weight:700;font-family:Consolas,monospace;font-size:12px}
+  .__preview_banner .tag{background:rgba(96,165,250,.22);color:#93c5fd;padding:2px 9px;border-radius:10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .__preview_banner .warn{margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 10px;border-radius:10px;font-size:10px}
+  .__preview_banner .purpose{color:#cbd5e1;font-size:11px}
+</style>
+<div class="__preview_banner">
+  <span class="tag">STATIC</span>
+  <b>html/store_request_proc_nomal.php</b>
+  <span class="purpose">일반 신청 저장</span>
+  <span class="warn">⚠ 실제 PHP로 렌더해 저장한 화면 · DB 값 없음 (단독 동작)</span>
+</div>
+<script>
+// Offline defuse — block navigation, alerts, AJAX
+(function(){
+  var orig=window.alert; window.alert=function(m){console.log('[preview suppressed alert]',m)};
+  var origConfirm=window.confirm; window.confirm=function(){return false};
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('form').forEach(function(f){
+      f.addEventListener('submit',function(e){e.preventDefault();console.log('[preview] form submit blocked')});
+    });
+    document.querySelectorAll('a').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(h==='#'||(h&&h.indexOf('javascript:')===0)) a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  });
+  // Stub ajaxLoader / common helpers that don't work offline
+  window.ajaxLoader=function(){console.log('[preview] ajaxLoader disabled');return false};
+})();
+</script>
+<!-- ========== /baked ========== -->
+
+<div style="padding:40px 20px;font-family:'맑은 고딕',sans-serif;max-width:720px;margin:40px auto;background:#f9fafb;border-radius:10px;text-align:center">
+  <div style="font-size:48px;margin-bottom:16px">⚙️</div>
+  <h2 style="font-size:20px;margin-bottom:8px;color:#1e293b">처리 전용 엔드포인트</h2>
+  <p style="color:#64748b;font-size:13px;margin-bottom:16px"><code>html/store_request_proc_nomal.php</code> 는 HTML을 출력하지 않는 PHP 처리 파일입니다.</p>
+  <p style="color:#475569;font-size:12px;line-height:1.7">AJAX mode 분기, 로그인 체크, 파일 업로드, <code>INSERT/UPDATE</code> 실행 후 리다이렉트 등<br>화면이 아닌 <b>백엔드 로직만 수행</b>하는 파일이라 이 창에 보여줄 UI가 없습니다.<br>체인 다이어그램에서 이 단계가 어떤 테이블/프로시저를 건드리는지 확인하세요.</p>
+</div></body></html>

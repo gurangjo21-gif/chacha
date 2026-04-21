@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>현장 관리 - KOCOM CS</title>
+  <script src="../../_shared/libs/tailwind.js"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'k-primary':'#6699FF','k-active':'#5acd3e','k-border':'#d7d7d7',
+      'k-text':'#333','k-sub':'#545454','k-bg':'#f2f2f2','k-header':'#f3f3f3'
+    }}}}
+  </script>
+  <script src="../../specs/all-specs.js"></script>
+  <script defer src="../../_shared/libs/alpine.js"></script>
+</head>
+<body class="bg-k-bg text-k-text text-sm" x-data="{
+  keyword:'', keyfield:'', orderBy:'all', val1:'', val2:'', val3:'',
+  rows:[
+    {code:'APT001', apt:'래미안 강남 2차', scene:'서울 강남 CS', manager:'박현장 팀장', model:'홈넷 월패드 7인치', branch:'서울지점', status:'무상', warranty:'2026-12-31'},
+    {code:'APT002', apt:'판교 힐스테이트 더리버', scene:'경기 판교 CS', manager:'최현장 과장', model:'홈넷 도어폰 HD', branch:'경기지점', status:'30일 후 유상', warranty:'2026-05-15'},
+    {code:'APT003', apt:'해운대 아이파크 마리나', scene:'부산 해운대 CS', manager:'이현장 대리', model:'홈넷 세대단말기 Pro', branch:'부산지점', status:'유상', warranty:'2024-06-30'},
+    {code:'APT004', apt:'마포 자이 더 파크', scene:'서울 마포 CS', manager:'정현장 주임', model:'홈넷 주차관제 시스템', branch:'서울지점', status:'무상', warranty:'2027-03-20'},
+    {code:'APT005', apt:'도안 신도시 엘리움', scene:'대전 도안 CS', manager:'한현장 사원', model:'홈넷 월패드 9인치', branch:'대전지점', status:'15일 후 유상', warranty:'2026-04-30'},
+    {code:'APT006', apt:'상무 센트럴 파크', scene:'광주 상무 CS', manager:'오현장 대리', model:'홈넷 세대단말기', branch:'광주지점', status:'유상', warranty:'2023-11-30'},
+    {code:'APT007', apt:'수성 롯데캐슬 골드파크', scene:'대구 수성 CS', manager:'임현장 팀장', model:'홈넷 도어폰 일반형', branch:'대구지점', status:'무상', warranty:'2028-01-15'},
+  ]
+}">
+<div class="max-w-full mx-auto p-4">
+  <div class="flex items-center justify-between mb-3 pb-2 border-b border-k-border">
+    <h2 class="text-lg font-bold">현장 관리</h2>
+    <div class="flex gap-1">
+      <button class="bg-purple-500 text-white px-3 py-1 rounded text-xs hover:opacity-80">팝업</button>
+      <button class="bg-gray-500 text-white px-3 py-1 rounded text-xs hover:opacity-80">엑셀다운</button>
+      <a href="admin_scene_mode.html" class="bg-k-primary text-white px-3 py-1 rounded text-xs hover:opacity-80">추가</a>
+    </div>
+  </div>
+
+  <div class="bg-white border border-k-border rounded p-3 mb-3 flex flex-wrap gap-2 items-center text-xs">
+    <span class="font-bold">유무상</span>
+    <label class="flex items-center gap-1"><input type="radio" x-model="orderBy" value="all"> 전체</label>
+    <label class="flex items-center gap-1"><input type="radio" x-model="orderBy" value="cost"> 유상</label>
+    <label class="flex items-center gap-1"><input type="radio" x-model="orderBy" value="free"> 무상</label>
+    <select x-model="val1" class="border border-k-border rounded px-2 py-1">
+      <option value="">:: 설치항목1 ::</option><option>홈넷</option><option>도어폰</option><option>주차관제</option>
+    </select>
+    <select x-model="val2" class="border border-k-border rounded px-2 py-1">
+      <option value="">:: 설치항목2 ::</option><option>월패드</option><option>세대단말기</option>
+    </select>
+    <select x-model="val3" class="border border-k-border rounded px-2 py-1">
+      <option value="">:: 설치항목3 ::</option><option>낙뢰</option><option>게이트웨이</option>
+    </select>
+    <select x-model="keyfield" class="border border-k-border rounded px-2 py-1">
+      <option value="">-- 선택 --</option><option value="1">아파트명</option><option value="2">현장명</option>
+      <option value="3">담당자</option><option value="4">모델명</option><option value="5">담당지점</option>
+    </select>
+    <input type="text" x-model="keyword" placeholder="검색어" class="border border-k-border rounded px-2 py-1 w-40">
+    <button class="bg-k-primary text-white px-3 py-1 rounded hover:opacity-80">검색</button>
+  </div>
+  <p class="text-xs text-gray-600 mb-2 font-bold">* 리스트를 더블 클릭하면 현장정보를 상세하게 보실 수 있습니다.</p>
+
+  <div class="overflow-x-auto bg-white border border-k-border rounded">
+    <table class="w-full text-xs" style="min-width:900px">
+      <thead class="bg-k-header">
+        <tr>
+          <th class="py-2 px-3 border-b border-r border-k-border text-center cursor-pointer hover:bg-blue-50">아파트번호 ▲</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-left cursor-pointer hover:bg-blue-50">아파트명</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-left cursor-pointer hover:bg-blue-50">현장명</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-center cursor-pointer hover:bg-blue-50">현장담당자</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-left cursor-pointer hover:bg-blue-50">모델명</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-center cursor-pointer hover:bg-blue-50">담당지점</th>
+          <th class="py-2 px-3 border-b border-r border-k-border text-center">유상알림</th>
+          <th class="py-2 px-3 border-b border-k-border text-center">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="(r, i) in rows" :key="r.code">
+          <tr class="border-b border-k-border hover:bg-blue-50 cursor-pointer"
+              @dblclick="window.location.href='admin_scene_detail.html'">
+            <td class="py-2 px-3 text-center border-r border-k-border font-bold" x-text="r.code"></td>
+            <td class="py-2 px-3 border-r border-k-border font-bold text-k-primary" x-text="r.apt"></td>
+            <td class="py-2 px-3 border-r border-k-border" x-text="r.scene"></td>
+            <td class="py-2 px-3 text-center border-r border-k-border" x-text="r.manager"></td>
+            <td class="py-2 px-3 border-r border-k-border" x-text="r.model"></td>
+            <td class="py-2 px-3 text-center border-r border-k-border" x-text="r.branch"></td>
+            <td class="py-2 px-3 text-center border-r border-k-border">
+              <span :class="r.status==='유상'?'text-gray-500':r.status.includes('일 후')?'text-red-500 font-bold':'text-green-600 font-bold'"
+                    x-text="r.status"></span>
+            </td>
+            <td class="py-2 px-3 text-center flex gap-1 justify-center">
+              <a href="admin_scene_mode.html" class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs hover:bg-blue-200">수정</a>
+              <button @click="rows.splice(i,1)" class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs hover:bg-red-200">삭제</button>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+  <div class="flex justify-center mt-4 gap-1 text-xs">
+    <button class="px-3 py-1 border border-k-border rounded bg-white">이전</button>
+    <button class="px-3 py-1 border border-k-primary rounded bg-k-primary text-white">1</button>
+    <button class="px-3 py-1 border border-k-border rounded bg-white">다음</button>
+  </div>
+</div>
+<!-- 개발자 스펙 패널 -->
+<div x-data="{ open: false, spec: null }"
+     x-init="(() => { const cat = location.pathname.includes('/admin/')?'admin': location.pathname.includes('/forum/')?'forum':'popup'; Promise.resolve(window.ALL_SPECS && window.ALL_SPECS["admin"]).then(d=>{ const k=location.pathname.split("/").pop().replace(".html",""); spec = d ? d[k] : null }).catch(()=>{}) })()"
+     class="fixed right-0 top-0 h-screen z-50">
+  <button @click="open = !open"
+          class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#6699FF] text-white px-2 py-4 rounded-l text-xs shadow-lg">
+    스펙
+  </button>
+  <div x-show="open" @click.away="open = false" x-cloak
+       class="fixed right-0 top-0 h-screen w-96 bg-white border-l-2 border-[#6699FF] shadow-2xl overflow-y-auto p-4 text-xs">
+    <button @click="open = false" class="absolute top-2 right-2 text-gray-500">[x]</button>
+    <h3 class="font-bold text-sm text-[#6699FF] mb-2" x-text="spec?.title || '로딩중...'"></h3>
+    <div class="text-[#999] mb-3" x-text="spec?.phpFile"></div>
+    <div class="bg-blue-50 p-2 mb-3 rounded" x-text="spec?.workflow"></div>
+    <div class="mb-3" x-show="spec?.purpose">
+      <div class="font-bold mb-1">목적</div>
+      <div class="text-[11px] text-gray-700" x-text="spec?.purpose"></div>
+    </div>
+    <div x-show="spec?.searchFields?.length" class="mb-3">
+      <div class="font-bold mb-1">검색 필드</div>
+      <template x-for="f in spec?.searchFields" :key="f.name">
+        <div class="flex gap-2 text-[10px] border-b py-1">
+          <span class="font-mono text-[#6699FF] w-20" x-text="f.name"></span>
+          <span x-text="f.label"></span>
+          <span class="text-[#999] ml-auto" x-text="f.type"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.tableColumns?.length" class="mb-3">
+      <div class="font-bold mb-1">컬럼 (<span x-text="spec?.tableColumns?.length"></span>개)</div>
+      <template x-for="c in spec?.tableColumns" :key="c.name">
+        <div class="text-[10px] border-b py-1" x-text="c.name + ' (' + (c.dbField||'') + ')'"></div>
+      </template>
+    </div>
+    <div x-show="spec?.buttons?.length" class="mb-3">
+      <div class="font-bold mb-1">버튼</div>
+      <template x-for="b in spec?.buttons" :key="b.label">
+        <div class="text-[10px] border-l-2 border-[#6699FF] pl-2 mb-1">
+          <b x-text="b.label"></b>: <span class="text-[#999]" x-text="b.action"></span>
+        </div>
+      </template>
+    </div>
+    <div x-show="spec?.popupsCalled?.length" class="mb-3">
+      <div class="font-bold mb-1">호출 팝업</div>
+      <template x-for="p in spec?.popupsCalled" :key="p.popup">
+        <div class="text-[10px] mb-1" x-text="p.trigger + ' -> ' + p.popup"></div>
+      </template>
+    </div>
+    <div x-show="spec?.flowFrom?.length" class="mb-3">
+      <div class="font-bold mb-1">진입 경로</div>
+      <template x-for="t in spec?.flowFrom" :key="t">
+        <span class="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+    <div x-show="spec?.flowTo?.length" class="mb-3">
+      <div class="font-bold mb-1">연결 화면</div>
+      <template x-for="t in spec?.flowTo" :key="t">
+        <span class="inline-block bg-blue-50 text-[#6699FF] px-2 py-0.5 rounded mr-1 text-[10px]" x-text="t"></span>
+      </template>
+    </div>
+  </div>
+</div>
+</body>
+</html>
