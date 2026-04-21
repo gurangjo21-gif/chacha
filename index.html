@@ -58,8 +58,12 @@ textarea,input{font-family:inherit;color:inherit}
 /* ===== Sidebar ===== */
 .sidebar{background:var(--bg-el);border-right:1px solid var(--line);overflow-y:auto;padding:8px 0}
 .sidebar::-webkit-scrollbar{width:6px}.sidebar::-webkit-scrollbar-thumb{background:var(--line-s);border-radius:3px}
-.nav-home{display:block;width:calc(100% - 16px);margin:4px 8px 12px;padding:10px 12px;border-radius:var(--r-sm);font-weight:600;font-size:12px;text-align:left;background:linear-gradient(135deg,var(--blue-s),var(--violet-s));color:var(--ink);border:1px solid var(--line)}
+.nav-home{display:block;width:calc(100% - 16px);margin:4px 8px 8px;padding:10px 12px;border-radius:var(--r-sm);font-weight:600;font-size:12px;text-align:left;background:linear-gradient(135deg,var(--blue-s),var(--violet-s));color:var(--ink);border:1px solid var(--line)}
 .nav-home.active{box-shadow:0 0 0 2px var(--blue) inset}
+.mode-toggle{display:flex;gap:2px;margin:4px 8px 10px;padding:3px;background:var(--bg-sub);border-radius:var(--r-sm)}
+.mode-toggle button{flex:1;padding:6px 8px;border-radius:4px;font-size:11px;font-weight:600;color:var(--ink-3);transition:all .12s;cursor:pointer}
+.mode-toggle button:hover{color:var(--ink-2);background:var(--bg-el)}
+.mode-toggle button.active{background:var(--ink);color:#fff}
 .dom-group{margin-bottom:4px}
 .dom-head{display:flex;align-items:center;gap:8px;padding:8px 14px 4px;font-size:10.5px;font-weight:700;color:var(--ink-4);letter-spacing:.05em;text-transform:uppercase}
 .dom-head .count{margin-left:auto;font-weight:500;color:var(--ink-4);font-size:10px}
@@ -322,6 +326,10 @@ textarea,input{font-family:inherit;color:inherit}
     <!-- ===== Sidebar ===== -->
     <aside class="sidebar" id="sidebar">
       <button class="nav-home active" id="nav-home" onclick="goHome()">🏠 홈 · 차세대 전산 비전</button>
+      <div class="mode-toggle">
+        <button id="mt-domain" class="active" onclick="setSidebarMode('domain')" title="도메인별 (관리자/접수/자재…)">📂 도메인</button>
+        <button id="mt-flow" onclick="setSidebarMode('flow')" title="업무 흐름별 (4개 여정 + 지원)">🔗 흐름</button>
+      </div>
       <div id="nav-bus"></div>
     </aside>
 
@@ -876,10 +884,36 @@ const DOMAINS = {
 const LS_KEY = 'kocom-cs-dev-book-v1';
 let state = {
   currentBu: null,
-  mode: 'compare', // 'asis' | 'tobe' | 'compare'
-  role: 'all',     // 'all' | 'list' | 'mode' | 'proc' | 'popup' | 'other'
-  feedback: {},    // { buId: { keep:[{text,author,ts}], imp:[], del:[], new:[] } }
+  mode: 'compare',      // 'asis' | 'tobe' | 'compare'
+  role: 'all',          // 'all' | 'list' | 'mode' | 'proc' | 'popup' | 'other'
+  sidebarMode: 'domain',// 'domain' | 'flow'
+  feedback: {},         // { buId: { keep:[{text,author,ts}], imp:[], del:[], new:[] } }
 };
+
+/* 흐름별 그룹 정의 — 각 BU는 한 곳에만 (중복 방지)
+   공유 BU(receipt-main, svc-main, admin-audit) 는 주 여정에 배치 */
+const FLOW_GROUPS = [
+  {id:'flow-normal', label:'🎯 일반 CS 흐름', order:1, kind:'flow',
+   bus:['cti-softphone','receipt-main','svc-main','store-request','store-release','store-doing','serial-main','admin-audit','sms-send']},
+  {id:'flow-tdb',    label:'⚡ 뇌전(TDB) 흐름', order:2, kind:'flow',
+   bus:['tdb-in','tdb-store','tdb-doing','tdb-serial','tdb-return']},
+  {id:'flow-year',   label:'📅 연차 흐름', order:3, kind:'flow',
+   bus:['receipt-year','resolve-year']},
+  {id:'flow-tk',     label:'🏗 TK 하자점검 흐름', order:4, kind:'flow',
+   bus:['admin-scene','receipt-tk']},
+  {id:'sup-master',  label:'🏛 기준정보 마스터', order:5, kind:'support',
+   bus:['admin-user','admin-member','admin-offmanager','admin-centermanager','admin-code','admin-access']},
+  {id:'sup-receipt', label:'📞 접수 보조', order:6, kind:'support',
+   bus:['receipt-memo','receipt-menual']},
+  {id:'sup-store',   label:'📦 자재·시리얼 보조', order:7, kind:'support',
+   bus:['store-return','store-suri','store-receipt','store-price','serial-return','serial-store']},
+  {id:'sup-tdb',     label:'⚡ 뇌전 보조', order:8, kind:'support',
+   bus:['tdb-price']},
+  {id:'sup-forum',   label:'💬 소통·게시판', order:9, kind:'support',
+   bus:['forum-free','forum-notice','forum-memo','forum-qna','forum-pds']},
+  {id:'sup-sys',     label:'🧰 시스템·도구', order:10, kind:'support',
+   bus:['common-search','layout-shell','ajax-oracle','ajax-mysql','util-files','util-myinfo','util-misc']},
+];
 
 function loadState(){
   try{
@@ -958,6 +992,10 @@ function renderScenarios(){
    SIDEBAR RENDER
    =================================================================== */
 function renderSidebar(){
+  if(state.sidebarMode === 'flow') return renderSidebarByFlow();
+  return renderSidebarByDomain();
+}
+function renderSidebarByDomain(){
   const host = document.getElementById('nav-bus');
   const byDom = {};
   BUS.forEach(b=>{ (byDom[b.dom]=byDom[b.dom]||[]).push(b); });
@@ -969,16 +1007,62 @@ function renderSidebar(){
     const bus = byDom[dom];
     html += `<div class="dom-group">
       <div class="dom-head"><span>${meta.label}</span><span class="count">${bus.length}</span></div>`;
-    bus.forEach(b=>{
-      const fbCount = fbTotal(b.id);
-      html += `<button class="bu-btn${b.tobe.length?' has-tobe':''}${fbCount?' has-fb':''}" data-bu-id="${b.id}" data-fb="${fbCount||''}" onclick="openBu('${b.id}')">
-        <span class="bu-dot"></span>
-        <span>${b.name}</span>
-      </button>`;
-    });
+    bus.forEach(b=> html += buButtonHtml(b));
     html += `</div>`;
   });
   host.innerHTML = html;
+}
+function renderSidebarByFlow(){
+  const host = document.getElementById('nav-bus');
+  // Build reverse map for safety check
+  const assigned = new Set();
+  FLOW_GROUPS.forEach(g=>g.bus.forEach(id=>assigned.add(id)));
+  const unassigned = BUS.filter(b=>!assigned.has(b.id)).map(b=>b.id);
+
+  let html = '';
+  FLOW_GROUPS.forEach(g=>{
+    const bus = g.bus.map(id=>BUS.find(b=>b.id===id)).filter(Boolean);
+    if(!bus.length) return;
+    const isFlow = g.kind === 'flow';
+    html += `<div class="dom-group">
+      <div class="dom-head" style="${isFlow?'color:var(--amber)':''}">
+        <span>${g.label}</span><span class="count">${bus.length}</span>
+      </div>`;
+    // Flow groups: show step numbers (1→2→3...)
+    bus.forEach((b,i)=>{
+      const stepBadge = isFlow
+        ? `<span style="font-size:9.5px;font-weight:800;color:var(--amber);font-family:'JetBrains Mono',monospace;margin-right:2px">${String(i+1).padStart(2,'0')}</span>`
+        : '';
+      html += buButtonHtml(b, stepBadge);
+    });
+    html += `</div>`;
+  });
+  // Safety: show any BU that slipped through
+  if(unassigned.length){
+    html += `<div class="dom-group"><div class="dom-head" style="color:var(--red)">⚠ 미분류<span class="count">${unassigned.length}</span></div>`;
+    unassigned.forEach(id=>{
+      const b = BUS.find(x=>x.id===id);
+      if(b) html += buButtonHtml(b);
+    });
+    html += `</div>`;
+  }
+  host.innerHTML = html;
+}
+function buButtonHtml(b, prefix=''){
+  const fbCount = fbTotal(b.id);
+  return `<button class="bu-btn${b.tobe.length?' has-tobe':''}${fbCount?' has-fb':''}" data-bu-id="${b.id}" data-fb="${fbCount||''}" onclick="openBu('${b.id}')">
+    <span class="bu-dot"></span>${prefix}<span>${b.name}</span>
+  </button>`;
+}
+function setSidebarMode(m){
+  state.sidebarMode = m;
+  document.getElementById('mt-domain').classList.toggle('active', m==='domain');
+  document.getElementById('mt-flow').classList.toggle('active', m==='flow');
+  renderSidebar();
+  // keep highlight on current BU
+  if(state.currentBu){
+    document.querySelectorAll('.bu-btn').forEach(b=>b.classList.toggle('active', b.dataset.buId===state.currentBu));
+  }
 }
 function fbTotal(buId){
   const f = state.feedback[buId]; if(!f) return 0;
