@@ -82,6 +82,9 @@ def parse_value(v):
     if v.startswith("'") and v.endswith("'"): return v[1:-1]
     if v.startswith('"') and v.endswith('"'): return v[1:-1]
     if v.startswith('{'): return js_obj_to_dict(v)
+    if v == 'true':  return True
+    if v == 'false': return False
+    if v == 'null':  return None
     return v
 
 def parse_array(s):

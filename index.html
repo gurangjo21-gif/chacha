@@ -75,6 +75,11 @@ textarea,input{font-family:inherit;color:inherit}
 .bu-btn.has-tobe .bu-dot{background:var(--green)}
 .bu-btn.has-fb::after{content:attr(data-fb);position:absolute;right:10px;font-size:10px;color:var(--violet);font-weight:700}
 .bu-btn.active.has-fb::after{color:#fbbf24}
+.bu-btn.is-new{border:1px dashed var(--violet);background:linear-gradient(90deg,rgba(139,92,246,.06),transparent)}
+.bu-btn.is-new .bu-dot{background:var(--violet)}
+.bu-btn.is-new.active{background:var(--violet);color:#fff;border-style:solid}
+.bu-btn .new-tag{font-size:9.5px;font-weight:800;color:var(--violet);background:var(--violet-s);padding:1px 4px;border-radius:3px;letter-spacing:.02em;margin-right:2px}
+.bu-btn.active .new-tag{background:rgba(255,255,255,.2);color:#fff}
 
 /* ===== Viewer ===== */
 .viewer{overflow-y:auto;background:var(--bg)}
@@ -153,6 +158,7 @@ textarea,input{font-family:inherit;color:inherit}
 .bu-badge{padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;background:var(--bg-sub);color:var(--ink-3)}
 .bu-badge.has-tobe{background:var(--green-s);color:var(--green)}
 .bu-badge.no-tobe{background:var(--amber-s);color:var(--amber)}
+.bu-badge.is-new{background:var(--violet-s);color:var(--violet);border:1px dashed var(--violet)}
 .bu-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-3);margin-top:6px}
 .bu-meta b{color:var(--ink-2);font-weight:600}
 .bu-tables{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
@@ -225,15 +231,6 @@ textarea,input{font-family:inherit;color:inherit}
 .lg-item{padding:2px 6px;border-radius:3px;background:var(--bg-el);border:1px solid var(--line);color:var(--ink-2);font-size:10.5px;cursor:default}
 .lg-item b{color:var(--red);font-weight:800;font-family:"JetBrains Mono",monospace;margin-right:3px}
 .pane.tobe .lg-item b{color:var(--green)}
-
-/* ===== Export Modal ===== */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center}
-.modal-bg.on{display:flex}
-.modal{background:#fff;border-radius:var(--r-lg);padding:22px 26px;max-width:620px;width:92%;max-height:80vh;display:flex;flex-direction:column}
-.modal h3{font-size:16px;margin-bottom:6px}
-.modal p{font-size:12px;color:var(--ink-3);margin-bottom:14px}
-.modal textarea{flex:1;width:100%;min-height:280px;padding:12px;border:1px solid var(--line);border-radius:var(--r-sm);font-family:"JetBrains Mono",monospace;font-size:11px;resize:vertical;background:var(--bg-soft)}
-.modal-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
 
 /* ===== Scenario (Home journeys) ===== */
 .scen-title{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;color:var(--ink);margin-top:24px}
@@ -316,8 +313,6 @@ textarea,input{font-family:inherit;color:inherit}
       <b class="k-del" id="cnt-del">0</b>
       <b class="k-new" id="cnt-new">0</b>
     </div>
-    <button class="btn" onclick="openExport()">📥 내보내기</button>
-    <button class="btn" onclick="openImport()" title="이전 내보낸 JSON 불러오기">📤 불러오기</button>
   </header>
 
   <!-- ===== Main ===== -->
@@ -344,9 +339,6 @@ textarea,input{font-family:inherit;color:inherit}
           현재 KOCOM CS 전산은 <b>206개 화면</b>을 <b>45개 업무단위(BU)</b>로 묶어 <b>17개 핵심 DB 프로시저</b>로 흐르는 시스템입니다.
           이 북은 <b>현재 화면을 있는 그대로 보여주고</b>, <b>앞으로의 모습을 그 옆에 나란히</b> 두어
           비개발자도 번호를 찍어 의견을 낼 수 있게 합니다.
-          <br><br>
-          왼쪽 사이드바에서 업무를 골라 ① 현재 화면 ② 새 모습(있다면) ③ 의견 4블록(🟢유지/🟡개선/🔴삭제/💡신규) 을 보세요.
-          모든 의견은 브라우저에 저장되며, 우상단 <b>내보내기</b>로 JSON 파일을 받아 노션에 붙일 수 있습니다.
         </p>
 
         <div class="chip-row">
@@ -360,9 +352,9 @@ textarea,input{font-family:inherit;color:inherit}
 
         <div class="stats">
           <div class="stat a"><div class="stat-n">206</div><div class="stat-l">총 화면 수</div></div>
-          <div class="stat b"><div class="stat-n" id="s-bu">45</div><div class="stat-l">업무 단위 (BU)</div></div>
+          <div class="stat b"><div class="stat-n" id="s-bu">46</div><div class="stat-l">업무 단위 (BU)</div></div>
           <div class="stat c"><div class="stat-n" id="s-tobe">12</div><div class="stat-l">새 버전 제안됨</div></div>
-          <div class="stat d"><div class="stat-n" id="s-notobe">33</div><div class="stat-l">의견 받는 BU</div></div>
+          <div class="stat d"><div class="stat-n" id="s-notobe">34</div><div class="stat-l">의견 받는 BU</div></div>
           <div class="stat e"><div class="stat-n" id="s-fb">0</div><div class="stat-l">받은 의견</div></div>
         </div>
 
@@ -464,7 +456,7 @@ textarea,input{font-family:inherit;color:inherit}
               <code id="f-asis">–</code>
               <span style="margin-left:auto;font-size:10.5px;color:var(--ink-3)">번호 <b id="cnt-asis-n">0</b></span>
             </div>
-            <div class="pane-body">
+            <div class="pane-body" id="pb-asis">
               <iframe id="if-asis" data-side="asis" sandbox="allow-same-origin allow-scripts"></iframe>
             </div>
             <div class="legend">
@@ -553,35 +545,8 @@ textarea,input{font-family:inherit;color:inherit}
 
 </div>
 
-<!-- Export Modal -->
-<div class="modal-bg" id="modal-ex">
-  <div class="modal">
-    <h3>📥 의견 내보내기</h3>
-    <p>아래 JSON을 복사해서 파일로 저장하거나 노션·이메일에 붙여넣으세요. 나중에 "불러오기"로 다시 열 수 있습니다.</p>
-    <textarea id="ex-text" readonly></textarea>
-    <div class="modal-actions">
-      <button class="btn" onclick="copyEx()">📋 클립보드로 복사</button>
-      <button class="btn" onclick="downloadEx()">💾 JSON 파일 다운로드</button>
-      <button class="btn btn-primary" onclick="closeEx()">닫기</button>
-    </div>
-  </div>
-</div>
-
-<!-- Import Modal -->
-<div class="modal-bg" id="modal-im">
-  <div class="modal">
-    <h3>📤 이전 의견 불러오기</h3>
-    <p>이전에 내보낸 JSON을 붙여넣으세요. 현재 저장된 내용에 <b>덮어쓰기</b> 됩니다.</p>
-    <textarea id="im-text" placeholder='{"receipt-main":{"keep":["..."],...},...}'></textarea>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeIm()">취소</button>
-      <button class="btn btn-primary" onclick="applyIm()">불러오기 실행</button>
-    </div>
-  </div>
-</div>
-
 <!-- ===================================================================
-     DATA · BUS (45 업무단위 × AS-IS / TO-BE 매핑)
+     DATA · BUS (45 레거시 BU + 1 신설 제안 BU × AS-IS / TO-BE 매핑)
      =================================================================== -->
 <script>
 const BUS = [
@@ -744,13 +709,18 @@ const BUS = [
 
   /* ===== Util ===== */
   {id:'util-files',dom:'util',ic:'📎',name:'파일 업/다운/엑셀',desc:'파일 업로드·다운로드·PHPExcel 워크북.',
-   asis:['file_upfile.html','download.html','excel.html','popup_receipt_excel_upload.html'],
+   asis:['file_upfile.html','download.html','excel.html'],
    tobe:[],tables:[]},
   {id:'util-myinfo',dom:'util',ic:'👤',name:'내 정보',desc:'사원 본인 정보 수정.',
    asis:['my_info.html'],tobe:[],tables:['CS사원']},
   {id:'util-misc',dom:'util',ic:'🧰',name:'기타 유틸',desc:'페이징·날짜·PDF·로그인 검증.',
    asis:['login_check.html','db_date.html','page_search.html','pdf_sample.html','address_popup.html'],
    tobe:[],tables:[]},
+
+  /* ===== Future · 신설 제안 (AS-IS 없음, 새로 만들 업무) ===== */
+  {id:'chatbot-self',dom:'receipt',ic:'💬',name:'AI 챗봇 셀프서비스',
+   desc:'고객이 챗봇과 먼저 대화. 간단한 고장 진단·예약·조회는 챗봇이 1차 응대하고, 복잡한 케이스만 상담원으로 에스컬레이션됩니다. 현재는 존재하지 않는 업무입니다.',
+   asis:[], tobe:[], tables:['(신규) CS챗봇세션','(신규) CS챗봇의도'], isNew:true},
 ];
 
 /* =====================================================================
@@ -759,6 +729,7 @@ const BUS = [
    ===================================================================== */
 const BU_EDGES = [
   // ── 콜 → 접수
+  {from:'chatbot-self',  to:'cti-softphone', via:'에스컬레이션', kind:'flow'},
   {from:'cti-softphone', to:'receipt-main', via:'콜 인입',     kind:'trigger'},
   // ── 접수 → 하류
   {from:'receipt-main',  to:'svc-main',      via:'CS접수',      kind:'flow'},
@@ -825,6 +796,7 @@ const SCENARIOS = [
   {id:'normal', name:'일반 CS 접수 여정', ic:'🎯', color:'c-blue',
    desc:'콜 한 통이 고객 불만 해결까지 가는 전형적인 경로. 가장 흔한 케이스.',
    steps:[
+     {bu:'chatbot-self',  act:'챗봇이 1차 응대·분류 (신설)'},
      {bu:'cti-softphone', act:'인바운드 콜 수신'},
      {bu:'receipt-main',  act:'상담원이 접수 등록'},
      {bu:'svc-main',      act:'기사 배정·출동·수리'},
@@ -894,7 +866,7 @@ let state = {
    공유 BU(receipt-main, svc-main, admin-audit) 는 주 여정에 배치 */
 const FLOW_GROUPS = [
   {id:'flow-normal', label:'🎯 일반 CS 흐름', order:1, kind:'flow',
-   bus:['cti-softphone','receipt-main','svc-main','store-request','store-release','store-doing','serial-main','admin-audit','sms-send']},
+   bus:['chatbot-self','cti-softphone','receipt-main','svc-main','store-request','store-release','store-doing','serial-main','admin-audit','sms-send']},
   {id:'flow-tdb',    label:'⚡ 뇌전(TDB) 흐름', order:2, kind:'flow',
    bus:['tdb-in','tdb-store','tdb-doing','tdb-serial','tdb-return']},
   {id:'flow-year',   label:'📅 연차 흐름', order:3, kind:'flow',
@@ -1050,8 +1022,10 @@ function renderSidebarByFlow(){
 }
 function buButtonHtml(b, prefix=''){
   const fbCount = fbTotal(b.id);
-  return `<button class="bu-btn${b.tobe.length?' has-tobe':''}${fbCount?' has-fb':''}" data-bu-id="${b.id}" data-fb="${fbCount||''}" onclick="openBu('${b.id}')">
-    <span class="bu-dot"></span>${prefix}<span>${b.name}</span>
+  const cls = `bu-btn${b.tobe.length?' has-tobe':''}${fbCount?' has-fb':''}${b.isNew?' is-new':''}`;
+  const newTag = b.isNew ? '<span class="new-tag">신설</span>' : '';
+  return `<button class="${cls}" data-bu-id="${b.id}" data-fb="${fbCount||''}" onclick="openBu('${b.id}')">
+    <span class="bu-dot"></span>${prefix}${newTag}<span>${b.name}</span>
   </button>`;
 }
 function setSidebarMode(m){
@@ -1097,12 +1071,13 @@ function openBu(id){
   document.getElementById('bu-desc').textContent = bu.desc;
 
   const badges = document.getElementById('bu-badges');
-  badges.innerHTML = `
-    <span class="bu-badge">AS-IS ${bu.asis.length}개</span>
-    ${bu.tobe.length
-      ? `<span class="bu-badge has-tobe">✅ 새 버전 ${bu.tobe.length}개</span>`
-      : `<span class="bu-badge no-tobe">⚠ 새 버전 미정</span>`}
-  `;
+  badges.innerHTML = bu.isNew
+    ? `<span class="bu-badge is-new">🆕 신설 제안</span>
+       <span class="bu-badge no-tobe">AS-IS 없음 · 새로 만들 업무</span>`
+    : `<span class="bu-badge">AS-IS ${bu.asis.length}개</span>
+       ${bu.tobe.length
+         ? `<span class="bu-badge has-tobe">✅ 새 버전 ${bu.tobe.length}개</span>`
+         : `<span class="bu-badge no-tobe">⚠ 새 버전 미정</span>`}`;
 
   document.getElementById('bu-meta').innerHTML = `<span>도메인: <b>${DOMAINS[bu.dom].label}</b></span>`;
   document.getElementById('bu-tables').innerHTML = bu.tables.map(t=>`<span class="tbl-chip">🗄 ${t}</span>`).join('');
@@ -1192,8 +1167,25 @@ function setMode(m){
    =================================================================== */
 function loadAsis(){
   const bu = BUS.find(b=>b.id===state.currentBu); if(!bu) return;
+  const host = document.getElementById('pb-asis');
+  if(!bu.asis.length){
+    host.innerHTML = `
+      <div class="pane-empty">
+        <div class="pe-ic">🆕</div>
+        <div class="pe-t">AS-IS 없음 · 새로 만들 업무</div>
+        <div class="pe-d">이 업무는 <b>지금은 존재하지 않는 신설 제안</b>입니다. 레거시 화면이 없고, 차세대 전산에서 처음 만들어지는 업무입니다.</div>
+        <div class="pe-note">💡 이런 업무가 <b>정말 필요한가?</b> · <b>어디 끼워 넣는 게 맞는가?</b> 에 대해 의견을 남겨주세요.</div>
+      </div>`;
+    document.getElementById('f-asis').textContent = '—';
+    document.getElementById('lg-asis').innerHTML = `<em style="color:var(--ink-4);font-size:11px">AS-IS 없음</em>`;
+    document.getElementById('cnt-asis-n').textContent = '0';
+    return;
+  }
+  if(!host.querySelector('iframe')){
+    host.innerHTML = `<iframe id="if-asis" data-side="asis" sandbox="allow-same-origin allow-scripts"></iframe>`;
+    document.getElementById('if-asis').addEventListener('load', ()=>injectBadges('if-asis'));
+  }
   const fn = document.getElementById('pick-asis').value || bu.asis[0];
-  if(!fn){ document.getElementById('f-asis').textContent='–'; return; }
   const role = classifyScreen(fn);
   const m = ROLE_META[role];
   document.getElementById('f-asis').innerHTML = `<span style="color:var(--ink-3);margin-right:4px">${m.ic}${m.lbl}</span>${fn}`;
@@ -1384,57 +1376,6 @@ function updateCounters(){
 }
 
 /* ===================================================================
-   EXPORT / IMPORT
-   =================================================================== */
-function openExport(){
-  const payload = {
-    __meta: {
-      app:'KOCOM CS 차세대 전산 개발북',
-      version:'0.1',
-      exportedAt: new Date().toISOString(),
-      totalIdeas: Object.values(state.feedback).reduce((a,f)=>a+(f.keep?.length||0)+(f.imp?.length||0)+(f.del?.length||0)+(f.new?.length||0),0),
-    },
-    feedback: state.feedback,
-  };
-  document.getElementById('ex-text').value = JSON.stringify(payload,null,2);
-  document.getElementById('modal-ex').classList.add('on');
-}
-function closeEx(){ document.getElementById('modal-ex').classList.remove('on'); }
-function copyEx(){
-  const ta = document.getElementById('ex-text');
-  ta.select(); document.execCommand('copy');
-  alert('클립보드에 복사되었습니다!');
-}
-function downloadEx(){
-  const txt = document.getElementById('ex-text').value;
-  const blob = new Blob([txt],{type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href=url;
-  a.download = `kocom-cs-opinions-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function openImport(){ document.getElementById('im-text').value=''; document.getElementById('modal-im').classList.add('on'); }
-function closeIm(){ document.getElementById('modal-im').classList.remove('on'); }
-function applyIm(){
-  try{
-    const txt = document.getElementById('im-text').value.trim();
-    if(!txt) return;
-    const obj = JSON.parse(txt);
-    const fb = obj.feedback || obj;
-    if(typeof fb !== 'object') throw new Error('형식 오류');
-    if(!confirm('현재 저장된 모든 의견을 덮어쓸까요?')) return;
-    state.feedback = fb;
-    saveState(); closeIm();
-    updateCounters(); renderSidebar();
-    if(state.currentBu) renderFeedback();
-    alert('불러오기 완료!');
-  }catch(e){ alert('불러오기 실패: '+e.message); }
-}
-
-/* ===================================================================
    HOME STATS
    =================================================================== */
 function updateHomeStats(){
@@ -1466,17 +1407,6 @@ renderScenarios();
 updateHomeStats();
 updateCounters();
 
-// Click outside modal to close
-document.querySelectorAll('.modal-bg').forEach(m=>{
-  m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('on'); });
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){
-    document.querySelectorAll('.modal-bg.on').forEach(m=>m.classList.remove('on'));
-  }
-});
 </script>
 
 </body>
