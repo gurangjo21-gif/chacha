@@ -41,12 +41,8 @@ textarea,input{font-family:inherit;color:inherit}
 .brand-t{font-weight:700;font-size:14px;letter-spacing:-.01em}
 .brand-s{font-size:11px;color:var(--ink-3);margin-left:2px}
 .spacer{flex:1}
-.fb-counter{display:flex;gap:6px;align-items:center;font-size:11.5px;color:var(--ink-3)}
-.fb-counter b{padding:2px 8px;border-radius:999px;background:var(--bg-sub);color:var(--ink-2);font-weight:700;font-size:11px;min-width:22px;text-align:center}
-.fb-counter .k-keep{background:var(--green-s);color:var(--green)}
-.fb-counter .k-imp{background:var(--amber-s);color:var(--amber)}
-.fb-counter .k-del{background:var(--red-s);color:var(--red)}
-.fb-counter .k-new{background:var(--violet-s);color:var(--violet)}
+.submit-hint{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-3);padding:4px 10px;border-radius:999px;background:var(--amber-s);border:1px solid var(--amber)}
+.submit-hint b{color:var(--amber);font-weight:700}
 .btn{padding:6px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;transition:all .15s;background:var(--bg-sub);color:var(--ink-2)}
 .btn:hover{background:var(--line)}
 .btn-primary{background:var(--ink);color:#fff}
@@ -73,8 +69,6 @@ textarea,input{font-family:inherit;color:inherit}
 .bu-btn.active .bu-dot{background:#fff !important}
 .bu-dot{width:5px;height:5px;border-radius:50%;background:var(--ink-4);flex-shrink:0}
 .bu-btn.has-tobe .bu-dot{background:var(--green)}
-.bu-btn.has-fb::after{content:attr(data-fb);position:absolute;right:10px;font-size:10px;color:var(--violet);font-weight:700}
-.bu-btn.active.has-fb::after{color:#fbbf24}
 .bu-btn.is-new{border:1px dashed var(--violet);background:linear-gradient(90deg,rgba(139,92,246,.06),transparent)}
 .bu-btn.is-new .bu-dot{background:var(--violet)}
 .bu-btn.is-new.active{background:var(--violet);color:#fff;border-style:solid}
@@ -191,35 +185,13 @@ textarea,input{font-family:inherit;color:inherit}
 .pane-empty .pe-note{margin-top:14px;padding:10px 14px;background:var(--amber-s);border-radius:var(--r-sm);font-size:11.5px;color:var(--amber);font-weight:600;line-height:1.5}
 
 /* Feedback */
-.feedback{padding:20px 24px 60px;background:var(--bg-soft);border-top:1px solid var(--line)}
-.fb-title{font-size:14px;font-weight:700;margin-bottom:4px}
-.fb-sub{font-size:12px;color:var(--ink-3);margin-bottom:14px}
-.fb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.fb-col{background:var(--bg-el);border:1px solid var(--line);border-radius:var(--r);padding:12px;min-height:140px;display:flex;flex-direction:column}
-.fb-col-h{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-weight:700;font-size:12.5px}
-.fb-col-h .cc{width:10px;height:10px;border-radius:50%}
-.fb-col-h .n{margin-left:auto;font-size:10.5px;font-weight:500;color:var(--ink-3);padding:1px 7px;border-radius:999px;background:var(--bg-sub)}
-.fb-col.keep{border-top:2px solid var(--green)}.fb-col.keep .cc{background:var(--green)}
-.fb-col.imp{border-top:2px solid var(--amber)}.fb-col.imp .cc{background:var(--amber)}
-.fb-col.del{border-top:2px solid var(--red)}.fb-col.del .cc{background:var(--red)}
-.fb-col.new{border-top:2px solid var(--violet)}.fb-col.new .cc{background:var(--violet)}
-.fb-items{flex:1;display:flex;flex-direction:column;gap:5px;margin-bottom:8px;max-height:240px;overflow-y:auto}
-.fb-item{padding:7px 9px;background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--r-sm);font-size:11.5px;line-height:1.5;color:var(--ink-2);position:relative;word-break:break-all}
-.fb-item .fb-x{position:absolute;top:3px;right:4px;width:16px;height:16px;border-radius:3px;display:none;font-size:11px;color:var(--ink-4);line-height:1}
-.fb-item:hover .fb-x{display:grid;place-items:center}
-.fb-item .fb-x:hover{background:var(--red-s);color:var(--red)}
-.fb-item .tag{font-size:10px;color:var(--ink-4);margin-left:4px}
-.fb-add{display:flex;flex-direction:column;gap:6px}
-.fb-add textarea{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:11.5px;resize:vertical;min-height:52px;background:var(--bg-soft)}
-.fb-add textarea:focus{outline:none;border-color:var(--blue);background:#fff}
-.fb-add-row{display:flex;gap:5px;align-items:center}
-.fb-add input[type=text]{flex:1;padding:5px 8px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:10.5px;background:var(--bg-soft)}
-.fb-add input::placeholder{color:var(--ink-4)}
-.fb-btn{padding:6px 10px;border-radius:var(--r-sm);font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
-.fb-col.keep .fb-btn{background:var(--green)}
-.fb-col.imp .fb-btn{background:var(--amber)}
-.fb-col.del .fb-btn{background:var(--red)}
-.fb-col.new .fb-btn{background:var(--violet)}
+.submit-box{margin:20px 24px 60px;padding:20px 24px;background:linear-gradient(135deg,var(--amber-s),var(--bg-soft));border:1px solid var(--amber);border-radius:var(--r-lg);display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.submit-box .sb-ic{font-size:28px;flex-shrink:0;line-height:1}
+.submit-box .sb-t{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.submit-box .sb-t b{color:var(--amber)}
+.submit-box .sb-d{font-size:12.5px;color:var(--ink-2);line-height:1.7}
+.submit-box .sb-d code{padding:2px 6px;background:rgba(0,0,0,.05);border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink)}
+.submit-box .sb-d b{color:var(--ink)}
 
 /* Legend below iframes */
 .legend{padding:10px 14px;background:var(--bg-soft);border-top:1px solid var(--line);max-height:120px;overflow-y:auto;flex-shrink:0}
@@ -287,7 +259,6 @@ textarea,input{font-family:inherit;color:inherit}
   .home-title{font-size:28px}
   .vision-grid{grid-template-columns:1fr}
   .stats{grid-template-columns:repeat(3,1fr)}
-  .fb-grid{grid-template-columns:1fr 1fr}
   .screens.mode-compare{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
 }
 </style>
@@ -306,13 +277,7 @@ textarea,input{font-family:inherit;color:inherit}
       <span class="brand-s">AS-IS / TO-BE · 의견수렴 v0.1</span>
     </div>
     <div class="spacer"></div>
-    <div class="fb-counter">
-      <span>의견</span>
-      <b class="k-keep" id="cnt-keep">0</b>
-      <b class="k-imp" id="cnt-imp">0</b>
-      <b class="k-del" id="cnt-del">0</b>
-      <b class="k-new" id="cnt-new">0</b>
-    </div>
+    <div class="submit-hint">💬 의견은 <b>엑셀 파일</b>로 제출해 주세요</div>
   </header>
 
   <!-- ===== Main ===== -->
@@ -355,7 +320,7 @@ textarea,input{font-family:inherit;color:inherit}
           <div class="stat b"><div class="stat-n" id="s-bu">46</div><div class="stat-l">업무 단위 (BU)</div></div>
           <div class="stat c"><div class="stat-n" id="s-tobe">12</div><div class="stat-l">새 버전 제안됨</div></div>
           <div class="stat d"><div class="stat-n" id="s-notobe">34</div><div class="stat-l">의견 받는 BU</div></div>
-          <div class="stat e"><div class="stat-n" id="s-fb">0</div><div class="stat-l">받은 의견</div></div>
+          <div class="stat e"><div class="stat-n" id="s-xlsx">10</div><div class="stat-l">배포 엑셀 파일</div></div>
         </div>
 
         <div class="flow-box">
@@ -412,7 +377,7 @@ textarea,input{font-family:inherit;color:inherit}
         <div class="cta-box" style="margin-top:24px">
           <div>
             <div class="cta-t">🗳 여러분의 의견으로 완성되는 전산</div>
-            <div class="cta-d">왼쪽 사이드바에서 업무를 골라보세요. 현재 화면을 먼저 보고, 번호를 짚으며 "이건 유지" "이건 개선" 의견을 달아주시면 다음 버전에 반영됩니다.</div>
+            <div class="cta-d">왼쪽 사이드바에서 업무를 골라 현재 화면과 새 버전을 나란히 비교해 보세요. 의견은 담당자에게 받으신 <b>엑셀 파일</b>에 번호로 짚어 적어주시면 다음 버전에 반영됩니다.</div>
           </div>
           <button class="cta-btn" onclick="document.querySelector('.bu-btn[data-bu-id=receipt-main]')?.click()">수신접수 먼저 보기 →</button>
         </div>
@@ -481,59 +446,16 @@ textarea,input{font-family:inherit;color:inherit}
           </div>
         </div>
 
-        <div class="feedback">
-          <div class="fb-title">💬 이 업무에 대한 의견</div>
-          <div class="fb-sub">번호(①②③...)로 찍어서 의견 남겨주세요. 짧게 한 줄이면 됩니다. "③번 드롭다운 길어서 불편" 이런 식으로.</div>
-          <div class="fb-grid">
-
-            <div class="fb-col keep">
-              <div class="fb-col-h"><span class="cc"></span><span>🟢 유지 · 이건 꼭 남겨주세요</span><span class="n" id="cn-keep">0</span></div>
-              <div class="fb-items" id="it-keep"></div>
-              <div class="fb-add">
-                <textarea placeholder="예: ③번 고객 자동조회는 정말 편해요. 꼭 유지." id="in-keep"></textarea>
-                <div class="fb-add-row">
-                  <input type="text" placeholder="작성자 (선택)" id="au-keep">
-                  <button class="fb-btn" onclick="addFb('keep')">추가</button>
-                </div>
-              </div>
+        <div class="submit-box">
+          <div class="sb-ic">📋</div>
+          <div class="sb-body">
+            <div class="sb-t">💬 이 업무에 대한 의견은 <b>엑셀 파일</b>에 남겨주세요</div>
+            <div class="sb-d">
+              담당자에게 받으신 엑셀 (예: <code>홍길동_01_일반CS흐름_10BU_55화면.xlsx</code>) 을 열어
+              해당 업무의 <b>BU_xxx 시트</b> 또는 <b>개별 화면 시트</b>에 🟢유지 · 🟡개선 · 🔴삭제 · 💡신규 4블록으로 적어 회신하시면 됩니다.
+              <br>
+              이 웹사이트는 <b>지금 화면과 새 모습을 비교해서 보는 용도</b>이며, 여기서 입력한 내용은 제출되지 않습니다.
             </div>
-
-            <div class="fb-col imp">
-              <div class="fb-col-h"><span class="cc"></span><span>🟡 개선 · 이렇게 바뀌면 더 좋겠어요</span><span class="n" id="cn-imp">0</span></div>
-              <div class="fb-items" id="it-imp"></div>
-              <div class="fb-add">
-                <textarea placeholder="예: ⑦번 드롭다운이 너무 길어서 찾기 힘들어요. 검색창으로." id="in-imp"></textarea>
-                <div class="fb-add-row">
-                  <input type="text" placeholder="작성자 (선택)" id="au-imp">
-                  <button class="fb-btn" onclick="addFb('imp')">추가</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="fb-col del">
-              <div class="fb-col-h"><span class="cc"></span><span>🔴 삭제 · 이건 안 써요</span><span class="n" id="cn-del">0</span></div>
-              <div class="fb-items" id="it-del"></div>
-              <div class="fb-add">
-                <textarea placeholder="예: ⑫번 버튼은 한 번도 안 씀. 자리만 차지." id="in-del"></textarea>
-                <div class="fb-add-row">
-                  <input type="text" placeholder="작성자 (선택)" id="au-del">
-                  <button class="fb-btn" onclick="addFb('del')">추가</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="fb-col new">
-              <div class="fb-col-h"><span class="cc"></span><span>💡 신규 · 이게 있으면 좋겠어요</span><span class="n" id="cn-new">0</span></div>
-              <div class="fb-items" id="it-new"></div>
-              <div class="fb-add">
-                <textarea placeholder="예: 이전 접수 이력이 이 화면에 자동으로 뜨면 좋겠어요." id="in-new"></textarea>
-                <div class="fb-add-row">
-                  <input type="text" placeholder="작성자 (선택)" id="au-new">
-                  <button class="fb-btn" onclick="addFb('new')">추가</button>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
 
@@ -851,15 +773,13 @@ const DOMAINS = {
 };
 
 /* ===================================================================
-   STATE & STORAGE
+   STATE
    =================================================================== */
-const LS_KEY = 'kocom-cs-dev-book-v1';
 let state = {
   currentBu: null,
   mode: 'compare',      // 'asis' | 'tobe' | 'compare'
   role: 'all',          // 'all' | 'list' | 'mode' | 'proc' | 'popup' | 'other'
   sidebarMode: 'domain',// 'domain' | 'flow'
-  feedback: {},         // { buId: { keep:[{text,author,ts}], imp:[], del:[], new:[] } }
 };
 
 /* 흐름별 그룹 정의 — 각 BU는 한 곳에만 (중복 방지)
@@ -886,18 +806,6 @@ const FLOW_GROUPS = [
   {id:'sup-sys',     label:'🧰 시스템·도구', order:10, kind:'support',
    bus:['common-search','layout-shell','ajax-oracle','ajax-mysql','util-files','util-myinfo','util-misc']},
 ];
-
-function loadState(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(raw){ const p = JSON.parse(raw); state.feedback = p.feedback||{}; }
-  }catch(e){ console.warn('load state failed',e); }
-}
-function saveState(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify({feedback:state.feedback})); }
-  catch(e){ console.warn('save state failed',e); }
-}
-loadState();
 
 /* ===================================================================
    HELPERS: classify, neighbors
@@ -1021,10 +929,9 @@ function renderSidebarByFlow(){
   host.innerHTML = html;
 }
 function buButtonHtml(b, prefix=''){
-  const fbCount = fbTotal(b.id);
-  const cls = `bu-btn${b.tobe.length?' has-tobe':''}${fbCount?' has-fb':''}${b.isNew?' is-new':''}`;
+  const cls = `bu-btn${b.tobe.length?' has-tobe':''}${b.isNew?' is-new':''}`;
   const newTag = b.isNew ? '<span class="new-tag">신설</span>' : '';
-  return `<button class="${cls}" data-bu-id="${b.id}" data-fb="${fbCount||''}" onclick="openBu('${b.id}')">
+  return `<button class="${cls}" data-bu-id="${b.id}" onclick="openBu('${b.id}')">
     <span class="bu-dot"></span>${prefix}${newTag}<span>${b.name}</span>
   </button>`;
 }
@@ -1038,11 +945,6 @@ function setSidebarMode(m){
     document.querySelectorAll('.bu-btn').forEach(b=>b.classList.toggle('active', b.dataset.buId===state.currentBu));
   }
 }
-function fbTotal(buId){
-  const f = state.feedback[buId]; if(!f) return 0;
-  return (f.keep?.length||0)+(f.imp?.length||0)+(f.del?.length||0)+(f.new?.length||0);
-}
-
 /* ===================================================================
    NAVIGATION
    =================================================================== */
@@ -1052,7 +954,6 @@ function goHome(){
   document.getElementById('view-bu').classList.remove('active');
   document.getElementById('nav-home').classList.add('active');
   document.querySelectorAll('.bu-btn').forEach(b=>b.classList.remove('active'));
-  updateCounters();
 }
 
 function openBu(id){
@@ -1087,7 +988,6 @@ function openBu(id){
   renderFilePickers(bu);
 
   loadAsis(); loadTobe();
-  renderFeedback();
   setMode(state.mode);
 }
 
@@ -1200,7 +1100,7 @@ function loadTobe(){
       <div class="pane-empty">
         <div class="pe-ic">🎨</div>
         <div class="pe-t">아직 새 버전 초안이 없습니다</div>
-        <div class="pe-d">이 업무의 새 모습은 <b>여러분의 의견으로</b> 그려집니다. 오른쪽 아래 의견 4블록에 유지/개선/삭제/신규를 남겨주세요.</div>
+        <div class="pe-d">이 업무의 새 모습은 <b>여러분의 의견으로</b> 그려집니다. 담당자에게 받으신 <b>엑셀 파일</b>의 🟢유지 / 🟡개선 / 🔴삭제 / 💡신규 블록에 번호로 짚어 적어주세요.</div>
         <div class="pe-note">💡 레거시 그대로는 남기고 싶다 → 🟢 유지<br>완전히 새로 갈아엎어야 한다 → 💡 신규</div>
       </div>`;
     document.getElementById('f-tobe').textContent = '—';
@@ -1313,69 +1213,6 @@ document.getElementById('if-asis').addEventListener('load', ()=>injectBadges('if
 document.getElementById('if-tobe').addEventListener('load', ()=>injectBadges('if-tobe'));
 
 /* ===================================================================
-   FEEDBACK
-   =================================================================== */
-function ensureFb(buId){
-  if(!state.feedback[buId]) state.feedback[buId] = {keep:[],imp:[],del:[],new:[]};
-  return state.feedback[buId];
-}
-function addFb(cat){
-  const bu = state.currentBu; if(!bu) return;
-  const text = document.getElementById('in-'+cat).value.trim();
-  if(!text) return;
-  const author = document.getElementById('au-'+cat).value.trim();
-  const item = { text, author: author||'익명', ts: new Date().toISOString().slice(0,16).replace('T',' ') };
-  ensureFb(bu)[cat].push(item);
-  saveState();
-  document.getElementById('in-'+cat).value='';
-  renderFeedback();
-  updateCounters();
-  renderSidebar();
-  // Re-highlight current
-  document.querySelectorAll('.bu-btn').forEach(b=>b.classList.toggle('active', b.dataset.buId===bu));
-}
-function delFb(cat, idx){
-  const bu = state.currentBu; if(!bu) return;
-  if(!confirm('이 의견을 삭제할까요?')) return;
-  state.feedback[bu][cat].splice(idx,1);
-  saveState(); renderFeedback(); updateCounters(); renderSidebar();
-  document.querySelectorAll('.bu-btn').forEach(b=>b.classList.toggle('active', b.dataset.buId===bu));
-}
-function renderFeedback(){
-  const bu = state.currentBu; if(!bu) return;
-  const f = ensureFb(bu);
-  ['keep','imp','del','new'].forEach(cat=>{
-    const items = f[cat]||[];
-    document.getElementById('cn-'+cat).textContent = items.length;
-    const host = document.getElementById('it-'+cat);
-    if(!items.length){
-      host.innerHTML = `<div style="font-size:11px;color:var(--ink-4);text-align:center;padding:14px 0">아직 의견 없음</div>`;
-    } else {
-      host.innerHTML = items.map((it,i)=>`
-        <div class="fb-item">
-          ${escapeHtml(it.text)}
-          <span class="tag">· ${escapeHtml(it.author||'익명')} · ${it.ts}</span>
-          <button class="fb-x" onclick="delFb('${cat}',${i})" title="삭제">✕</button>
-        </div>
-      `).join('');
-    }
-  });
-}
-function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
-
-function updateCounters(){
-  let k=0,i=0,d=0,n=0;
-  Object.values(state.feedback).forEach(f=>{
-    k+=f.keep?.length||0; i+=f.imp?.length||0; d+=f.del?.length||0; n+=f.new?.length||0;
-  });
-  document.getElementById('cnt-keep').textContent = k;
-  document.getElementById('cnt-imp').textContent = i;
-  document.getElementById('cnt-del').textContent = d;
-  document.getElementById('cnt-new').textContent = n;
-  document.getElementById('s-fb').textContent = k+i+d+n;
-}
-
-/* ===================================================================
    HOME STATS
    =================================================================== */
 function updateHomeStats(){
@@ -1383,6 +1220,7 @@ function updateHomeStats(){
   document.getElementById('s-bu').textContent = BUS.length;
   document.getElementById('s-tobe').textContent = nTobe;
   document.getElementById('s-notobe').textContent = BUS.length - nTobe;
+  document.getElementById('s-xlsx').textContent = FLOW_GROUPS.length;
   // rough file-type counts across all BUs
   let list=0,mode=0,proc=0,popup=0;
   BUS.forEach(b=>{
@@ -1405,7 +1243,6 @@ function updateHomeStats(){
 renderSidebar();
 renderScenarios();
 updateHomeStats();
-updateCounters();
 
 </script>
 
