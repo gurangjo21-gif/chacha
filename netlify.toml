@@ -1,0 +1,25 @@
+# Netlify 배포 설정
+
+[build.processing]
+  # 빌드 후처리 비활성화 (레거시 HTML·CSS 그대로 보존)
+  skip_processing = true
+
+[build.processing.html]
+  # .html 확장자 자동 제거 끄기 (iframe src가 301 리다이렉트 없이 바로 200 뜨도록)
+  pretty_urls = false
+
+[build.processing.css]
+  bundle = false
+  minify = false
+
+[build.processing.js]
+  bundle = false
+  minify = false
+
+# 모든 파일 캐시 짧게 (개발북 자주 업데이트 가정)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    # 노션 iframe 임베드를 위해 X-Frame-Options 완화
+    X-Frame-Options = "ALLOWALL"
