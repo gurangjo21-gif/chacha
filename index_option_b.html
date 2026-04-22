@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
-<title>KOCOM CS 차세대 전산 · 개발북</title>
+<title>KOCOM CS 차세대 전산 · 개발북 · Option B</title>
 <style>
 :root{
   --bg:#f7f7f8;--bg-el:#fff;--bg-sub:#f2f2f4;--bg-soft:#fafafa;
@@ -32,7 +32,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 a{color:var(--blue);text-decoration:none}
 textarea,input{font-family:inherit;color:inherit}
 
-.app{display:grid;grid-template-rows:52px 1fr;height:100vh}
+.app{display:grid;grid-template-rows:28px 52px 1fr;height:100vh}
+
+/* ===== Option B banner ===== */
+.ob-banner{display:flex;align-items:center;gap:10px;padding:0 18px;background:linear-gradient(90deg,#1e3a8a,#6d28d9,#db2777);color:#fff;font-size:11.5px;font-weight:600;letter-spacing:.01em;flex-shrink:0;overflow:hidden;white-space:nowrap}
+.ob-banner b{font-weight:800;letter-spacing:.04em}
+.ob-banner code{font-family:"JetBrains Mono","Consolas",monospace;font-size:10.5px;padding:1px 6px;background:rgba(255,255,255,.18);border-radius:4px;margin-left:4px}
+.ob-banner .ob-dot{width:6px;height:6px;border-radius:50%;background:#facc15;box-shadow:0 0 0 2px rgba(250,204,21,.3)}
 
 /* ===== AppBar ===== */
 .appbar{display:flex;align-items:center;gap:14px;padding:0 20px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);z-index:20}
@@ -49,22 +55,17 @@ textarea,input{font-family:inherit;color:inherit}
 .btn-primary:hover{background:var(--ink-2)}
 
 /* ===== Main Grid ===== */
-.main{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 52px);overflow:hidden}
+.main{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 80px);overflow:hidden}
 
 /* ===== Sidebar ===== */
 .sidebar{background:var(--bg-el);border-right:1px solid var(--line);overflow-y:auto;padding:8px 0}
 .sidebar::-webkit-scrollbar{width:6px}.sidebar::-webkit-scrollbar-thumb{background:var(--line-s);border-radius:3px}
 .nav-home{display:block;width:calc(100% - 16px);margin:4px 8px 8px;padding:10px 12px;border-radius:var(--r-sm);font-weight:600;font-size:12px;text-align:left;background:linear-gradient(135deg,var(--blue-s),var(--violet-s));color:var(--ink);border:1px solid var(--line)}
 .nav-home.active{box-shadow:0 0 0 2px var(--blue) inset}
-.mode-toggle{display:flex;gap:2px;margin:4px 8px 4px;padding:3px;background:var(--bg-sub);border-radius:var(--r-sm)}
+.mode-toggle{display:flex;gap:2px;margin:4px 8px 10px;padding:3px;background:var(--bg-sub);border-radius:var(--r-sm)}
 .mode-toggle button{flex:1;padding:6px 8px;border-radius:4px;font-size:11px;font-weight:600;color:var(--ink-3);transition:all .12s;cursor:pointer}
 .mode-toggle button:hover{color:var(--ink-2);background:var(--bg-el)}
 .mode-toggle button.active{background:var(--ink);color:#fff}
-.future-toggle{display:flex;align-items:center;justify-content:space-between;gap:6px;width:calc(100% - 16px);margin:0 8px 10px;padding:6px 12px;border-radius:var(--r-sm);font-size:11px;font-weight:600;color:var(--ink-3);background:var(--bg-sub);border:1px dashed var(--line);transition:all .12s;cursor:pointer}
-.future-toggle:hover{color:var(--ink-2);background:var(--bg-el)}
-.future-toggle.active{background:var(--violet-s);border-color:var(--violet);color:var(--violet)}
-.future-toggle b{font-size:10px;font-weight:800;padding:1px 6px;border-radius:3px;background:var(--bg-el);color:var(--ink-3);letter-spacing:.04em}
-.future-toggle.active b{background:var(--violet);color:#fff}
 .dom-group{margin-bottom:4px}
 .dom-head{display:flex;align-items:center;gap:8px;padding:8px 14px 4px;font-size:10.5px;font-weight:700;color:var(--ink-4);letter-spacing:.05em;text-transform:uppercase}
 .dom-head .count{margin-left:auto;font-weight:500;color:var(--ink-4);font-size:10px}
@@ -163,12 +164,14 @@ textarea,input{font-family:inherit;color:inherit}
 .bu-tables{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
 .tbl-chip{padding:3px 8px;border-radius:4px;background:var(--slate-s);color:var(--slate);font-size:10.5px;font-family:"JetBrains Mono",monospace;font-weight:500}
 
-.bu-tabs{display:flex;gap:4px;padding:10px 24px;background:var(--bg-el);border-bottom:1px solid var(--line);flex-shrink:0}
+.bu-tabs{display:flex;gap:4px;padding:10px 24px;background:var(--bg-el);border-bottom:1px solid var(--line);flex-shrink:0;align-items:center}
 .tab-btn{padding:6px 14px;border-radius:var(--r-sm);font-size:12px;font-weight:600;color:var(--ink-3);transition:all .15s}
 .tab-btn:hover{background:var(--bg-sub)}
 .tab-btn.active{background:var(--ink);color:#fff}
-.tab-sep{width:1px;background:var(--line);margin:0 8px}
-.file-pick{padding:4px 8px;border-radius:var(--r-sm);background:var(--bg-sub);font-size:11px;color:var(--ink-2);border:none;cursor:pointer}
+.tab-sep{width:1px;background:var(--line);margin:0 8px;align-self:stretch}
+.file-pick{padding:5px 10px;border-radius:var(--r-sm);background:var(--bg-sub);font-size:11.5px;color:var(--ink-2);border:none;cursor:pointer;max-width:380px;font-family:"JetBrains Mono","Consolas",monospace;font-weight:500}
+.combo-wrap{display:flex;align-items:center;gap:6px}
+.combo-lbl{font-size:10.5px;font-weight:800;color:var(--indigo);background:var(--indigo-s);padding:3px 7px;border-radius:4px;letter-spacing:.03em}
 
 .screens{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);overflow:hidden;min-height:0}
 .screens.mode-asis{grid-template-columns:1fr 0}
@@ -233,31 +236,16 @@ textarea,input{font-family:inherit;color:inherit}
 .scen-card.c-amber{--sc-c:var(--amber);--sc-s:var(--amber-s)}
 
 /* ===== BU neighbors (upstream/downstream) ===== */
-/* BU 헤더 내 정보 행 (도메인 / 연관 테이블) */
-.bu-info-row{display:flex;align-items:center;gap:10px;margin-top:6px;font-size:12px;flex-wrap:wrap}
-.bu-info-lbl{font-size:10.5px;font-weight:700;color:var(--ink-4);letter-spacing:.02em;padding:2px 8px;border-radius:4px;background:var(--bg-sub);flex-shrink:0;min-width:84px;text-align:center}
-.bu-info-val{display:flex;gap:6px;flex-wrap:wrap;align-items:center;color:var(--ink-2)}
-
-/* 이웃 BU 연결 (상류 / 하류) */
-.bu-nb{display:flex;flex-direction:column;gap:8px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
-.bu-nb-row{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
-.bu-nb-lbl-col{display:flex;flex-direction:column;gap:1px;flex-shrink:0;min-width:84px}
-.bu-nb-lbl{font-size:11px;font-weight:800;letter-spacing:.02em;padding:3px 8px;border-radius:4px;text-align:center}
+.bu-nb{display:flex;gap:10px;align-items:stretch;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);flex-wrap:wrap}
+.bu-nb-col{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:22px}
+.bu-nb-lbl{font-size:10.5px;font-weight:700;color:var(--ink-4);letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--bg-sub);flex-shrink:0}
 .bu-nb-lbl.up{background:var(--blue-s);color:var(--blue)}
 .bu-nb-lbl.dn{background:var(--amber-s);color:var(--amber)}
-.bu-nb-hint{font-size:9.5px;color:var(--ink-4);text-align:center;padding:0 4px}
-.bu-nb-pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex:1;min-width:0;padding-top:2px}
-.nb-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 4px;border-radius:999px;background:var(--bg-el);border:1px solid var(--line);font-size:11.5px;color:var(--ink-2);cursor:pointer;transition:all .1s;font-weight:500}
+.nb-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;background:var(--bg-el);border:1px solid var(--line);font-size:11px;color:var(--ink-2);cursor:pointer;transition:all .1s;font-weight:500}
 .nb-chip:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
-.nb-chip .nb-kind{font-size:9px;font-weight:800;padding:1px 5px;border-radius:3px;letter-spacing:.02em;color:#fff}
-.nb-chip .nb-via{font-size:10px;color:var(--ink-4);margin-left:4px;padding-left:5px;border-left:1px solid var(--line)}
-.nb-chip:hover .nb-via{color:#cbd5e1;border-left-color:rgba(255,255,255,.3)}
-.nb-empty{font-size:11.5px;color:var(--ink-4);font-style:italic;padding:3px 0}
-
-/* 연결 종류 범례 */
-.bu-nb-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;padding-top:8px;border-top:1px dotted var(--line);font-size:10.5px;color:var(--ink-4)}
-.bu-nb-legend .lg-item{display:inline-flex;align-items:center;gap:4px}
-.bu-nb-legend .lg-dot{width:8px;height:8px;border-radius:2px}
+.nb-chip .via{font-size:9.5px;color:var(--ink-4);margin-left:2px}
+.nb-chip:hover .via{color:#cbd5e1}
+.nb-empty{font-size:11px;color:var(--ink-4);font-style:italic}
 
 /* ===== Role tabs (5단 사다리) ===== */
 .role-tabs{display:flex;gap:2px;background:var(--bg-sub);padding:3px;border-radius:var(--r-sm)}
@@ -281,19 +269,17 @@ textarea,input{font-family:inherit;color:inherit}
   .stats{grid-template-columns:repeat(3,1fr)}
   .screens.mode-compare{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
 }
-
-/* Per-screen TO-BE missing note */
-.pane-empty .pe-file{
-  margin-top:10px;padding:6px 10px;background:rgba(0,0,0,.05);
-  border-radius:4px;font-family:"JetBrains Mono",monospace;
-  font-size:11px;color:var(--ink-2);word-break:break-all;max-width:420px;
-  border:1px dashed var(--line-s);
-}
 </style>
 </head>
 <body>
 
 <div class="app">
+
+  <!-- ===== Option B banner (REQUIRED · first visible element) ===== -->
+  <div class="ob-banner">
+    <span class="ob-dot"></span>
+    <span>🅱️ <b>옵션 B 프로토타입</b> · 데이터 구조 리팩토링 · <code>screens[{asis,tobe,role}]</code> 페어 구조</span>
+  </div>
 
   <!-- ===== AppBar ===== -->
   <header class="appbar">
@@ -302,7 +288,7 @@ textarea,input{font-family:inherit;color:inherit}
       <div>
         <div class="brand-t">KOCOM CS <span style="color:var(--ink-3)">·</span> 차세대 전산 개발북</div>
       </div>
-      <span class="brand-s">AS-IS / TO-BE · 의견수렴 v0.1</span>
+      <span class="brand-s">AS-IS / TO-BE · 의견수렴 v0.1 · Option B</span>
     </div>
     <div class="spacer"></div>
     <div class="submit-hint">💬 의견은 <b>엑셀 파일</b>로 제출해 주세요</div>
@@ -318,7 +304,6 @@ textarea,input{font-family:inherit;color:inherit}
         <button id="mt-domain" class="active" onclick="setSidebarMode('domain')" title="도메인별 (관리자/접수/자재…)">📂 도메인</button>
         <button id="mt-flow" onclick="setSidebarMode('flow')" title="업무 흐름별 (4개 여정 + 지원)">🔗 흐름</button>
       </div>
-      <button class="future-toggle active" id="ft-btn" onclick="toggleShowFuture()" title="차세대 신설 제안(🆕 표시된 5개 BU) 표시/숨김">🆕 신설 제안 <b id="ft-state">ON</b></button>
       <div id="nav-bus"></div>
     </aside>
 
@@ -327,12 +312,16 @@ textarea,input{font-family:inherit;color:inherit}
 
       <!-- HOME VIEW -->
       <section class="home" id="view-home">
-        <div class="home-eyebrow"><span class="pulse"></span>KOCOM CS · 차세대 전산 개발북 v0.1</div>
-        <h1 class="home-title">레거시 화면과 <em>차세대 제안</em>을<br>나란히 비교하는 개발북</h1>
+        <div class="home-eyebrow"><span class="pulse"></span>내일의 의견수렴을 위한 완성 체인</div>
+        <h1 class="home-title">모든 화면이 짝을 이루고,<br><em>모든 의견이 번호로 남는</em> 개발북.</h1>
         <p class="home-sub">
-          <b>레거시</b> 202 화면 · 45 업무단위(BU) · 17 DB 프로시저<br>
-          <b>차세대</b> 신설 제안 5 BU · TO-BE 초안 13건 (9 BU 보유 · 41 BU 의견 대기)<br>
-          <b>용도</b> 화면 쌍(AS-IS ↔ TO-BE) 열람 · 의견은 배포 엑셀 10종으로 수집
+          현재 KOCOM CS 전산은 <b>206개 화면</b>을 <b>45개 업무단위(BU)</b>로 묶어 <b>17개 핵심 DB 프로시저</b>로 흐르는 시스템입니다.
+          이 북은 <b>현재 화면을 있는 그대로 보여주고</b>, <b>앞으로의 모습을 그 옆에 나란히</b> 두어
+          비개발자도 번호를 찍어 의견을 낼 수 있게 합니다.
+        </p>
+        <p class="home-sub" style="font-size:12.5px;padding:10px 14px;background:var(--indigo-s);border-left:3px solid var(--indigo);border-radius:4px;color:var(--ink-2)">
+          <b>🅱️ Option B 프로토타입:</b> 각 AS-IS 화면마다 <b>TO-BE 슬롯이 명시적으로</b> 붙은 <code style="font-family:'JetBrains Mono',monospace;font-size:11.5px">screens[{asis,tobe,role}]</code> 페어 구조로 바뀌었습니다.
+          화면 선택 드롭다운이 <b>단일화</b>되어 선택 시 양쪽 iframe이 동시에 로드되며, TO-BE 초안이 없으면 "새 버전 초안 없음" 플레이스홀더가 나타납니다.
         </p>
 
         <div class="chip-row">
@@ -340,17 +329,18 @@ textarea,input{font-family:inherit;color:inherit}
           <div class="chip">✏️ 입력 <b id="n-mode">–</b></div>
           <div class="chip">⚡ 처리 <b id="n-proc">–</b></div>
           <div class="chip">🔎 팝업 <b id="n-popup">–</b></div>
-          <div class="chip">🧩 기타 <b id="n-other">–</b></div>
           <div class="chip">🧩 DB 프로시저 <b>17</b></div>
-          <div class="chip">🗄️ 테이블·뷰 <b id="n-tables">–</b></div>
+          <div class="chip">🗄️ 테이블 <b>40+</b></div>
+          <div class="chip" style="background:var(--green-s);border-color:var(--green);color:var(--green)">✅ 페어링됨 <b id="n-paired">–</b></div>
+          <div class="chip" style="background:var(--amber-s);border-color:var(--amber);color:var(--amber)">∅ tobe:null <b id="n-null">–</b></div>
         </div>
 
         <div class="stats">
-          <div class="stat a"><div class="stat-n" id="s-asis">202</div><div class="stat-l">레거시 화면 (AS-IS)</div></div>
+          <div class="stat a"><div class="stat-n">206</div><div class="stat-l">총 화면 수</div></div>
           <div class="stat b"><div class="stat-n" id="s-bu">50</div><div class="stat-l">업무 단위 (BU)</div></div>
-          <div class="stat c"><div class="stat-n" id="s-tobe">9</div><div class="stat-l">TO-BE 있는 BU</div></div>
-          <div class="stat d"><div class="stat-n" id="s-notobe">41</div><div class="stat-l">TO-BE 없는 BU</div></div>
-          <div class="stat e"><div class="stat-n" id="s-xlsx">10</div><div class="stat-l">배포 엑셀 파일</div></div>
+          <div class="stat c"><div class="stat-n" id="s-tobe">9</div><div class="stat-l">새 버전 제안됨</div></div>
+          <div class="stat d"><div class="stat-n" id="s-notobe">41</div><div class="stat-l">의견 받는 BU</div></div>
+          <div class="stat e"><div class="stat-n" id="s-xlsx">11</div><div class="stat-l">배포 엑셀 파일</div></div>
         </div>
 
         <div class="flow-box">
@@ -437,8 +427,10 @@ textarea,input{font-family:inherit;color:inherit}
           <div class="tab-sep"></div>
           <div class="role-tabs" id="role-tabs"></div>
           <div class="tab-sep"></div>
-          <select class="file-pick" id="pick-asis" onchange="loadAsis()" title="AS-IS 파일 선택"></select>
-          <select class="file-pick" id="pick-tobe" onchange="loadTobeFromPicker()" title="TO-BE 파일 선택"></select>
+          <div class="combo-wrap">
+            <span class="combo-lbl">🅱 화면 선택</span>
+            <select class="file-pick" id="pick-screen" onchange="loadScreen()" title="AS-IS + TO-BE 페어 선택 (단일 드롭다운)"></select>
+          </div>
           <div class="spacer" style="flex:1"></div>
           <button class="btn" onclick="renumber()" style="font-size:11px">🔢 번호 다시</button>
         </div>
@@ -481,7 +473,7 @@ textarea,input{font-family:inherit;color:inherit}
           <div class="sb-body">
             <div class="sb-t">💬 이 업무에 대한 의견은 <b>엑셀 파일</b>에 남겨주세요</div>
             <div class="sb-d">
-              담당자에게 받으신 엑셀 (예: <code>홍길동_01_일반CS흐름_13BU_55화면.xlsx</code>) 을 열어
+              담당자에게 받으신 엑셀 (예: <code>홍길동_01_일반CS흐름_10BU_55화면.xlsx</code>) 을 열어
               해당 업무의 <b>BU_xxx 시트</b> 또는 <b>개별 화면 시트</b>에 🟢유지 · 🟡개선 · 🔴삭제 · 💡신규 4블록으로 적어 회신하시면 됩니다.
               <br>
               이 웹사이트는 <b>지금 화면과 새 모습을 비교해서 보는 용도</b>이며, 여기서 입력한 내용은 제출되지 않습니다.
@@ -498,213 +490,351 @@ textarea,input{font-family:inherit;color:inherit}
 </div>
 
 <!-- ===================================================================
-     DATA · BUS (45 레거시 BU + 5 신설 제안 BU × AS-IS / TO-BE 매핑)
-     =================================================================== -->
+     DATA · BUS (Option B 데이터 구조)
+     각 BU는 screens:[{asis, tobe, role}] 배열을 가집니다.
+       · asis:    레거시 파일명 (문자열) · null = TO-BE-only 고아 항목
+       · tobe:    새 버전 파일 경로 · null = "새 버전 초안 없음"
+       · role:    list | mode | proc | popup | other  (자동분류 + 보정)
+     매칭 규칙:
+       · 양쪽을 lowercase → 확장자 제거 → `_` → `-` 로 정규화
+       · TO-BE는 basename만 취해 비교
+       · 완전 일치 시 페어링, 아니면 tobe:null
+     =================================================================== */
 <script>
+
+/* ========== Option B 페어링 부트스트랩 헬퍼 ========== */
+function _norm(s){ return s.toLowerCase().replace(/\.html?$/,'').replace(/_/g,'-'); }
+function _basename(p){ return p.split('/').pop(); }
+function _classify(f){
+  if(!f) return 'other';
+  const name = f.split('/').pop().toLowerCase();
+  if(name.includes('_proc'))  return 'proc';
+  if(name.startsWith('popup_') || name.includes('_popup') || name.includes('popup-')) return 'popup';
+  if(name.includes('_list') || name.includes('-list')) return 'list';
+  if(name.includes('_mode') || name.includes('-mode')) return 'mode';
+  if(name.includes('_release')) return 'proc';
+  if(name.includes('_setting')) return 'mode';
+  if(name.includes('_detail'))  return 'list';
+  return 'other';
+}
+/* 빌더: 기존 asis[] + tobe[] 를 받아 screens[] 로 변환 */
+function _buildScreens(asis, tobe){
+  const tobeIdx = new Map(); // normalized stem -> tobe path
+  tobe.forEach(t => tobeIdx.set(_norm(_basename(t)), t));
+  const used = new Set();
+  const screens = asis.map(a=>{
+    const key = _norm(a);
+    const matched = tobeIdx.get(key) || null;
+    if(matched) used.add(key);
+    return { asis:a, tobe:matched, role:_classify(a) };
+  });
+  // 매칭되지 않은 TO-BE 파일들을 "고아 TO-BE" 항목으로 포함 (asis:null)
+  tobe.forEach(t=>{
+    const key = _norm(_basename(t));
+    if(!used.has(key)){
+      screens.push({ asis:null, tobe:t, role:_classify(t) });
+    }
+  });
+  return screens;
+}
+
 const BUS = [
   /* ===== Admin ===== */
   {id:'admin-user',dom:'admin',ic:'👤',name:'사원 관리',desc:'CS 사원 등록·수정·퇴사. Oracle + MySQL(CTI) 이중 동기화.',
-   asis:['admin_user_list.html','admin_user_mode.html','admin_user_proc.html'],
-   tobe:['2.화면단위/pages/P2-major/admin-user-list.html'],
+   screens:_buildScreens(
+     ['admin_user_list.html','admin_user_mode.html','admin_user_proc.html'],
+     ['2.화면단위/pages/P2-major/admin-user-list.html']
+   ),
    tables:['CS사원','CS로그인','xline_agent_list']},
   {id:'admin-member',dom:'admin',ic:'📇',name:'고객 관리',desc:'CS 고객정보 마스터(1.8M건). 시퀀스 기반 고객번호 채번.',
-   asis:['admin_member_list.html','admin_member_mode.html','admin_member_proc.html','member_find.html'],
-   tobe:[],tables:['CS고객정보']},
+   screens:_buildScreens(
+     ['admin_member_list.html','admin_member_mode.html','admin_member_proc.html','member_find.html'],
+     []
+   ),
+   tables:['CS고객정보']},
   {id:'admin-offmanager',dom:'admin',ic:'🧑‍💼',name:'담당자 관리',desc:'CS 담당자(외부 업체 담당자) 마스터.',
-   asis:['admin_offmanager_list.html','admin_offmanager_mode.html','admin_offmanager_proc.html'],
-   tobe:[],tables:['CS담당자']},
+   screens:_buildScreens(
+     ['admin_offmanager_list.html','admin_offmanager_mode.html','admin_offmanager_proc.html'],
+     []
+   ),
+   tables:['CS담당자']},
   {id:'admin-centermanager',dom:'admin',ic:'🏢',name:'센터(대리점) 관리',desc:'대리점·AS 지점 마스터.',
-   asis:['admin_centermanager_list.html','admin_centermanager_mode.html','admin_centermanager_proc.html'],
-   tobe:[],tables:['대리점','AS지점']},
+   screens:_buildScreens(
+     ['admin_centermanager_list.html','admin_centermanager_mode.html','admin_centermanager_proc.html'],
+     []
+   ),
+   tables:['대리점','AS지점']},
   {id:'admin-scene',dom:'admin',ic:'🏘',name:'현장(아파트) 관리',desc:'CS 현장(아파트코드) + 현장품목(세대기기) 헤더·라인 저장.',
-   asis:['admin_scene_list.html','admin_scene_mode.html','admin_scene_mode1.html','admin_scene_proc.html','admin_scene_detail.html','pop_admin_scene_list.html','popup_apt_search_1.html','popup_scene_list.html','popup_scene_mode.html','popup_scene_mode_proc.html','popup_scene_detail.html','popup_secen_search.html','popup_secen_search_release.html'],
-   tobe:[],tables:['CS현장','CS현장품목']},
+   screens:_buildScreens(
+     ['admin_scene_list.html','admin_scene_mode.html','admin_scene_mode1.html','admin_scene_proc.html','admin_scene_detail.html','pop_admin_scene_list.html','popup_apt_search_1.html','popup_scene_list.html','popup_scene_mode.html','popup_scene_mode_proc.html','popup_scene_detail.html','popup_secen_search.html','popup_secen_search_release.html'],
+     []
+   ),
+   tables:['CS현장','CS현장품목']},
   {id:'admin-code',dom:'admin',ic:'🏷',name:'코드 마스터',desc:'코드·오류·원인·수리 코드 목록(읽기 전용).',
-   asis:['admin_code_list.html','admin_code_error_list.html','admin_code_reason_list.html','admin_code_repair_list.html'],
-   tobe:[],tables:['코드마스터','CS장애구분']},
+   screens:_buildScreens(
+     ['admin_code_list.html','admin_code_error_list.html','admin_code_reason_list.html','admin_code_repair_list.html'],
+     []
+   ),
+   tables:['코드마스터','CS장애구분']},
   {id:'admin-audit',dom:'admin',ic:'📝',name:'감사(결재) 관리',desc:'서비스 처리 결재 승인/취소.',
-   asis:['admin_audit_list.html','admin_audit_list_apply.html'],
-   tobe:[],tables:['CS처리']},
+   screens:_buildScreens(
+     ['admin_audit_list.html','admin_audit_list_apply.html'],
+     []
+   ),
+   tables:['CS처리']},
   {id:'admin-access',dom:'admin',ic:'🔐',name:'접근 권한',desc:'사원별 메뉴 권한(SMENU) 설정.',
-   asis:['admin_access_mode.html'],tobe:[],tables:['ACCESS_GRADE','TOP_MENU']},
+   screens:_buildScreens(['admin_access_mode.html'], []),
+   tables:['ACCESS_GRADE','TOP_MENU']},
 
   /* ===== Receipt ===== */
   {id:'receipt-main',dom:'receipt',ic:'📞',name:'수신접수 메인',desc:'콜센터 상담원의 업무 진입점. 접수 저장 시 PK 채번·상태 검증 트리거 자동 실행.',
-   asis:['receipt.html','receipt_main.html','receipt_all.html','receipt_consult_list.html','receipt_callback_list.html','receipt_happycall_list.html','receipt_m_list.html','receipt_service_list.html','receipt_proc.html','receipt_info.html','receipt_top.html','popup_receipt_read.html','popup_happycall.html','popup_satisfaction.html','popup_visit_cancel.html','popup_receipt_excel_111.html','popup_receipt_excel_upload.html'],
-   tobe:['2.화면단위/pages/P1-core/receipt-form.html','2.화면단위/pages/P2-major/happycall-list.html'],
+   screens:_buildScreens(
+     ['receipt.html','receipt_main.html','receipt_all.html','receipt_consult_list.html','receipt_callback_list.html','receipt_happycall_list.html','receipt_m_list.html','receipt_service_list.html','receipt_proc.html','receipt_info.html','receipt_top.html','popup_receipt_read.html','popup_happycall.html','popup_satisfaction.html','popup_visit_cancel.html','popup_receipt_excel_111.html','popup_receipt_excel_upload.html'],
+     ['2.화면단위/pages/P1-core/receipt-form.html','2.화면단위/pages/P2-major/happycall-list.html']
+   ),
    tables:['CS접수','CS고객정보','CS처리','CTI_CALLBACK']},
   {id:'receipt-memo',dom:'receipt',ic:'📋',name:'특이사항 메모',desc:'장애구분·증상·처리 노하우 메모(공유 지식베이스).',
-   asis:['receipt_memo_list.html','receipt_memo_mode.html','receipt_memo_proc.html','receipt_g_memo.html'],
-   tobe:[],tables:['CS특이사항','CS장애구분']},
+   screens:_buildScreens(
+     ['receipt_memo_list.html','receipt_memo_mode.html','receipt_memo_proc.html','receipt_g_memo.html'],
+     []
+   ),
+   tables:['CS특이사항','CS장애구분']},
   {id:'receipt-menual',dom:'receipt',ic:'📚',name:'매뉴얼',desc:'제품·공정별 매뉴얼 PDF 첨부 공유.',
-   asis:['receipt_menual_list.html','receipt_menual_list_link.html','receipt_menual_mode.html','receipt_menual_proc.html'],
-   tobe:[],tables:['CS매뉴얼']},
+   screens:_buildScreens(
+     ['receipt_menual_list.html','receipt_menual_list_link.html','receipt_menual_mode.html','receipt_menual_proc.html'],
+     []
+   ),
+   tables:['CS매뉴얼']},
   {id:'receipt-tk',dom:'receipt',ic:'🔧',name:'TK 하자점검',desc:'건설사 아파트 입주 전 하자 점검. 세대/공용 두 종류.',
-   asis:['receipt_tk_main_list.html','receipt_tk_list.html','receipt_tk_detail_list.html','receipt_tk_setting.html','receipt_tk_setting1.html','receipt_tk_setting2.html','receipt_tk_setting3.html','popup_tk_G.html','popup_tk_G_proc.html','popup_tk_S.html','popup_tk_S_detail.html','popup_tk_S_proc.html','popup_receipt_tk_excel_upload.html'],
-   tobe:[],tables:['CSTK공용','CSTK세대','CSTK설정']},
+   screens:_buildScreens(
+     ['receipt_tk_main_list.html','receipt_tk_list.html','receipt_tk_detail_list.html','receipt_tk_setting.html','receipt_tk_setting1.html','receipt_tk_setting2.html','receipt_tk_setting3.html','popup_tk_G.html','popup_tk_G_proc.html','popup_tk_S.html','popup_tk_S_detail.html','popup_tk_S_proc.html','popup_receipt_tk_excel_upload.html'],
+     []
+   ),
+   tables:['CSTK공용','CSTK세대','CSTK설정']},
   {id:'receipt-year',dom:'receipt',ic:'📅',name:'연차 접수',desc:'보증기간 연차 만기 도래 접수.',
-   asis:['receipt_year.html','receipt_year_list.html','receipt_year_mode.html','receipt_year_proc.html','popup_receipt_year_read.html','popup_receipt_year_proc.html'],
-   tobe:[],tables:['CS접수']},
+   screens:_buildScreens(
+     ['receipt_year.html','receipt_year_list.html','receipt_year_mode.html','receipt_year_proc.html','popup_receipt_year_read.html','popup_receipt_year_proc.html'],
+     []
+   ),
+   tables:['CS접수']},
 
   /* ===== SVC ===== */
   {id:'svc-main',dom:'svc',ic:'🛠',name:'서비스 처리 (기사 출동)',desc:'접수된 건에 기사 배정·수리 결과 기록. 업무 종결 지점.',
-   asis:['svc_list.html','popup_svc.html','popup_svc_proc.html','popup_svc_read.html','popup_svc_read_del.html','popup_svc_cancel.html','popup_svc_master.html','popup_svc_print.html','popup_model_search_svc.html'],
-   tobe:['2.화면단위/pages/P1-core/svc-list.html','2.화면단위/pages/P1-core/svc-popup.html'],
+   screens:_buildScreens(
+     ['svc_list.html','popup_svc.html','popup_svc_proc.html','popup_svc_read.html','popup_svc_read_del.html','popup_svc_cancel.html','popup_svc_master.html','popup_svc_print.html','popup_model_search_svc.html'],
+     ['2.화면단위/pages/P1-core/svc-list.html','2.화면단위/pages/P1-core/svc-popup.html']
+   ),
    tables:['CS처리','CS처리부품','CS접수']},
 
   /* ===== Store ===== */
   {id:'store-request',dom:'store',ic:'📦',name:'자재 신청',desc:'서비스 건에 필요한 자재 신청. 헤더+라인+접수플래그 3단 쓰기.',
-   asis:['store_request_list.html','store_request_list_center.html','store_request_list_nomal.html','store_request.html','store_request_nomal.html','store_request_proc.html','store_request_proc_nomal.html','store_request_mater.html','store_request_mater_list.html','popup_jaje.html','popup_store_grade.html'],
-   tobe:[],tables:['CS자재신청','CS자재신청품목']},
+   screens:_buildScreens(
+     ['store_request_list.html','store_request_list_center.html','store_request_list_nomal.html','store_request.html','store_request_nomal.html','store_request_proc.html','store_request_proc_nomal.html','store_request_mater.html','store_request_mater_list.html','popup_jaje.html','popup_store_grade.html'],
+     []
+   ),
+   tables:['CS자재신청','CS자재신청품목']},
   {id:'store-release',dom:'store',ic:'✅',name:'자재 신청 승인',desc:'신청 건 승인 · 진행상황 플래그 갱신.',
-   asis:['store_request_release.html','store_request_release_proc.html'],
-   tobe:[],tables:['CS자재신청품목']},
+   screens:_buildScreens(
+     ['store_request_release.html','store_request_release_proc.html'],
+     []
+   ),
+   tables:['CS자재신청품목']},
   {id:'store-doing',dom:'store',ic:'🚚',name:'자재 출고 처리',desc:'승인된 자재 실제 출고. 본사만 청구금액 수정 가능.',
-   asis:['store_doing_list.html','store_doing_list_center.html','store_doing_mode.html','store_doing_proc.html','store_doing_mode_print.html'],
-   tobe:['2.화면단위/pages/P2-major/store-doing-list.html'],
+   screens:_buildScreens(
+     ['store_doing_list.html','store_doing_list_center.html','store_doing_mode.html','store_doing_proc.html','store_doing_mode_print.html'],
+     ['2.화면단위/pages/P2-major/store-doing-list.html']
+   ),
    tables:['KM수리의뢰']},
   {id:'store-return',dom:'store',ic:'↩',name:'반품 처리',desc:'뇌전 자재 반품 처리.',
-   asis:['store_return_list.html','store_return_list_center.html','store_return_release.html','store_return_release_proc.html'],
-   tobe:[],tables:['CS뇌전자재신청품목']},
+   screens:_buildScreens(
+     ['store_return_list.html','store_return_list_center.html','store_return_release.html','store_return_release_proc.html'],
+     []
+   ),
+   tables:['CS뇌전자재신청품목']},
   {id:'store-price',dom:'store',ic:'💰',name:'자재 가격 관리',desc:'자재 가격 조회·승인 UI.',
-   asis:['store_price_list.html','store_price_release.html'],
-   tobe:[],tables:['AS품목','CS가격']},
+   screens:_buildScreens(['store_price_list.html','store_price_release.html'], []),
+   tables:['AS품목','CS가격']},
   {id:'store-suri',dom:'store',ic:'🔨',name:'수리 의뢰',desc:'외부 수리 의뢰 (서비스에서 처리 못 하는 건).',
-   asis:['store_suri_list.html','store_suri_proc.html'],
-   tobe:[],tables:['KM수리의뢰']},
+   screens:_buildScreens(['store_suri_list.html','store_suri_proc.html'], []),
+   tables:['KM수리의뢰']},
   {id:'store-receipt',dom:'store',ic:'🧾',name:'영수증 조회',desc:'발행된 영수증 목록 (읽기 전용).',
-   asis:['store_receipt_list.html'],tobe:[],tables:['CS영수증']},
+   screens:_buildScreens(['store_receipt_list.html'], []),
+   tables:['CS영수증']},
 
   /* ===== TDB ===== */
   {id:'tdb-in',dom:'tdb',ic:'⚡',name:'뇌전(TDB) 접수',desc:'낙뢰 피해 제품 전용 접수 + 보험사 연계.',
-   asis:['tdb_in_list.html','tdb_in_mode.html','tdb_in_proc.html','tdb_in_release.html','tdb_in_proc_release.html'],
-   tobe:['2.화면단위/pages/P2-major/tdb-in-list.html'],
+   screens:_buildScreens(
+     ['tdb_in_list.html','tdb_in_mode.html','tdb_in_proc.html','tdb_in_release.html','tdb_in_proc_release.html'],
+     ['2.화면단위/pages/P2-major/tdb-in-list.html']
+   ),
    tables:['CS뇌전접수','CS뇌전서류파일']},
   {id:'tdb-store',dom:'tdb',ic:'📥',name:'뇌전 자재 신청',desc:'뇌전 전용 자재 신청. 가격 필드 9종.',
-   asis:['tdb_store_list.html','tdb_store_mode.html','tdb_store_release.html','tdb_store_proc.html','popup_tdb_store_list.html'],
-   tobe:[],tables:['CS뇌전자재신청','CS뇌전자재신청품목']},
+   screens:_buildScreens(
+     ['tdb_store_list.html','tdb_store_mode.html','tdb_store_release.html','tdb_store_proc.html','popup_tdb_store_list.html'],
+     []
+   ),
+   tables:['CS뇌전자재신청','CS뇌전자재신청품목']},
   {id:'tdb-doing',dom:'tdb',ic:'📤',name:'뇌전 출고',desc:'뇌전 자재 출고 현황 목록 (읽기).',
-   asis:['tdb_store_doing_list.html','tdb_store_doing_list_center.html'],
-   tobe:[],tables:['CS뇌전자재출고']},
+   screens:_buildScreens(
+     ['tdb_store_doing_list.html','tdb_store_doing_list_center.html'],
+     []
+   ),
+   tables:['CS뇌전자재출고']},
   {id:'tdb-return',dom:'tdb',ic:'🔄',name:'뇌전 반품 처리',desc:'뇌전 자재 반품 + 보험 반품 관리.',
-   asis:['tdb_return_list.html','tdb_return_ins_list.html','tdb_return_release.html','tdb_return_ins_release.html'],
-   tobe:[],tables:['CS뇌전반품']},
+   screens:_buildScreens(
+     ['tdb_return_list.html','tdb_return_ins_list.html','tdb_return_release.html','tdb_return_ins_release.html'],
+     []
+   ),
+   tables:['CS뇌전반품']},
   {id:'tdb-price',dom:'tdb',ic:'💵',name:'뇌전 가격 관리',desc:'뇌전 자재 단가 조회/수정.',
-   asis:['tdb_price_list.html','tdb_price_release.html','popup_tdb_price_modify.html'],
-   tobe:[],tables:['CS뇌전가격']},
+   screens:_buildScreens(
+     ['tdb_price_list.html','tdb_price_release.html','popup_tdb_price_modify.html'],
+     []
+   ),
+   tables:['CS뇌전가격']},
   {id:'tdb-serial',dom:'tdb',ic:'🔢',name:'TDB 시리얼 팝업',desc:'뇌전 자재 시리얼 출고·반납·보험반납 (3단계).',
-   asis:['popup_serial_tdb.html','popup_serial_tdb_proc.html','popup_serial_tdb_return.html','popup_serial_tdb_return_proc.html','popup_serial_tdb_return_ins.html','popup_serial_tdb_return_ins_proc.html'],
-   tobe:[],tables:['CS시리얼','CS뇌전자재신청품목']},
+   screens:_buildScreens(
+     ['popup_serial_tdb.html','popup_serial_tdb_proc.html','popup_serial_tdb_return.html','popup_serial_tdb_return_proc.html','popup_serial_tdb_return_ins.html','popup_serial_tdb_return_ins_proc.html'],
+     []
+   ),
+   tables:['CS시리얼','CS뇌전자재신청품목']},
 
   /* ===== Serial ===== */
   {id:'serial-main',dom:'serial',ic:'🔖',name:'시리얼 출고',desc:'자재 출고 시 실물 시리얼 번호 기록.',
-   asis:['popup_serial.html','popup_serial_proc.html'],
-   tobe:[],tables:['CS시리얼','CS자재신청품목']},
+   screens:_buildScreens(['popup_serial.html','popup_serial_proc.html'], []),
+   tables:['CS시리얼','CS자재신청품목']},
   {id:'serial-return',dom:'serial',ic:'🔁',name:'시리얼 반품',desc:'반납 시리얼 확정·등급 재분류(양품/재생/불량).',
-   asis:['popup_serial_return.html','popup_return.html','popup_serial_return_release.html','popup_serial_return_release_proc.html','popup_serial_return_release2.html','popup_serial_return_release2_proc.html','popup_return_proc.html'],
-   tobe:[],tables:['CS시리얼','CS반품']},
+   screens:_buildScreens(
+     ['popup_serial_return.html','popup_return.html','popup_serial_return_release.html','popup_serial_return_release_proc.html','popup_serial_return_release2.html','popup_serial_return_release2_proc.html','popup_return_proc.html'],
+     []
+   ),
+   tables:['CS시리얼','CS반품']},
   {id:'serial-store',dom:'serial',ic:'🏪',name:'시리얼 창고',desc:'창고 내 시리얼 재고 관리.',
-   asis:['popup_serial_store.html','popup_serial_store_proc.html'],
-   tobe:[],tables:['CS시리얼','CS창고재고']},
+   screens:_buildScreens(
+     ['popup_serial_store.html','popup_serial_store_proc.html'],
+     []
+   ),
+   tables:['CS시리얼','CS창고재고']},
 
   /* ===== Forum ===== */
   {id:'forum-free',dom:'forum',ic:'💬',name:'자유게시판',desc:'계층 답글 (단계 = "A"/"A.A" 문자열 트리).',
-   asis:['forum_free_list.html','forum_free_mode.html','forum_free_proc.html','forum_free_upfile.html'],
-   tobe:['2.화면단위/pages/P2-major/forum-list.html','2.화면단위/pages/P3-extra/forum-mode.html'],
+   screens:_buildScreens(
+     ['forum_free_list.html','forum_free_mode.html','forum_free_proc.html','forum_free_upfile.html'],
+     ['2.화면단위/pages/P2-major/forum-list.html','2.화면단위/pages/P3-extra/forum-mode.html']
+   ),
    tables:['자유게시판']},
   {id:'forum-notice',dom:'forum',ic:'📢',name:'공지게시판',desc:'관리자 공지사항.',
-   asis:['forum_notice_list.html','forum_notice_mode.html','forum_notice_proc.html'],
-   tobe:[],tables:['공지게시판']},
+   screens:_buildScreens(
+     ['forum_notice_list.html','forum_notice_mode.html','forum_notice_proc.html'],
+     []
+   ),
+   tables:['공지게시판']},
   {id:'forum-memo',dom:'forum',ic:'✉',name:'쪽지(메모)',desc:'사원 간 1:1 쪽지. soft delete.',
-   asis:['forum_memo_list.html','forum_memo_mode.html','forum_memo_proc.html'],
-   tobe:[],tables:['쪽지게시판']},
+   screens:_buildScreens(
+     ['forum_memo_list.html','forum_memo_mode.html','forum_memo_proc.html'],
+     []
+   ),
+   tables:['쪽지게시판']},
   {id:'forum-qna',dom:'forum',ic:'❓',name:'Q&A',desc:'비공개/공개 Q&A + 답글.',
-   asis:['forum_qna_list.html','forum_qna_mode.html','forum_qna_proc.html'],
-   tobe:[],tables:['QA게시판']},
+   screens:_buildScreens(
+     ['forum_qna_list.html','forum_qna_mode.html','forum_qna_proc.html'],
+     []
+   ),
+   tables:['QA게시판']},
   {id:'forum-pds',dom:'forum',ic:'📁',name:'자료실',desc:'첨부파일 최대 9개 슬롯.',
-   asis:['forum_pds_list.html','forum_pds_mode.html','forum_pds_proc.html'],
-   tobe:[],tables:['자료게시판']},
+   screens:_buildScreens(
+     ['forum_pds_list.html','forum_pds_mode.html','forum_pds_proc.html'],
+     []
+   ),
+   tables:['자료게시판']},
 
   /* ===== Resolve ===== */
   {id:'resolve-year',dom:'resolve',ic:'🗓',name:'연차 처리 (수리)',desc:'연차 대상 접수에 대한 수리 완료 처리.',
-   asis:['resolve_year_list.html','resolve_year_mode.html','resolve_year_mode1.html','resolve_year_proc.html'],
-   tobe:[],tables:['CS처리','CS처리부품']},
+   screens:_buildScreens(
+     ['resolve_year_list.html','resolve_year_mode.html','resolve_year_mode1.html','resolve_year_proc.html'],
+     []
+   ),
+   tables:['CS처리','CS처리부품']},
 
   /* ===== CTI ===== */
   {id:'cti-softphone',dom:'cti',ic:'☎',name:'CTI 소프트폰',desc:'Xline5 PBX 연동. 1초 폴링으로 상담원 상태 갱신.',
-   asis:['softphone.html','call_popup.html'],
-   tobe:[],tables:['xline_agent_list','xline_callback','CTI_CALLBACK']},
+   screens:_buildScreens(['softphone.html','call_popup.html'], []),
+   tables:['xline_agent_list','xline_callback','CTI_CALLBACK']},
 
   /* ===== SMS ===== */
   {id:'sms-send',dom:'sms',ic:'📨',name:'SMS 발송',desc:'STD_SMS 큐잉 패턴. 외부 배치가 pick-up 발송.',
-   asis:['sms_send.html','sms_send_proc.html','popup_sms.html','popup_sms_list.html','popup_sms_main.html'],
-   tobe:['2.화면단위/pages/P3-extra/popup-sms.html'],
+   screens:_buildScreens(
+     ['sms_send.html','sms_send_proc.html','popup_sms.html','popup_sms_list.html','popup_sms_main.html'],
+     ['2.화면단위/pages/P3-extra/popup-sms.html']
+   ),
    tables:['STD_SMS','STD_MMS']},
 
   /* ===== Common ===== */
   {id:'common-search',dom:'common',ic:'🔎',name:'공통 검색 팝업',desc:'아파트·모델·센터·담당자·마스터 검색 (모든 업무 공용).',
-   asis:['popup_apt_search.html','popup_model_search.html','popup_model_search_scene.html','popup_model_search_sub.html','popup_center_search.html','popup_center_aff.html','popup_master_search.html','popup_charge_select.html'],
-   tobe:['2.화면단위/pages/P3-extra/popup-apt-search.html','2.화면단위/pages/P3-extra/popup-model-search.html'],
+   screens:_buildScreens(
+     ['popup_apt_search.html','popup_model_search.html','popup_model_search_scene.html','popup_model_search_sub.html','popup_center_search.html','popup_center_aff.html','popup_master_search.html','popup_charge_select.html'],
+     ['2.화면단위/pages/P3-extra/popup-apt-search.html','2.화면단위/pages/P3-extra/popup-model-search.html']
+   ),
    tables:['CS현장','AS품목']},
 
   /* ===== Layout ===== */
   {id:'layout-shell',dom:'layout',ic:'🪟',name:'레이아웃 셸',desc:'상·하단 레이아웃. TOP_MENU 기반 동적 메뉴.',
-   asis:['main.html','top.html','top_menu.html','top_toolbar.html','tail.html','main_list.html','sub.html'],
-   tobe:['2.화면단위/pages/main-layout.html'],
+   screens:_buildScreens(
+     ['main.html','top.html','top_menu.html','top_toolbar.html','tail.html','main_list.html','sub.html'],
+     ['2.화면단위/pages/main-layout.html']
+   ),
    tables:['TOP_MENU','MIDDLE_MENU']},
 
   /* ===== AJAX ===== */
   {id:'ajax-oracle',dom:'ajax',ic:'🔌',name:'AJAX 라우터 (Oracle)',desc:'switch($_REQUEST[mode]) 분기 40+ 케이스.',
-   asis:['ajax_proc.html'],tobe:[],tables:['(Oracle 전 테이블)']},
+   screens:_buildScreens(['ajax_proc.html'], []),
+   tables:['(Oracle 전 테이블)']},
   {id:'ajax-mysql',dom:'ajax',ic:'🔗',name:'AJAX 라우터 (MySQL)',desc:'Xline5 CTI 전용 라우터.',
-   asis:['ajax_proc_mysql.html'],tobe:[],tables:['xline_agent_list']},
+   screens:_buildScreens(['ajax_proc_mysql.html'], []),
+   tables:['xline_agent_list']},
 
   /* ===== Util ===== */
   {id:'util-files',dom:'util',ic:'📎',name:'파일 업/다운/엑셀',desc:'파일 업로드·다운로드·PHPExcel 워크북.',
-   asis:['file_upfile.html','download.html','excel.html'],
-   tobe:[],tables:[]},
+   screens:_buildScreens(['file_upfile.html','download.html','excel.html'], []),
+   tables:[]},
   {id:'util-myinfo',dom:'util',ic:'👤',name:'내 정보',desc:'사원 본인 정보 수정.',
-   asis:['my_info.html'],tobe:[],tables:['CS사원']},
+   screens:_buildScreens(['my_info.html'], []),
+   tables:['CS사원']},
   {id:'util-misc',dom:'util',ic:'🧰',name:'기타 유틸',desc:'페이징·날짜·PDF·로그인 검증.',
-   asis:['login_check.html','db_date.html','page_search.html','pdf_sample.html','address_popup.html'],
-   tobe:[],tables:[]},
+   screens:_buildScreens(
+     ['login_check.html','db_date.html','page_search.html','pdf_sample.html','address_popup.html'],
+     []
+   ),
+   tables:[]},
 
   /* ===== Future · 신설 제안 (AS-IS 없음, 새로 만들 업무) ===== */
   {id:'cs-core',dom:'cti',ic:'🎧',name:'콜센터 코어 · 하나의 덩어리',
-   desc:'현재 cti-softphone(소프트폰·녹취)과 receipt-main(상담원 접수)이 분리된 두 화면. 이 제안은 두 BU를 감싸는 통합 워크스페이스 한 화면으로 묶어 콜 인입 순간 고객·아파트·이력이 자동 조회되게 합니다. 레거시 BU를 대체가 아닌 "오버레이"로 재설계.',
-   asis:[], tobe:[],
-   tables:['(신규) CS콜세션','(신규) CS워크스페이스상태','xline_agent_list','CTI_CALLBACK','CS고객정보','CS접수'], isNew:true},
+   desc:'지금은 소프트폰·녹취·CTI·수신접수가 따로 놀고 있습니다. 이들을 한 화면에 통합해 콜이 뜨는 순간 고객·아파트·이력이 자동 조회되는 "하나의 덩어리"로 재설계합니다. 현재는 존재하지 않는 업무입니다.',
+   screens:[], tables:['(신규) CS콜세션','(통합) xline_agent_list·CTI_CALLBACK·CS고객정보'], isNew:true},
 
   {id:'chatbot-self',dom:'receipt',ic:'💬',name:'AI 챗봇 셀프서비스',
-   desc:'고객이 챗봇과 먼저 대화. 간단한 고장 진단·예약·조회는 챗봇이 1차 응대, 복잡하면 상담원으로 에스컬레이션. 흐름상 cti-softphone 앞에 위치하여 인입 콜 수량 자체를 줄이는 "방어선" 역할.',
-   asis:[], tobe:[],
-   tables:['(신규) CS챗봇세션','(신규) CS챗봇의도','(신규) CS챗봇로그','(신규) CS자동응답템플릿','CS접수'], isNew:true},
+   desc:'고객이 챗봇과 먼저 대화. 간단한 고장 진단·예약·조회는 챗봇이 1차 응대하고, 복잡한 케이스만 상담원으로 에스컬레이션됩니다. 현재는 존재하지 않는 업무입니다.',
+   screens:[], tables:['(신규) CS챗봇세션','(신규) CS챗봇의도'], isNew:true},
 
   {id:'ai-copilot',dom:'receipt',ic:'🤖',name:'AI 상담사 보조',
-   desc:'receipt-main 위에 덧씌워지는 실시간 오버레이. 통화 스트림에서 LLM이 요약·장애코드 추천·유사 이력 검색·자동 메모를 수행하여 상담사에게 제시. 상담사는 "승인/보정"만 하여 기록 품질은 유지하되 타이핑 부담을 제거.',
-   asis:[], tobe:[],
-   tables:['(신규) CS콜요약','(신규) CS장애추천','(신규) CS유사이력벡터','(신규) CS자동메모','CS장애구분','CS특이사항','CS처리'], isNew:true},
+   desc:'통화 중 실시간 요약, 증상→장애코드 자동 추천, 유사 이력 기반 해결책 제시, 자동 메모 작성. 상담사는 고객과의 대화에 집중하고 시스템이 기록·추천을 담당합니다. 현재는 존재하지 않는 업무입니다.',
+   screens:[], tables:['(신규) CS콜요약','(신규) CS장애추천','CS장애구분','CS특이사항'], isNew:true},
 
   {id:'field-sync',dom:'svc',ic:'🚚',name:'현장 ↔ 상담실 실시간 동기화',
-   desc:'기사 모바일 앱에서 발생하는 위치 핑·상태 이벤트·현장 사진을 실시간으로 svc-main·receipt-main 화면에 노출. "기사님 언제 도착해요?" 문의에 상담사가 즉답 가능해지고 고객 재연결·재통화 수요가 사라집니다.',
-   asis:[], tobe:[],
-   tables:['(신규) CS기사위치','(신규) CS기사경로ETA','(신규) CS현장사진','(신규) CS현장이벤트','CS처리','CS사원'], isNew:true},
+   desc:'기사 위치·도착 예정 시각·처리 상태·현장 사진이 상담원 화면에 실시간으로 흐릅니다. "고객님 잠시만요, 다시 전화 주세요"가 사라지고 상담사가 곧바로 답할 수 있습니다. 현재는 존재하지 않는 업무입니다.',
+   screens:[], tables:['(신규) CS기사위치','(신규) CS현장사진','CS처리'], isNew:true},
 
   {id:'stock-board',dom:'store',ic:'📦',name:'재고 가시화 · 끊기지 않는 흐름',
-   desc:'자재·시리얼·반품·뇌전 7개 기존 BU에 흩어진 상태를 한 보드에 집계하는 대시보드. 단계별 건수·체류 시간·병목을 시각화해 "어디서 막혔는지" 즉시 식별. 기존 업무를 대체하지 않고 "읽기 전용 관제 화면"으로 추가.',
-   asis:[], tobe:[],
-   tables:['(뷰) V_CS자재체인','(뷰) V_CS재고상태','(신규) CS재고알림','(신규) CS자재병목분석','CS자재신청','CS자재신청품목','CS시리얼','CS반품','CS창고재고','CS뇌전자재신청','KM수리의뢰'], isNew:true},
+   desc:'자재 신청 → 승인 → 출고 → 시리얼 → 반품 전체 체인이 한 보드에서 추적 가능. 어디서 막혔는지 즉시 보입니다. 기존 자재·시리얼 업무를 단절 없이 한 화면으로 모읍니다. 현재는 존재하지 않는 업무입니다.',
+   screens:[], tables:['(뷰) CS자재신청·CS자재신청품목·CS시리얼·CS반품 집계'], isNew:true},
 ];
 
 /* =====================================================================
-   BU_EDGES — 업무단위 간 전후 관계
-   kind: flow(업무흐름) · trigger(자동트리거) · master(마스터제공) · ref(참조)
+   BU_EDGES — 업무단위 간 전후 관계 (Option A와 동일, 변경 없음)
    ===================================================================== */
 const BU_EDGES = [
-  // ── 콜 → 접수
   {from:'chatbot-self',  to:'cti-softphone', via:'에스컬레이션', kind:'flow'},
   {from:'cti-softphone', to:'receipt-main', via:'콜 인입',     kind:'trigger'},
-  // ── 접수 → 하류
   {from:'receipt-main',  to:'svc-main',      via:'CS접수',      kind:'flow'},
   {from:'receipt-main',  to:'store-request', via:'자재 필요',    kind:'flow'},
   {from:'receipt-main',  to:'tdb-in',        via:'낙뢰 분기',    kind:'flow'},
@@ -713,31 +843,25 @@ const BU_EDGES = [
   {from:'receipt-main',  to:'sms-send',      via:'고객 알림',    kind:'ref'},
   {from:'receipt-main',  to:'receipt-memo',  via:'상담 노하우',  kind:'ref'},
   {from:'receipt-main',  to:'receipt-menual',via:'매뉴얼 참조',  kind:'ref'},
-  // ── 서비스 처리 → 하류
   {from:'svc-main',      to:'admin-audit',   via:'결재 승인',    kind:'flow'},
   {from:'svc-main',      to:'serial-main',   via:'시리얼 출고',  kind:'flow'},
   {from:'svc-main',      to:'store-return',  via:'반품 필요',    kind:'flow'},
-  // ── 자재 체인
   {from:'store-request', to:'store-release', via:'CS자재신청',  kind:'flow'},
   {from:'store-release', to:'store-doing',   via:'승인→출고',   kind:'flow'},
   {from:'store-doing',   to:'serial-main',   via:'CS시리얼',    kind:'flow'},
   {from:'store-doing',   to:'store-receipt', via:'영수증 발행',  kind:'flow'},
   {from:'store-request', to:'store-suri',    via:'외부 의뢰',    kind:'flow'},
   {from:'store-request', to:'store-price',   via:'단가 참조',    kind:'ref'},
-  // ── 시리얼 체인
   {from:'serial-main',   to:'serial-return', via:'시리얼 반품',  kind:'flow'},
   {from:'serial-main',   to:'serial-store',  via:'창고 이동',    kind:'flow'},
-  // ── 뇌전(TDB) 체인
   {from:'tdb-in',        to:'tdb-store',     via:'자재 신청',    kind:'flow'},
   {from:'tdb-store',     to:'tdb-doing',     via:'CS뇌전자재',  kind:'flow'},
   {from:'tdb-doing',     to:'tdb-serial',    via:'시리얼 출고',  kind:'flow'},
   {from:'tdb-serial',    to:'tdb-return',    via:'반품(보험)',   kind:'flow'},
   {from:'tdb-return',    to:'store-return',  via:'반품 귀속',    kind:'flow'},
   {from:'tdb-store',     to:'tdb-price',     via:'뇌전 단가',    kind:'ref'},
-  // ── 연차 체인
   {from:'receipt-year',  to:'resolve-year',  via:'CS접수(연차)', kind:'flow'},
   {from:'resolve-year',  to:'admin-audit',   via:'결재 승인',    kind:'flow'},
-  // ── 마스터 데이터
   {from:'admin-user',    to:'receipt-main',  via:'사원 ID',     kind:'master'},
   {from:'admin-user',    to:'svc-main',      via:'기사 ID',     kind:'master'},
   {from:'admin-user',    to:'cti-softphone', via:'상담원 동기화',kind:'master'},
@@ -749,38 +873,9 @@ const BU_EDGES = [
   {from:'admin-offmanager',    to:'svc-main',     via:'외주 담당자',kind:'master'},
   {from:'admin-code',    to:'receipt-main',  via:'장애코드',    kind:'master'},
   {from:'admin-code',    to:'svc-main',      via:'수리코드',    kind:'master'},
-  // ── 공용 도구
   {from:'common-search', to:'receipt-main',  via:'검색 팝업',    kind:'ref'},
   {from:'common-search', to:'svc-main',      via:'모델 검색',    kind:'ref'},
   {from:'common-search', to:'store-request', via:'자재 검색',    kind:'ref'},
-
-  // ── 차세대 신설 제안 (오버레이 · 상시 보조)
-  // cs-core: 기존 cti/receipt를 감싸는 통합 워크스페이스 레이어
-  {from:'cti-softphone', to:'cs-core',       via:'통합 흡수',    kind:'ref'},
-  {from:'receipt-main',  to:'cs-core',       via:'통합 흡수',    kind:'ref'},
-  {from:'admin-member',  to:'cs-core',       via:'자동 조회',    kind:'master'},
-  {from:'admin-scene',   to:'cs-core',       via:'아파트 자동 조회', kind:'master'},
-
-  // ai-copilot: receipt-main 위에 실시간 오버레이
-  {from:'receipt-main',  to:'ai-copilot',    via:'콜 스트림',    kind:'trigger'},
-  {from:'admin-code',    to:'ai-copilot',    via:'장애코드 학습', kind:'master'},
-  {from:'receipt-memo',  to:'ai-copilot',    via:'지식베이스',   kind:'master'},
-  {from:'ai-copilot',    to:'receipt-main',  via:'실시간 추천',  kind:'ref'},
-  {from:'ai-copilot',    to:'receipt-memo',  via:'자동 메모',    kind:'ref'},
-
-  // field-sync: 기사 앱 → 상담실 대시보드
-  {from:'svc-main',      to:'field-sync',    via:'위치·상태 송신', kind:'trigger'},
-  {from:'admin-user',    to:'field-sync',    via:'기사 마스터',  kind:'master'},
-  {from:'field-sync',    to:'receipt-main',  via:'상담사 뷰',    kind:'ref'},
-  {from:'field-sync',    to:'svc-main',      via:'ETA·사진 피드백', kind:'ref'},
-
-  // stock-board: 자재·시리얼·반품·뇌전 7개 BU를 집계하는 읽기 전용 대시보드
-  {from:'store-request', to:'stock-board',   via:'신청 이벤트',  kind:'trigger'},
-  {from:'store-doing',   to:'stock-board',   via:'출고 이벤트',  kind:'trigger'},
-  {from:'serial-main',   to:'stock-board',   via:'시리얼 이벤트',kind:'trigger'},
-  {from:'store-return',  to:'stock-board',   via:'반품 이벤트',  kind:'trigger'},
-  {from:'tdb-store',     to:'stock-board',   via:'뇌전 자재',    kind:'trigger'},
-  {from:'store-suri',    to:'stock-board',   via:'수리 의뢰',    kind:'ref'},
 ];
 
 const EDGE_KIND = {
@@ -791,7 +886,7 @@ const EDGE_KIND = {
 };
 
 /* =====================================================================
-   SCENARIOS — 대표 여정 (업무 흐름 시각화)
+   SCENARIOS — 대표 여정 (Option A와 동일, 변경 없음)
    ===================================================================== */
 const SCENARIOS = [
   {id:'normal', name:'일반 CS 접수 여정', ic:'🎯', color:'c-blue',
@@ -859,16 +954,12 @@ let state = {
   mode: 'compare',      // 'asis' | 'tobe' | 'compare'
   role: 'all',          // 'all' | 'list' | 'mode' | 'proc' | 'popup' | 'other'
   sidebarMode: 'domain',// 'domain' | 'flow'
-  showFuture: true,     // isNew BU 표시 여부 (토글)
 };
 
-/* 흐름별 그룹 정의 — 각 BU는 한 곳에만 (중복 방지)
-   공유 BU(receipt-main, svc-main, admin-audit) 는 주 여정에 배치 */
+/* 흐름별 그룹 정의 — Option A와 동일 */
 const FLOW_GROUPS = [
-  // 신설 제안 BU는 해당 위치에 인라인 배치 (chatbot 01, cs-core 02, ai-copilot 05, field-sync 07).
-  // 상단 "신설 제안 포함/숨김" 토글로 일괄 표시·숨김 가능.
   {id:'flow-normal', label:'🎯 일반 CS 흐름', order:1, kind:'flow',
-   bus:['chatbot-self','cs-core','cti-softphone','receipt-main','ai-copilot','svc-main','field-sync','store-request','store-release','store-doing','serial-main','admin-audit','sms-send']},
+   bus:['chatbot-self','cti-softphone','receipt-main','svc-main','store-request','store-release','store-doing','serial-main','admin-audit','sms-send']},
   {id:'flow-tdb',    label:'⚡ 뇌전(TDB) 흐름', order:2, kind:'flow',
    bus:['tdb-in','tdb-store','tdb-doing','tdb-serial','tdb-return']},
   {id:'flow-year',   label:'📅 연차 흐름', order:3, kind:'flow',
@@ -880,29 +971,20 @@ const FLOW_GROUPS = [
   {id:'sup-receipt', label:'📞 접수 보조', order:6, kind:'support',
    bus:['receipt-memo','receipt-menual']},
   {id:'sup-store',   label:'📦 자재·시리얼 보조', order:7, kind:'support',
-   bus:['store-return','store-suri','store-receipt','store-price','serial-return','serial-store','stock-board']},
+   bus:['store-return','store-suri','store-receipt','store-price','serial-return','serial-store']},
   {id:'sup-tdb',     label:'⚡ 뇌전 보조', order:8, kind:'support',
    bus:['tdb-price']},
   {id:'sup-forum',   label:'💬 소통·게시판', order:9, kind:'support',
    bus:['forum-free','forum-notice','forum-memo','forum-qna','forum-pds']},
   {id:'sup-sys',     label:'🧰 시스템·도구', order:10, kind:'support',
    bus:['common-search','layout-shell','ajax-oracle','ajax-mysql','util-files','util-myinfo','util-misc']},
+  {id:'sup-future',  label:'🆕 차세대 신설 제안 (상시·보조)', order:11, kind:'support',
+   bus:['cs-core','ai-copilot','field-sync','stock-board']},
 ];
 
 /* ===================================================================
-   HELPERS: classify, neighbors
+   HELPERS · Option B: screens[] 기반
    =================================================================== */
-function classifyScreen(f){
-  const name = f.split('/').pop().toLowerCase();
-  if(name.includes('_proc')) return 'proc';
-  if(name.startsWith('popup_') || name.includes('_popup')) return 'popup';
-  if(name.includes('_list')) return 'list';
-  if(name.includes('_mode')) return 'mode';
-  if(name.includes('_release')) return 'proc';
-  if(name.includes('_setting')) return 'mode';
-  if(name.includes('_detail')) return 'list';
-  return 'other';
-}
 const ROLE_META = {
   list:  {ic:'📋', lbl:'목록',  desc:'조회·검색 화면'},
   mode:  {ic:'✏️', lbl:'입력',  desc:'_mode.php 폼 화면'},
@@ -910,11 +992,15 @@ const ROLE_META = {
   popup: {ic:'🔎', lbl:'팝업',  desc:'검색·선택 팝업'},
   other: {ic:'🧩', lbl:'기타',  desc:'레이아웃·유틸 등'},
 };
-function groupByRole(files){
+function classifyScreen(f){ return _classify(f); }
+function groupByRole(screens){
   const g = {list:[],mode:[],proc:[],popup:[],other:[]};
-  files.forEach(f=>g[classifyScreen(f)].push(f));
+  (screens||[]).forEach(sc=>{ g[sc.role||_classify(sc.asis||sc.tobe)].push(sc); });
   return g;
 }
+function buHasTobe(b){ return (b.screens||[]).some(s=>s.tobe); }
+function buAsisCount(b){ return (b.screens||[]).filter(s=>s.asis).length; }
+function buTobeCount(b){ return (b.screens||[]).filter(s=>s.tobe).length; }
 function getNeighbors(buId){
   const up = BU_EDGES.filter(e=>e.to===buId).map(e=>({id:e.from, via:e.via, kind:e.kind}));
   const dn = BU_EDGES.filter(e=>e.from===buId).map(e=>({id:e.to, via:e.via, kind:e.kind}));
@@ -928,14 +1014,9 @@ function buMeta(id){ return BUS.find(b=>b.id===id); }
 function renderScenarios(){
   const host = document.getElementById('scen-host');
   host.innerHTML = SCENARIOS.map(s=>{
-    // 토글 꺼지면 isNew BU 스텝은 제외 후 번호 재산정
-    const steps = s.steps.filter(st=>{
-      const b = buMeta(st.bu);
-      return b && includeBu(b);
-    });
-    const stepsHtml = steps.map((st,i)=>{
-      const b = buMeta(st.bu);
-      const arrow = i<steps.length-1 ? '<div class="scen-arrow">→</div>' : '';
+    const stepsHtml = s.steps.map((st,i)=>{
+      const b = buMeta(st.bu); if(!b) return '';
+      const arrow = i<s.steps.length-1 ? '<div class="scen-arrow">→</div>' : '';
       return `<div class="scen-step" onclick="openBu('${st.bu}')" title="${b.name}">
         <div class="ss-n">STEP ${i+1}</div>
         <div class="ss-ic">${b.ic}</div>
@@ -947,7 +1028,7 @@ function renderScenarios(){
       <div class="scen-h">
         <span class="sc-ic">${s.ic}</span>
         <span class="sc-name">${s.name}</span>
-        <span class="sc-cnt">${steps.length}단계</span>
+        <span class="sc-cnt">${s.steps.length}단계</span>
       </div>
       <div class="scen-d">${s.desc}</div>
       <div class="scen-steps">${stepsHtml}</div>
@@ -962,13 +1043,10 @@ function renderSidebar(){
   if(state.sidebarMode === 'flow') return renderSidebarByFlow();
   return renderSidebarByDomain();
 }
-// 토글이 꺼지면 isNew BU는 모든 렌더에서 제외됨
-function includeBu(b){ return state.showFuture || !b.isNew; }
-
 function renderSidebarByDomain(){
   const host = document.getElementById('nav-bus');
   const byDom = {};
-  BUS.filter(includeBu).forEach(b=>{ (byDom[b.dom]=byDom[b.dom]||[]).push(b); });
+  BUS.forEach(b=>{ (byDom[b.dom]=byDom[b.dom]||[]).push(b); });
   const doms = Object.keys(byDom).sort((a,b)=>DOMAINS[a].order-DOMAINS[b].order);
 
   let html = '';
@@ -984,15 +1062,13 @@ function renderSidebarByDomain(){
 }
 function renderSidebarByFlow(){
   const host = document.getElementById('nav-bus');
-  // Build reverse map for safety check
   const assigned = new Set();
   FLOW_GROUPS.forEach(g=>g.bus.forEach(id=>assigned.add(id)));
-  const unassigned = BUS.filter(b=>!assigned.has(b.id) && includeBu(b)).map(b=>b.id);
+  const unassigned = BUS.filter(b=>!assigned.has(b.id)).map(b=>b.id);
 
   let html = '';
   FLOW_GROUPS.forEach(g=>{
-    // 그룹별 BU 목록 — 토글 필터 적용. 스텝 번호는 필터 후 재산정하여 01,02,03... 으로 연속.
-    const bus = g.bus.map(id=>BUS.find(b=>b.id===id)).filter(b=>b && includeBu(b));
+    const bus = g.bus.map(id=>BUS.find(b=>b.id===id)).filter(Boolean);
     if(!bus.length) return;
     const isFlow = g.kind === 'flow';
     html += `<div class="dom-group">
@@ -1018,7 +1094,8 @@ function renderSidebarByFlow(){
   host.innerHTML = html;
 }
 function buButtonHtml(b, prefix=''){
-  const cls = `bu-btn${b.tobe.length?' has-tobe':''}${b.isNew?' is-new':''}`;
+  const hasTobe = buHasTobe(b);
+  const cls = `bu-btn${hasTobe?' has-tobe':''}${b.isNew?' is-new':''}`;
   const newTag = b.isNew ? '<span class="new-tag">신설</span>' : '';
   return `<button class="${cls}" data-bu-id="${b.id}" onclick="openBu('${b.id}')">
     <span class="bu-dot"></span>${prefix}${newTag}<span>${b.name}</span>
@@ -1029,28 +1106,8 @@ function setSidebarMode(m){
   document.getElementById('mt-domain').classList.toggle('active', m==='domain');
   document.getElementById('mt-flow').classList.toggle('active', m==='flow');
   renderSidebar();
-  // keep highlight on current BU
   if(state.currentBu){
     document.querySelectorAll('.bu-btn').forEach(b=>b.classList.toggle('active', b.dataset.buId===state.currentBu));
-  }
-}
-function toggleShowFuture(){
-  state.showFuture = !state.showFuture;
-  const btn = document.getElementById('ft-btn');
-  const label = document.getElementById('ft-state');
-  btn.classList.toggle('active', state.showFuture);
-  label.textContent = state.showFuture ? 'ON' : 'OFF';
-  renderSidebar();
-  renderScenarios();
-  // 현재 열린 BU가 숨겨지면 홈으로, 아니면 상태만 재렌더
-  if(state.currentBu){
-    const cur = BUS.find(b=>b.id===state.currentBu);
-    if(cur && cur.isNew && !state.showFuture){
-      goHome();
-    } else {
-      renderNeighbors(state.currentBu);
-      document.querySelectorAll('.bu-btn').forEach(b=>b.classList.toggle('active', b.dataset.buId===state.currentBu));
-    }
   }
 }
 /* ===================================================================
@@ -1079,90 +1136,57 @@ function openBu(id){
   document.getElementById('bu-name').textContent = bu.name;
   document.getElementById('bu-desc').textContent = bu.desc;
 
+  const asisCnt = buAsisCount(bu);
+  const tobeCnt = buTobeCount(bu);
   const badges = document.getElementById('bu-badges');
   badges.innerHTML = bu.isNew
     ? `<span class="bu-badge is-new">🆕 신설 제안</span>
        <span class="bu-badge no-tobe">AS-IS 없음 · 새로 만들 업무</span>`
-    : `<span class="bu-badge">AS-IS ${bu.asis.length}개</span>
-       ${bu.tobe.length
-         ? `<span class="bu-badge has-tobe">✅ 새 버전 ${bu.tobe.length}개</span>`
+    : `<span class="bu-badge">AS-IS ${asisCnt}개</span>
+       ${tobeCnt
+         ? `<span class="bu-badge has-tobe">✅ 새 버전 ${tobeCnt}개 페어링</span>`
          : `<span class="bu-badge no-tobe">⚠ 새 버전 미정</span>`}`;
 
-  document.getElementById('bu-meta').innerHTML =
-    `<div class="bu-info-row">
-       <span class="bu-info-lbl">도메인</span>
-       <span class="bu-info-val"><b>${DOMAINS[bu.dom].label}</b></span>
-     </div>`;
-  const tablesHtml = bu.tables.length
-    ? bu.tables.map(t=>`<span class="tbl-chip">🗄 ${t}</span>`).join('')
-    : `<em style="color:var(--ink-4);font-size:11px">— (없음)</em>`;
-  document.getElementById('bu-tables').innerHTML =
-    `<div class="bu-info-row">
-       <span class="bu-info-lbl">연관 테이블·뷰</span>
-       <span class="bu-info-val">${tablesHtml}</span>
-     </div>`;
+  document.getElementById('bu-meta').innerHTML = `<span>도메인: <b>${DOMAINS[bu.dom].label}</b></span><span style="color:var(--indigo)">· 🅱 <b>screens[${(bu.screens||[]).length}]</b> 페어 구조</span>`;
+  document.getElementById('bu-tables').innerHTML = bu.tables.map(t=>`<span class="tbl-chip">🗄 ${t}</span>`).join('');
 
   renderNeighbors(id);
   renderRoleTabs(bu);
   renderFilePickers(bu);
 
-  loadAsis(); loadTobe();
+  loadScreen();
   setMode(state.mode);
 }
 
 function renderNeighbors(id){
   const host = document.getElementById('bu-nb');
   const bu = buMeta(id);
-  let {up, dn} = getNeighbors(id);
-  // 토글 꺼지면 신설 제안 BU로 향하는/오는 엣지 숨김
-  if(!state.showFuture){
-    up = up.filter(n=>{ const b=buMeta(n.id); return b && !b.isNew; });
-    dn = dn.filter(n=>{ const b=buMeta(n.id); return b && !b.isNew; });
-  }
+  const {up, dn} = getNeighbors(id);
   const pill = n=>{
     const b = buMeta(n.id); if(!b) return '';
-    const kind = EDGE_KIND[n.kind] || {lbl:n.kind, c:'var(--ink-3)'};
-    return `<span class="nb-chip" onclick="openBu('${n.id}')" title="연결: ${kind.lbl} · 매개: ${n.via}">
-      <span class="nb-kind" style="background:${kind.c}">${kind.lbl}</span>${b.ic} ${b.name}<span class="nb-via">${n.via}</span>
+    const col = EDGE_KIND[n.kind]?.c || 'var(--ink-3)';
+    return `<span class="nb-chip" onclick="openBu('${n.id}')" title="${EDGE_KIND[n.kind]?.lbl||''} · ${n.via}">
+      <span style="color:${col};font-size:9px">●</span>${b.ic} ${b.name}<span class="via">· ${n.via}</span>
     </span>`;
   };
-  // 신설 제안 BU는 아직 상하류 관계가 정해지지 않았거나 흐름 밖 상시·보조 성격
   const isoMsg = bu?.isNew
     ? '<span class="nb-empty">신설 제안 · 흐름 관계 미정</span>'
     : null;
-  const upHtml = up.length ? up.map(pill).join('') : (isoMsg || '<span class="nb-empty">— (시작 업무, 앞 단계 없음)</span>');
-  const dnHtml = dn.length ? dn.map(pill).join('') : (isoMsg || '<span class="nb-empty">— (종결 업무, 뒤 단계 없음)</span>');
-  const legend = (up.length || dn.length)
-    ? `<div class="bu-nb-legend">
-         <span>연결 종류:</span>
-         ${Object.entries(EDGE_KIND).map(([k,v])=>`<span class="lg-item"><span class="lg-dot" style="background:${v.c}"></span>${v.lbl}</span>`).join('')}
-       </div>`
-    : '';
+  const upHtml = up.length ? up.map(pill).join('') : (isoMsg || '<span class="nb-empty">시작 업무 (상류 없음)</span>');
+  const dnHtml = dn.length ? dn.map(pill).join('') : (isoMsg || '<span class="nb-empty">종결 업무 (하류 없음)</span>');
   host.innerHTML = `
-    <div class="bu-nb-row">
-      <div class="bu-nb-lbl-col">
-        <span class="bu-nb-lbl up">← 상류</span>
-        <span class="bu-nb-hint">이 업무 앞</span>
-      </div>
-      <div class="bu-nb-pills">${upHtml}</div>
-    </div>
-    <div class="bu-nb-row">
-      <div class="bu-nb-lbl-col">
-        <span class="bu-nb-lbl dn">하류 →</span>
-        <span class="bu-nb-hint">이 업무 뒤</span>
-      </div>
-      <div class="bu-nb-pills">${dnHtml}</div>
-    </div>
-    ${legend}
+    <div class="bu-nb-col"><span class="bu-nb-lbl up">← 상류</span>${upHtml}</div>
+    <div class="bu-nb-col"><span class="bu-nb-lbl dn">하류 →</span>${dnHtml}</div>
   `;
 }
 
 function renderRoleTabs(bu){
-  const g = groupByRole(bu.asis);
+  const screens = bu.screens || [];
+  const g = groupByRole(screens);
   const roles = ['list','mode','proc','popup','other'];
   const host = document.getElementById('role-tabs');
   let html = `<div class="role-tab ${state.role==='all'?'active':''}" onclick="setRole('all')">
-    <span>🧩 전체</span><span class="rt-cnt">${bu.asis.length}</span>
+    <span>🧩 전체</span><span class="rt-cnt">${screens.length}</span>
   </div>`;
   roles.forEach(r=>{
     const cnt = g[r].length;
@@ -1181,68 +1205,28 @@ function setRole(r){
   const bu = BUS.find(b=>b.id===state.currentBu); if(!bu) return;
   renderRoleTabs(bu);
   renderFilePickers(bu);
-  loadAsis();
+  loadScreen();
 }
 
-/* ===================================================================
-   AS-IS ↔ TO-BE 파일명 매칭 헬퍼
-   Normalize: strip path segments, strip .html, lowercase, treat _/- as equivalent.
-   =================================================================== */
-function normalizeFileStem(f){
-  if(!f) return '';
-  // strip path → basename
-  const base = String(f).split(/[\\/]/).pop();
-  // strip .html (and .htm) extension
-  const noExt = base.replace(/\.html?$/i,'');
-  // lowercase + unify separators (_ and - equivalent → use '-')
-  return noExt.toLowerCase().replace(/_/g,'-');
-}
-/** Returns the tobe file (string) whose stem matches `asisFile` stem, or null. */
-function findPairedTobe(bu, asisFile){
-  if(!bu || !asisFile) return null;
-  const key = normalizeFileStem(asisFile);
-  if(!key) return null;
-  const hit = (bu.tobe||[]).find(t => normalizeFileStem(t) === key);
-  return hit || null;
-}
-/** Returns the asis file (string) whose stem matches `tobeFile` stem, or null. */
-function findPairedAsis(bu, tobeFile){
-  if(!bu || !tobeFile) return null;
-  const key = normalizeFileStem(tobeFile);
-  if(!key) return null;
-  const hit = (bu.asis||[]).find(a => normalizeFileStem(a) === key);
-  return hit || null;
-}
-
+/* Option B · 단일 '화면 선택' 드롭다운 */
 function renderFilePickers(bu){
-  const filtered = state.role==='all' ? bu.asis : bu.asis.filter(f=>classifyScreen(f)===state.role);
-  const pa = document.getElementById('pick-asis');
-  // AS-IS 옵션마다 짝 유무를 ✅(짝 있음) / ∅(짝 없음) 로 표시
-  pa.innerHTML = filtered.map(f=>{
-    const role = classifyScreen(f);
-    const paired = findPairedTobe(bu, f);
-    const cov = paired ? '✅' : '∅';
-    return `<option value="${f}" data-paired="${paired?'1':'0'}">${cov} ${ROLE_META[role].ic} ${f}</option>`;
-  }).join('') || `<option value="">(없음)</option>`;
-
-  const pt = document.getElementById('pick-tobe');
-  if(bu.tobe.length){
-    // TO-BE는 존재 자체가 ✅ 보장
-    pt.innerHTML = bu.tobe.map(f=>`<option value="${f}">✅ 🟩 ${f.split('/').pop()}</option>`).join('');
-    pt.disabled = false;
-  } else {
-    pt.innerHTML = `<option>– 미정 –</option>`;
-    pt.disabled = true;
+  const screens = bu.screens || [];
+  const filtered = state.role==='all' ? screens : screens.filter(s=>s.role===state.role);
+  const sel = document.getElementById('pick-screen');
+  if(!filtered.length){
+    sel.innerHTML = `<option value="">(화면 없음)</option>`;
+    sel.disabled = true;
+    return;
   }
-
-  // 초기 진입 시 현재 AS-IS와 짝을 이루는 TO-BE를 미리 선택
-  const asisVal = pa.value;
-  if(asisVal && bu.tobe.length){
-    const paired = findPairedTobe(bu, asisVal);
-    if(paired){
-      pt.value = paired;
-    }
-  }
+  sel.disabled = false;
+  sel.innerHTML = filtered.map((s,i)=>{
+    const role = s.role || 'other';
+    const rm   = ROLE_META[role];
+    const ind  = s.tobe ? '✅' : '∅';
+    const asisLbl = s.asis ? s.asis : '(AS-IS 없음 · TO-BE 고아)';
+    const tag  = s.tobe ? 'tobe exists' : 'tobe null';
+    return `<option value="${i}" data-idx="${i}">${ind} ${rm.ic} ${asisLbl} · ${tag}</option>`;
+  }).join('');
 }
 
 function setMode(m){
@@ -1254,146 +1238,76 @@ function setMode(m){
 }
 
 /* ===================================================================
-   IFRAME LOAD & NUMBER INJECT
-   =================================================================== */
-/* Guard flag to prevent reverse-sync recursion when we programmatically
-   drive one dropdown from the other. */
-let _ocSyncing = false;
+   IFRAME LOAD & NUMBER INJECT · Option B: 단일 loadScreen()
+   ===================================================================
+   선택된 screens[i] 엔트리 하나로 AS-IS iframe + TO-BE iframe 동시 로드
+   - asis:null  → 왼쪽 pane 플레이스홀더 ("AS-IS 없음")
+   - tobe:null  → 오른쪽 pane 플레이스홀더 ("새 버전 초안 없음")
+*/
+function _getCurrentScreen(){
+  const bu = BUS.find(b=>b.id===state.currentBu); if(!bu) return null;
+  const screens = bu.screens || [];
+  const filtered = state.role==='all' ? screens : screens.filter(s=>s.role===state.role);
+  if(!filtered.length) return null;
+  const sel = document.getElementById('pick-screen');
+  const idx = Math.max(0, parseInt(sel.value || '0', 10) || 0);
+  return filtered[idx] || filtered[0];
+}
 
-function loadAsis(){
+function loadScreen(){
   const bu = BUS.find(b=>b.id===state.currentBu); if(!bu) return;
-  const host = document.getElementById('pb-asis');
-  if(!bu.asis.length){
-    host.innerHTML = `
+  const sc = _getCurrentScreen();
+
+  /* --- 왼쪽 (AS-IS) --- */
+  const hostA = document.getElementById('pb-asis');
+  if(!sc || !sc.asis){
+    // isNew BU 또는 TO-BE 고아 엔트리
+    const title = bu.isNew ? 'AS-IS 없음 · 차세대 신설 제안' : 'AS-IS 없음 · TO-BE 고아 엔트리';
+    const desc  = bu.isNew
+      ? '이 업무는 차세대 전산에서 <b>새로 제안되는 모습</b>입니다. 레거시에 단독 화면이 없거나 · 여러 기존 화면에 흩어져 있던 기능을 <b>새롭게 묶거나 덧씌우는</b> 형태입니다.'
+      : '이 TO-BE 초안은 파일명 매칭 규칙으로 기존 AS-IS와 페어링되지 않아 <b>고아</b> 상태입니다. 담당자에게 어느 AS-IS와 짝지을지 확인해 주세요.';
+    hostA.innerHTML = `
       <div class="pane-empty">
-        <div class="pe-ic">🆕</div>
-        <div class="pe-t">AS-IS 없음 · 차세대 신설 제안</div>
-        <div class="pe-d">이 업무는 차세대 전산에서 <b>새로 제안되는 모습</b>입니다. 레거시에 단독 화면이 없거나 · 여러 기존 화면에 흩어져 있던 기능을 <b>새롭게 묶거나 덧씌우는</b> 형태입니다.</div>
-        <div class="pe-note">💡 이런 업무가 <b>정말 필요한가?</b> · <b>기존 어느 화면과 합쳐야 하는가?</b> 에 대해 의견을 엑셀로 남겨주세요.</div>
+        <div class="pe-ic">${bu.isNew?'🆕':'🧩'}</div>
+        <div class="pe-t">${title}</div>
+        <div class="pe-d">${desc}</div>
+        <div class="pe-note">💡 의견은 엑셀 파일로 남겨주세요.</div>
       </div>`;
     document.getElementById('f-asis').textContent = '—';
     document.getElementById('lg-asis').innerHTML = `<em style="color:var(--ink-4);font-size:11px">AS-IS 없음</em>`;
     document.getElementById('cnt-asis-n').textContent = '0';
-    return;
-  }
-  if(!host.querySelector('iframe')){
-    host.innerHTML = `<iframe id="if-asis" data-side="asis" sandbox="allow-same-origin allow-scripts"></iframe>`;
-    document.getElementById('if-asis').addEventListener('load', ()=>injectBadges('if-asis'));
-  }
-  const fn = document.getElementById('pick-asis').value || bu.asis[0];
-  const role = classifyScreen(fn);
-  const m = ROLE_META[role];
-  document.getElementById('f-asis').innerHTML = `<span style="color:var(--ink-3);margin-right:4px">${m.ic}${m.lbl}</span>${fn}`;
-  const url = '1.업무단위/previews/'+fn;
-  document.getElementById('if-asis').src = url;
-
-  // AS-IS 선택 → TO-BE 드롭다운 자동 동기화 (+ 화면별 TO-BE 미정 처리)
-  if(!_ocSyncing){
-    _ocSyncing = true;
-    try{
-      const pt = document.getElementById('pick-tobe');
-      if(bu.tobe.length && pt && !pt.disabled){
-        const paired = findPairedTobe(bu, fn);
-        if(paired){
-          if(pt.value !== paired) pt.value = paired;
-        }
-        // Re-render TO-BE pane to reflect pairing for this AS-IS (shows per-screen
-        // placeholder when paired===null, or loads matched TO-BE iframe otherwise).
-        loadTobe();
-      }
-    } finally {
-      _ocSyncing = false;
+  } else {
+    if(!hostA.querySelector('iframe')){
+      hostA.innerHTML = `<iframe id="if-asis" data-side="asis" sandbox="allow-same-origin allow-scripts"></iframe>`;
+      document.getElementById('if-asis').addEventListener('load', ()=>injectBadges('if-asis'));
     }
+    const role = sc.role || 'other';
+    const m = ROLE_META[role];
+    document.getElementById('f-asis').innerHTML = `<span style="color:var(--ink-3);margin-right:4px">${m.ic}${m.lbl}</span>${sc.asis}`;
+    const url = '1.업무단위/previews/'+sc.asis;
+    document.getElementById('if-asis').src = url;
   }
-}
-function loadTobe(){
-  const bu = BUS.find(b=>b.id===state.currentBu); if(!bu) return;
-  const host = document.getElementById('pb-tobe');
 
-  // ===== BU-level placeholder (unchanged) — whole BU has zero TO-BE files =====
-  if(!bu.tobe.length){
-    host.innerHTML = `
+  /* --- 오른쪽 (TO-BE) --- */
+  const hostB = document.getElementById('pb-tobe');
+  if(!sc || !sc.tobe){
+    hostB.innerHTML = `
       <div class="pane-empty">
         <div class="pe-ic">🎨</div>
-        <div class="pe-t">아직 새 버전 초안이 없습니다</div>
-        <div class="pe-d">이 업무의 새 모습은 <b>여러분의 의견으로</b> 그려집니다. 담당자에게 받으신 <b>엑셀 파일</b>의 🟢유지 / 🟡개선 / 🔴삭제 / 💡신규 블록에 번호로 짚어 적어주세요.</div>
-        <div class="pe-note">💡 레거시 그대로는 남기고 싶다 → 🟢 유지<br>완전히 새로 갈아엎어야 한다 → 💡 신규</div>
+        <div class="pe-t">새 버전 초안 없음</div>
+        <div class="pe-d">이 AS-IS 화면의 새 모습은 <b>여러분의 의견으로</b> 그려집니다. 담당자에게 받으신 <b>엑셀 파일</b>의 🟢유지 / 🟡개선 / 🔴삭제 / 💡신규 블록에 번호로 짚어 적어주세요.</div>
+        <div class="pe-note">🅱 Option B 데이터 구조: <code style="font-family:'JetBrains Mono',monospace">tobe: null</code></div>
       </div>`;
     document.getElementById('f-tobe').textContent = '—';
-    document.getElementById('lg-tobe').innerHTML = `<em style="color:var(--ink-4);font-size:11px">TO-BE 미정</em>`;
+    document.getElementById('lg-tobe').innerHTML = `<em style="color:var(--ink-4);font-size:11px">TO-BE 미정 (tobe:null)</em>`;
     document.getElementById('cnt-tobe-n').textContent = '0';
-    return;
-  }
-
-  // 화면별 TO-BE 미정 플레이스홀더
-  // If the currently selected AS-IS has NO matching TO-BE in this BU's tobe list,
-  // show a screen-specific "초안 미정" message even though other screens in this BU
-  // have TO-BEs.
-  const pickAsis = document.getElementById('pick-asis');
-  const pickTobe = document.getElementById('pick-tobe');
-  const selAsis = (pickAsis && pickAsis.value) ? pickAsis.value : (bu.asis[0] || '');
-  const paired = selAsis ? findPairedTobe(bu, selAsis) : null;
-
-  if(selAsis && !paired){
-    // No match for this specific AS-IS → per-screen placeholder
-    host.innerHTML = `
-      <div class="pane-empty">
-        <div class="pe-ic">⚠</div>
-        <div class="pe-t">이 화면의 새 버전 초안 미정</div>
-        <div class="pe-d">이 BU에는 다른 화면의 새 버전 초안이 존재하지만, <b>이 특정 AS-IS 화면</b>에 대한 짝은 아직 만들어지지 않았습니다. 엑셀로 의견 주세요.</div>
-        <div class="pe-file">📄 ${selAsis}</div>
-        <div class="pe-note">💡 이 화면이 <b>재설계되어야 하는가?</b> · <b>다른 새 화면에 합쳐져야 하는가?</b> 에 대한 의견을 엑셀로 남겨주세요.</div>
-      </div>`;
-    document.getElementById('f-tobe').textContent = '—';
-    document.getElementById('lg-tobe').innerHTML = `<em style="color:var(--ink-4);font-size:11px">이 화면의 TO-BE 미정</em>`;
-    document.getElementById('cnt-tobe-n').textContent = '0';
-    // Keep pick-tobe enabled so user can manually browse other TO-BEs in this BU.
-    return;
-  }
-
-  // Normal load path — ensure iframe exists
-  if(!host.querySelector('iframe')){
-    host.innerHTML = `<iframe id="if-tobe" data-side="tobe" sandbox="allow-same-origin allow-scripts"></iframe>`;
-    document.getElementById('if-tobe').addEventListener('load', ()=>injectBadges('if-tobe'));
-  }
-  // If we have a pairing, prefer it; otherwise honor the dropdown's current value.
-  const fn = paired || (pickTobe && pickTobe.value) || bu.tobe[0];
-  // Reflect the chosen file in the dropdown (keeps UI consistent).
-  if(pickTobe && pickTobe.value !== fn){
-    pickTobe.value = fn;
-  }
-  document.getElementById('f-tobe').textContent = fn.split('/').pop();
-  const ifr = document.getElementById('if-tobe');
-  ifr.src = fn;
-
-  // Reverse sync (TO-BE → AS-IS) is handled by loadTobeFromPicker(), not here.
-}
-
-/* Onchange handler for pick-tobe that also syncs pick-asis back to the matching AS-IS.
-   Hooked via inline onchange attribute rewrite at init. */
-function loadTobeFromPicker(){
-  if(_ocSyncing){ loadTobe(); return; }
-  _ocSyncing = true;
-  try{
-    const bu = BUS.find(b=>b.id===state.currentBu);
-    const pickTobe = document.getElementById('pick-tobe');
-    if(bu && pickTobe && pickTobe.value){
-      const pairedAsis = findPairedAsis(bu, pickTobe.value);
-      if(pairedAsis){
-        const pickAsis = document.getElementById('pick-asis');
-        // Only update if the matched AS-IS is present in the current role-filtered list.
-        if(pickAsis && Array.from(pickAsis.options).some(o=>o.value===pairedAsis)){
-          if(pickAsis.value !== pairedAsis){
-            pickAsis.value = pairedAsis;
-            // Refresh AS-IS iframe for the newly selected file.
-            loadAsis();
-          }
-        }
-      }
+  } else {
+    if(!hostB.querySelector('iframe')){
+      hostB.innerHTML = `<iframe id="if-tobe" data-side="tobe" sandbox="allow-same-origin allow-scripts"></iframe>`;
+      document.getElementById('if-tobe').addEventListener('load', ()=>injectBadges('if-tobe'));
     }
-    loadTobe();
-  } finally {
-    _ocSyncing = false;
+    document.getElementById('f-tobe').textContent = sc.tobe.split('/').pop();
+    document.getElementById('if-tobe').src = sc.tobe;
   }
 }
 
@@ -1408,10 +1322,8 @@ function injectBadges(iframeId){
   try{ doc = ifr.contentDocument; }catch(e){ return; }
   if(!doc || !doc.body) return;
 
-  // remove old badges
   doc.querySelectorAll('.__kocom_badge').forEach(x=>x.remove());
 
-  // Inject style (once)
   if(!doc.getElementById('__kocom_badge_style')){
     const st = doc.createElement('style');
     st.id='__kocom_badge_style';
@@ -1452,7 +1364,6 @@ function injectBadges(iframeId){
     b.style.top = (absTop-8)+'px';
     doc.body.appendChild(b);
 
-    // Label extraction
     let lbl = '';
     const tr = el.closest('tr');
     if(tr){
@@ -1471,7 +1382,6 @@ function injectBadges(iframeId){
     labels.push(lbl);
   });
 
-  // Legend
   const lg = document.getElementById(legendId);
   if(labels.length){
     lg.innerHTML = labels.map((l,i)=>`<span class="lg-item"><b>${i+1}</b>${l||'—'}</span>`).join('');
@@ -1486,43 +1396,38 @@ function renumber(){
   injectBadges('if-tobe');
 }
 
-// Attach listeners once
+// Attach listeners once (iframes may be replaced by loadScreen, listeners re-attached there)
 document.getElementById('if-asis').addEventListener('load', ()=>injectBadges('if-asis'));
 document.getElementById('if-tobe').addEventListener('load', ()=>injectBadges('if-tobe'));
 
 /* ===================================================================
-   HOME STATS
+   HOME STATS · Option B: screens[] 기반
    =================================================================== */
 function updateHomeStats(){
-  const nTobe = BUS.filter(b=>b.tobe.length).length;
-  // AS-IS 유니크 파일 수 (화면 수)
-  const asisSet = new Set();
-  BUS.forEach(b=>b.asis.forEach(f=>asisSet.add(f)));
-  document.getElementById('s-asis').textContent = asisSet.size;
+  const nTobe = BUS.filter(buHasTobe).length;
   document.getElementById('s-bu').textContent = BUS.length;
   document.getElementById('s-tobe').textContent = nTobe;
   document.getElementById('s-notobe').textContent = BUS.length - nTobe;
   document.getElementById('s-xlsx').textContent = FLOW_GROUPS.length;
-  // 분류 카운트 (목록 → 입력 → 처리 → 팝업 순으로 먼저 매칭되는 규칙 하나만)
-  let list=0,mode=0,proc=0,popup=0,other=0;
+
+  let list=0,mode=0,proc=0,popup=0, paired=0, nullCount=0;
   BUS.forEach(b=>{
-    b.asis.forEach(f=>{
+    (b.screens||[]).forEach(sc=>{
+      if(!sc.asis) return; // TO-BE-only 고아는 "화면 수" 집계에서 제외
+      const f = sc.asis;
       if(f.includes('_list')) list++;
       else if(f.includes('_mode')) mode++;
       else if(f.includes('_proc')) proc++;
       else if(f.includes('popup')) popup++;
-      else other++;
+      if(sc.tobe) paired++; else nullCount++;
     });
   });
   document.getElementById('n-list').textContent = list;
   document.getElementById('n-mode').textContent = mode;
   document.getElementById('n-proc').textContent = proc;
   document.getElementById('n-popup').textContent = popup;
-  document.getElementById('n-other').textContent = other;
-  // 유니크 테이블/뷰 수
-  const tSet = new Set();
-  BUS.forEach(b=>(b.tables||[]).forEach(t=>tSet.add(t)));
-  document.getElementById('n-tables').textContent = tSet.size;
+  const npair = document.getElementById('n-paired'); if(npair) npair.textContent = paired;
+  const nnull = document.getElementById('n-null');   if(nnull) nnull.textContent = nullCount;
 }
 
 /* ===================================================================
@@ -1531,6 +1436,21 @@ function updateHomeStats(){
 renderSidebar();
 renderScenarios();
 updateHomeStats();
+
+// 콘솔에 페어링 진단 로그 (개발자용)
+(function _logPairingDiag(){
+  let totalAsis=0, totalTobe=0, paired=0, orphanTobe=0, asisNullTobe=0;
+  BUS.forEach(b=>{
+    (b.screens||[]).forEach(s=>{
+      if(s.asis && s.tobe){ paired++; totalAsis++; totalTobe++; }
+      else if(s.asis && !s.tobe){ asisNullTobe++; totalAsis++; }
+      else if(!s.asis && s.tobe){ orphanTobe++; totalTobe++; }
+    });
+  });
+  console.log('[Option B] screens[] 페어링 진단:',
+    {BUs:BUS.length, 총AS_IS:totalAsis, 총TO_BE:totalTobe, 페어링:paired,
+     tobe_null:asisNullTobe, 고아_TO_BE:orphanTobe});
+})();
 
 </script>
 
