@@ -92,6 +92,12 @@ textarea,input{font-family:inherit;color:inherit}
 .home-title em{font-style:normal;background:linear-gradient(135deg,#2563eb,#7c3aed,#db2777);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .home-sub{font-size:15px;color:var(--ink-3);max-width:780px;line-height:1.65;margin-bottom:28px}
 .home-sub b{color:var(--ink-2);font-weight:600}
+.home-facts{display:flex;flex-direction:column;gap:4px;max-width:780px;margin-bottom:28px;background:var(--bg-el);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px}
+.home-facts .fact-row{display:flex;align-items:center;gap:12px;padding:4px 0;border-bottom:1px dashed var(--line)}
+.home-facts .fact-row:last-child{border-bottom:none}
+.home-facts .fact-lbl{font-size:11px;font-weight:800;color:var(--ink-3);letter-spacing:.04em;min-width:56px;padding:3px 10px;border-radius:4px;background:var(--bg-sub);text-align:center;flex-shrink:0}
+.home-facts .fact-val{font-size:14px;color:var(--ink-2);line-height:1.5}
+.home-facts .fact-val b{color:var(--ink);font-weight:700}
 
 .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
 .chip{padding:5px 11px;border-radius:999px;background:var(--bg-el);border:1px solid var(--line);font-size:11.5px;color:var(--ink-2);font-weight:500}
@@ -138,11 +144,6 @@ textarea,input{font-family:inherit;color:inherit}
 .flow-step.s4{--sc:var(--violet);--ss:var(--violet-s)}
 .flow-step.s5{--sc:var(--pink);--ss:var(--pink-s)}
 
-.cta-box{background:linear-gradient(135deg,#111827,#1f2937);border-radius:var(--r-lg);padding:28px 32px;color:#fff;display:flex;align-items:center;gap:24px}
-.cta-t{font-size:18px;font-weight:700;margin-bottom:4px}
-.cta-d{font-size:13px;color:#d4d4d8;line-height:1.6;max-width:560px}
-.cta-btn{margin-left:auto;padding:12px 22px;background:#fff;color:#111;border-radius:var(--r-sm);font-weight:700;font-size:13px;flex-shrink:0}
-.cta-btn:hover{background:#e5e5e5}
 
 /* --- BU View --- */
 .bu-view{display:none;flex-direction:column;height:100%}
@@ -329,11 +330,20 @@ textarea,input{font-family:inherit;color:inherit}
       <section class="home" id="view-home">
         <div class="home-eyebrow"><span class="pulse"></span>KOCOM CS · 차세대 전산 개발북 v0.1</div>
         <h1 class="home-title">레거시 화면과 <em>차세대 제안</em>을<br>나란히 비교하는 개발북</h1>
-        <p class="home-sub">
-          <b>레거시</b> 202 화면 · 45 업무단위(BU) · 17 DB 프로시저<br>
-          <b>차세대</b> 신설 제안 5 BU · TO-BE 초안 13건 (9 BU 보유 · 41 BU 의견 대기)<br>
-          <b>용도</b> 화면 쌍(AS-IS ↔ TO-BE) 열람 · 의견은 배포 엑셀 10종으로 수집
-        </p>
+        <div class="home-facts">
+          <div class="fact-row">
+            <span class="fact-lbl">레거시</span>
+            <span class="fact-val">45 업무 · 202 화면 · 17 DB 프로시저</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-lbl">제안</span>
+            <span class="fact-val">+ 5 신설 BU · + 13 TO-BE 초안 화면</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-lbl">엑셀</span>
+            <span class="fact-val"><b>10종</b> (흐름 4 + 지원 6) · 50 BU · 202 화면 전부 수록</span>
+          </div>
+        </div>
 
         <div class="chip-row">
           <div class="chip">📋 목록 <b id="n-list">–</b></div>
@@ -403,14 +413,6 @@ textarea,input{font-family:inherit;color:inherit}
         <div class="scen-title">🔗 업무는 흐름이다 · 4가지 대표 여정</div>
         <div class="scen-sub">KOCOM CS의 모든 업무는 아래 4개 여정 중 하나로 귀결됩니다. 각 단계를 클릭하면 해당 업무단위로 이동합니다.</div>
         <div id="scen-host"></div>
-
-        <div class="cta-box" style="margin-top:24px">
-          <div>
-            <div class="cta-t">🗳 여러분의 의견으로 완성되는 전산</div>
-            <div class="cta-d">왼쪽 사이드바에서 업무를 골라 현재 화면과 새 버전을 나란히 비교해 보세요. 의견은 담당자에게 받으신 <b>엑셀 파일</b>에 번호로 짚어 적어주시면 다음 버전에 반영됩니다.</div>
-          </div>
-          <button class="cta-btn" onclick="document.querySelector('.bu-btn[data-bu-id=receipt-main]')?.click()">수신접수 먼저 보기 →</button>
-        </div>
       </section>
 
       <!-- BU VIEW -->
