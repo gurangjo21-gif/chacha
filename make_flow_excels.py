@@ -629,7 +629,8 @@ def build_flow_workbook(group, idx):
 
     # Filename
     label_clean = re.sub(r'[^\w가-힣]', '', group.get('label',''))
-    fname = f'{idx:02d}_{label_clean}_{total_bus}BU_{total_screens}화면.xlsx'
+    suffix = f'_{total_screens}화면' if total_screens else ''
+    fname = f'{idx:02d}_{label_clean}_{total_bus}BU{suffix}.xlsx'
     path = os.path.join(OUT_DIR, fname)
     wb.save(path)
     return fname, total_screens

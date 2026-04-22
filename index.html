@@ -317,10 +317,10 @@ textarea,input{font-family:inherit;color:inherit}
 
         <div class="stats">
           <div class="stat a"><div class="stat-n">206</div><div class="stat-l">총 화면 수</div></div>
-          <div class="stat b"><div class="stat-n" id="s-bu">46</div><div class="stat-l">업무 단위 (BU)</div></div>
-          <div class="stat c"><div class="stat-n" id="s-tobe">12</div><div class="stat-l">새 버전 제안됨</div></div>
-          <div class="stat d"><div class="stat-n" id="s-notobe">34</div><div class="stat-l">의견 받는 BU</div></div>
-          <div class="stat e"><div class="stat-n" id="s-xlsx">10</div><div class="stat-l">배포 엑셀 파일</div></div>
+          <div class="stat b"><div class="stat-n" id="s-bu">50</div><div class="stat-l">업무 단위 (BU)</div></div>
+          <div class="stat c"><div class="stat-n" id="s-tobe">9</div><div class="stat-l">새 버전 제안됨</div></div>
+          <div class="stat d"><div class="stat-n" id="s-notobe">41</div><div class="stat-l">의견 받는 BU</div></div>
+          <div class="stat e"><div class="stat-n" id="s-xlsx">11</div><div class="stat-l">배포 엑셀 파일</div></div>
         </div>
 
         <div class="flow-box">
@@ -366,7 +366,7 @@ textarea,input{font-family:inherit;color:inherit}
           <div class="v-card c6">
             <span class="v-ico">🏛</span>
             <div class="v-t">레거시 토대 유지</div>
-            <div class="v-d">45 업무단위·17 DB 프로시저의 "흐름"은 그대로. 프론트와 테이블 구조만 새로 짭니다. 기존 업무가 단절되지 않습니다.</div>
+            <div class="v-d">기존 <b>45 레거시 업무단위·17 DB 프로시저</b>의 "흐름"은 그대로. 프론트와 테이블 구조만 새로 짭니다. 여기에 5개 신설 제안을 더해 총 50건을 본 북에서 다룹니다.</div>
           </div>
         </div>
 
@@ -468,7 +468,7 @@ textarea,input{font-family:inherit;color:inherit}
 </div>
 
 <!-- ===================================================================
-     DATA · BUS (45 레거시 BU + 1 신설 제안 BU × AS-IS / TO-BE 매핑)
+     DATA · BUS (45 레거시 BU + 5 신설 제안 BU × AS-IS / TO-BE 매핑)
      =================================================================== -->
 <script>
 const BUS = [
@@ -640,9 +640,25 @@ const BUS = [
    tobe:[],tables:[]},
 
   /* ===== Future · 신설 제안 (AS-IS 없음, 새로 만들 업무) ===== */
+  {id:'cs-core',dom:'cti',ic:'🎧',name:'콜센터 코어 · 하나의 덩어리',
+   desc:'지금은 소프트폰·녹취·CTI·수신접수가 따로 놀고 있습니다. 이들을 한 화면에 통합해 콜이 뜨는 순간 고객·아파트·이력이 자동 조회되는 "하나의 덩어리"로 재설계합니다. 현재는 존재하지 않는 업무입니다.',
+   asis:[], tobe:[], tables:['(신규) CS콜세션','(통합) xline_agent_list·CTI_CALLBACK·CS고객정보'], isNew:true},
+
   {id:'chatbot-self',dom:'receipt',ic:'💬',name:'AI 챗봇 셀프서비스',
    desc:'고객이 챗봇과 먼저 대화. 간단한 고장 진단·예약·조회는 챗봇이 1차 응대하고, 복잡한 케이스만 상담원으로 에스컬레이션됩니다. 현재는 존재하지 않는 업무입니다.',
    asis:[], tobe:[], tables:['(신규) CS챗봇세션','(신규) CS챗봇의도'], isNew:true},
+
+  {id:'ai-copilot',dom:'receipt',ic:'🤖',name:'AI 상담사 보조',
+   desc:'통화 중 실시간 요약, 증상→장애코드 자동 추천, 유사 이력 기반 해결책 제시, 자동 메모 작성. 상담사는 고객과의 대화에 집중하고 시스템이 기록·추천을 담당합니다. 현재는 존재하지 않는 업무입니다.',
+   asis:[], tobe:[], tables:['(신규) CS콜요약','(신규) CS장애추천','CS장애구분','CS특이사항'], isNew:true},
+
+  {id:'field-sync',dom:'svc',ic:'🚚',name:'현장 ↔ 상담실 실시간 동기화',
+   desc:'기사 위치·도착 예정 시각·처리 상태·현장 사진이 상담원 화면에 실시간으로 흐릅니다. "고객님 잠시만요, 다시 전화 주세요"가 사라지고 상담사가 곧바로 답할 수 있습니다. 현재는 존재하지 않는 업무입니다.',
+   asis:[], tobe:[], tables:['(신규) CS기사위치','(신규) CS현장사진','CS처리'], isNew:true},
+
+  {id:'stock-board',dom:'store',ic:'📦',name:'재고 가시화 · 끊기지 않는 흐름',
+   desc:'자재 신청 → 승인 → 출고 → 시리얼 → 반품 전체 체인이 한 보드에서 추적 가능. 어디서 막혔는지 즉시 보입니다. 기존 자재·시리얼 업무를 단절 없이 한 화면으로 모읍니다. 현재는 존재하지 않는 업무입니다.',
+   asis:[], tobe:[], tables:['(뷰) CS자재신청·CS자재신청품목·CS시리얼·CS반품 집계'], isNew:true},
 ];
 
 /* =====================================================================
@@ -805,6 +821,9 @@ const FLOW_GROUPS = [
    bus:['forum-free','forum-notice','forum-memo','forum-qna','forum-pds']},
   {id:'sup-sys',     label:'🧰 시스템·도구', order:10, kind:'support',
    bus:['common-search','layout-shell','ajax-oracle','ajax-mysql','util-files','util-myinfo','util-misc']},
+  // 챗봇은 flow-normal 01번에 배치됨 (진입 채널). 이 그룹은 상시/보조 성격의 제안 BU.
+  {id:'sup-future',  label:'🆕 차세대 신설 제안 (상시·보조)', order:11, kind:'support',
+   bus:['cs-core','ai-copilot','field-sync','stock-board']},
 ];
 
 /* ===================================================================
@@ -993,6 +1012,7 @@ function openBu(id){
 
 function renderNeighbors(id){
   const host = document.getElementById('bu-nb');
+  const bu = buMeta(id);
   const {up, dn} = getNeighbors(id);
   const pill = n=>{
     const b = buMeta(n.id); if(!b) return '';
@@ -1001,8 +1021,12 @@ function renderNeighbors(id){
       <span style="color:${col};font-size:9px">●</span>${b.ic} ${b.name}<span class="via">· ${n.via}</span>
     </span>`;
   };
-  const upHtml = up.length ? up.map(pill).join('') : '<span class="nb-empty">시작 업무 (상류 없음)</span>';
-  const dnHtml = dn.length ? dn.map(pill).join('') : '<span class="nb-empty">종결 업무 (하류 없음)</span>';
+  // 신설 제안 BU는 아직 상하류 관계가 정해지지 않았거나 흐름 밖 상시·보조 성격
+  const isoMsg = bu?.isNew
+    ? '<span class="nb-empty">신설 제안 · 흐름 관계 미정</span>'
+    : null;
+  const upHtml = up.length ? up.map(pill).join('') : (isoMsg || '<span class="nb-empty">시작 업무 (상류 없음)</span>');
+  const dnHtml = dn.length ? dn.map(pill).join('') : (isoMsg || '<span class="nb-empty">종결 업무 (하류 없음)</span>');
   host.innerHTML = `
     <div class="bu-nb-col"><span class="bu-nb-lbl up">← 상류</span>${upHtml}</div>
     <div class="bu-nb-col"><span class="bu-nb-lbl dn">하류 →</span>${dnHtml}</div>
@@ -1072,9 +1096,9 @@ function loadAsis(){
     host.innerHTML = `
       <div class="pane-empty">
         <div class="pe-ic">🆕</div>
-        <div class="pe-t">AS-IS 없음 · 새로 만들 업무</div>
-        <div class="pe-d">이 업무는 <b>지금은 존재하지 않는 신설 제안</b>입니다. 레거시 화면이 없고, 차세대 전산에서 처음 만들어지는 업무입니다.</div>
-        <div class="pe-note">💡 이런 업무가 <b>정말 필요한가?</b> · <b>어디 끼워 넣는 게 맞는가?</b> 에 대해 의견을 남겨주세요.</div>
+        <div class="pe-t">AS-IS 없음 · 차세대 신설 제안</div>
+        <div class="pe-d">이 업무는 차세대 전산에서 <b>새로 제안되는 모습</b>입니다. 레거시에 단독 화면이 없거나 · 여러 기존 화면에 흩어져 있던 기능을 <b>새롭게 묶거나 덧씌우는</b> 형태입니다.</div>
+        <div class="pe-note">💡 이런 업무가 <b>정말 필요한가?</b> · <b>기존 어느 화면과 합쳐야 하는가?</b> 에 대해 의견을 엑셀로 남겨주세요.</div>
       </div>`;
     document.getElementById('f-asis').textContent = '—';
     document.getElementById('lg-asis').innerHTML = `<em style="color:var(--ink-4);font-size:11px">AS-IS 없음</em>`;
